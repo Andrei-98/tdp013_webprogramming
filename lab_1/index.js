@@ -1,49 +1,65 @@
-document.getElementById("send").addEventListener("click", function() {
+document.getElementById("send").addEventListener("click", function() 
+{
     let text = document.getElementById("text_input").value;
-    // let text_node = document.getElementById("text_input");
-    console.log(text.length);
-
-    if (text.length == 0 || text.length > 10) {
+    if (text.length == 0 || text.length > 10) 
+    {
         error_msg();
         
     }
-    else {
+    else 
+    {
         reset_error();
         //display_message2(text);
         display_message(text);
     }
 
-  }); 
+    // listener for message buttons
+    document.getElementById("msg_btn").addEventListener("click", function() 
+    {
+        console.log("hello world");
+        console.clear();
+
+    }); 
+
+}); 
 
 function error_msg()
 {
-    console.log("IN ERROR");
     let error = document.getElementById("error");
-    error.textContent = "Too many characters!";
-    error.style.color = "red";
+    error.textContent = "Enter between 1 and 140 characters!";
 }
 
 function reset_error()
 {
-    let error = document.getElementById("error");
+    const error = document.getElementById("error");
     error.textContent = "";
 }
 
-function display_message(text) 
+function display_message(text) // Kasper version
 {
-    //const new_message = document.createElement("div");
-    const content = document.createElement("p");
-    //new_message.appendChild(content);
-    
-    content.innerHTML = text;
-    
-    let list = document.getElementById("msg_list");
-    let el = document.createElement("li");
-    el.innerHTML = content.textContent;
-    list.appendChild(el);
+    const list = document.getElementById("msg_list");
+    const new_msg = document.createElement("div");
+    const msg_btn = document.createElement("button");
+    msg_btn.innerHTML = document.createTextNode("Check").textContent;
+    msg_btn.setAttribute("id","msg_btn");
+    const content = document.createTextNode(text);
+
+    new_msg.appendChild(content);    
+    new_msg.appendChild(msg_btn);
+
+    const el = document.createElement("li");
+    el.appendChild(new_msg); 
+
+    if(list.getElementsByTagName("li").length >= 3)
+    {
+        list.removeChild(list.lastElementChild);
+    }
+
+    list.insertBefore(el, list.childNodes[0]);
+
 }
 
-function display_message2(text) 
+function display_message2(text) // Andrei version
 {
     const newDiv = document.createElement("div");
 
@@ -59,6 +75,9 @@ function display_message2(text)
     
 
 }
+
+
+
 
 /* document.body.onload = addElement;
 
