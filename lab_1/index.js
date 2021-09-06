@@ -1,27 +1,45 @@
-document.getElementById("send").addEventListener("click", function() 
+let message_arr = [];
+
+function render_message()
 {
     let text = document.getElementById("text_input").value;
-    if (text.length == 0 || text.length > 10) 
+    if (text.length == 0 || text.length > 140) 
     {
         error_msg();
-        
     }
     else 
     {
         reset_error();
-        //display_message2(text);
+        save_message(text);
         display_message(text);
     }
+};
 
-    // listener for message buttons
-    document.getElementById("msg_btn").addEventListener("click", function() 
+function main()
+{
+    document.getElementById("send").addEventListener("click", render_message);
+    let mess = document.cookie;
+    console.log(mess);
+    if(mess != "")
     {
-        console.log("hello world");
-        console.clear();
+        let mess_arr = mess.split(";");
+        console.log(mess_arr);
 
-    }); 
+        for(let i = 0; i < mess_arr.length; i++)
+        {
+            mess_arr[i] = mess_arr[i].replace(/message\d+\=/, "");
+            display_message(mess_arr[i]);
+            save_message(mess_arr[i]);
+        }
+    }
+}
 
-}); 
+
+function save_message(text)
+{
+    message_arr.push(text);
+    document.cookie = "message" + message_arr.length + "=" + text;
+}
 
 function error_msg()
 {
@@ -40,8 +58,10 @@ function display_message(text) // Kasper version
     const list = document.getElementById("msg_list");
     const new_msg = document.createElement("div");
     const msg_btn = document.createElement("button");
-    msg_btn.innerHTML = document.createTextNode("Check").textContent;
-    msg_btn.setAttribute("id","msg_btn");
+    msg_btn.innerHTML = document.createTextNode("Read").textContent;
+    msg_btn.setAttribute("class","msg_btn");
+    msg_btn.setAttribute("name", "off");
+    msg_btn.addEventListener('click', read_message);
     const content = document.createTextNode(text);
 
     new_msg.appendChild(content);    
@@ -50,49 +70,22 @@ function display_message(text) // Kasper version
     const el = document.createElement("li");
     el.appendChild(new_msg); 
 
-    if(list.getElementsByTagName("li").length >= 3)
-    {
-        list.removeChild(list.lastElementChild);
-    }
-
     list.insertBefore(el, list.childNodes[0]);
-
 }
 
-function display_message2(text) // Andrei version
+// listener for message buttons
+function read_message() 
 {
-    const newDiv = document.createElement("div");
-
-    // and give it some content
-    const newContent = document.createTextNode(text);
-  
-    // add the text node to the newly created div
-    newDiv.appendChild(newContent);
-  
-    // add the newly created element and its content into the DOM
-    const currentDiv = document.getElementById("div1");
-    document.body.insertBefore(newDiv, currentDiv);
-    
-
+    if(this.getAttribute("name") == "off")
+    {
+        this.setAttribute("name","on");
+        this.parentElement.style.color = "grey";
+    }
+    else
+    {
+        this.setAttribute("name","off");
+        this.parentElement.style.color = "black";
+    }
 }
 
-
-
-
-/* document.body.onload = addElement;
-
-function addElement () {
-  // create a new div element
-  const newDiv = document.createElement("div");
-
-  // and give it some content
-  const newContent = document.createTextNode("Hi there and greetings!");
-
-  // add the text node to the newly created div
-  newDiv.appendChild(newContent);
-
-  // add the newly created element and its content into the DOM
-  const currentDiv = document.getElementById("div1");
-  document.body.insertBefore(newDiv, currentDiv);
-} */
-
+main();
