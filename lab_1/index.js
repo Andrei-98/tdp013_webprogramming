@@ -33,7 +33,8 @@ function main()
 
 function save_message(text)
 {
-    let real_count = document.cookie.split(";").length + 1;
+    let real_count = document.cookie.length;
+    console.log(real_count);
 
     document.cookie = "message" + real_count + "=" + text + ";expires=Mon, 01 Nov 2021 12:00:00 UTC"; // TODO Is message read/unread.
 }
