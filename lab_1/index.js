@@ -1,5 +1,3 @@
-let message_arr = [];
-
 function render_message()
 {
     let text = document.getElementById("text_input").value;
@@ -29,16 +27,13 @@ function main()
         {
             mess_arr[i] = mess_arr[i].replace(/message\d+\=/, "");
             display_message(mess_arr[i]);
-            save_message(mess_arr[i]);
         }
     }
 }
 
-
 function save_message(text)
 {
-    message_arr.push(text);
-    document.cookie = "message" + message_arr.length + "=" + text;
+    document.cookie = "message" + document.cookie.length + "=" + text; // TODO fix expr date, Is message read/unread.
 }
 
 function error_msg()
@@ -55,22 +50,25 @@ function reset_error()
 
 function display_message(text) // Kasper version
 {
-    const list = document.getElementById("msg_list");
+    const list = document.getElementById("container-2");
     const new_msg = document.createElement("div");
     const msg_btn = document.createElement("button");
+
     msg_btn.innerHTML = document.createTextNode("Read").textContent;
-    msg_btn.setAttribute("class","msg_btn");
+    msg_btn.setAttribute("class","box_checkbox");
     msg_btn.setAttribute("name", "off");
     msg_btn.addEventListener('click', read_message);
-    const content = document.createTextNode(text);
 
-    new_msg.appendChild(content);    
+    const msg_content = document.createElement("p");
+    msg_content.setAttribute("class", "box_text");
+    msg_content.innerText = text;
+
+    new_msg.setAttribute("class", "msg_box");
+    new_msg.appendChild(msg_content);
     new_msg.appendChild(msg_btn);
+         
 
-    const el = document.createElement("li");
-    el.appendChild(new_msg); 
-
-    list.insertBefore(el, list.childNodes[0]);
+    list.insertBefore(new_msg, list.childNodes[0]);
 }
 
 // listener for message buttons

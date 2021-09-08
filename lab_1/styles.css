@@ -1,8 +1,60 @@
-span {
-    display:block;
-    color: red;
+body {
+    /* text-align: center; */
+    font-family: 'Times New Roman', Times, serif;
 }
 
-#msg {
-    
+div {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.container-1 {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+
+#container-2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: solid 1px black;
+
+}
+
+ul {
+    list-style: none;
+}
+
+#send {
+background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+span {
+    display:block;
+}
+
+.msg_box {
+
+    display: flex;
+    border: solid 1px black;
+    width: 40%;
+    flex-wrap: wrap;
+}
+
+.box_text {
+    flex: 5;
+    justify-content: flex-start;
+}
+
+.box_checkbox {
+    flex: 1;
+    justify-content: flex-end;
 }
