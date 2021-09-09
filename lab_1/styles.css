@@ -1,6 +1,9 @@
 body {
-    /* text-align: center; */
-    font-family: 'Times New Roman', Times, serif;
+
+    margin-top: 30px;
+    font-family: 'Arial', Times, serif;
+    background-color: #121212;
+    color: white;
 }
 
 div {
@@ -20,6 +23,15 @@ div {
     justify-content: center;
     align-items: center;
     border: solid 1px black;
+    background-color: #151515;
+    margin-left: 3%;
+    margin-right: 3%;
+
+}
+
+#text_input {
+    background-color: #212121;
+    color: white;
 
 }
 
@@ -28,7 +40,7 @@ ul {
 }
 
 #send {
-background-color: #4CAF50; /* Green */
+background-color: #4CAF50; 
   border: none;
   color: white;
   padding: 15px 32px;
@@ -47,16 +59,19 @@ span {
     border: solid 1px black;
     width: 40%;
     flex-wrap: wrap;
+    background-color: #212121;
+
 }
 
 .box_text {
     flex: 5;
-    justify-content: flex-start;
     word-wrap: break-word;
     word-break:break-word;
+    margin: 5px;
+
 }
 
 .box_checkbox {
     flex: 1;
-    justify-content: flex-end;
+    align-items: center;
 }

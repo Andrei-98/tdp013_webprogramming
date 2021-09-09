@@ -12,7 +12,7 @@ function render_message()
     {
         reset_error();
         save_message(text);
-        display_message(text);
+        display_message(text, 0, mess_arr);
     }
 };
 
@@ -37,7 +37,7 @@ function main()
 
         for(let i = 0; i < sorted_arr.length; i++)
         {
-            display_message(sorted_arr[i].content, sorted_arr[i].isRead);
+            display_message(sorted_arr[i].content, sorted_arr[i].isRead, i);
         }
     }
 
@@ -61,38 +61,54 @@ function reset_error()
     error.textContent = "";
 }
 
-function display_message(text, is_read = 0) // Kasper version
+function display_message(text, is_read = 0, index) // Kasper version
 {
     const list = document.getElementById("container-2");
     const new_msg = document.createElement("div");
-    const msg_btn = document.createElement("button");
 
-    msg_btn.innerHTML = document.createTextNode("Read").textContent;
-    msg_btn.setAttribute("class","box_checkbox");
+    const checkbox_container = document.createElement("div");
+    const msg_checkbox = document.createElement("input");
+    msg_checkbox.type = "checkbox";
+    msg_checkbox.className = "btn-check";
+    //msg_checkbox.id = "checkbox_" + index;
+    //msg_checkbox.name = "off";
+
+    const checkbox_label = document.createElement("label");
+    checkbox_label.className = "btn btn-outline-primary";
+    checkbox_label.innerText = "Read";
+    checkbox_label.htmlFor = mess_arr;  
+    checkbox_container.className = "box_checkbox";
+    checkbox_container.appendChild(msg_checkbox);
+    checkbox_container.appendChild(checkbox_label);
+
     const msg_content = document.createElement("p");
     msg_content.setAttribute("class", "box_text");
     msg_content.innerText = text;
-    if (msg_btn.getAttribute("id") == null)
+
+    if (msg_checkbox.getAttribute("id") == null)
     {
-        msg_btn.setAttribute("id", mess_arr);
+        msg_checkbox.setAttribute("id", mess_arr);
+       
     }
     
+    msg_checkbox.addEventListener("click", read_message);
+
     if(is_read == 0)
     {
-        msg_btn.setAttribute("name", "off");
+        msg_checkbox.setAttribute("name", "off");
     }
     else
     {
-        msg_btn.setAttribute("name", "on");
+        msg_checkbox.setAttribute("name", "on");
+        msg_checkbox.setAttribute("checked", "true");
         msg_content.style.color = "grey";
     }
 
-    msg_btn.addEventListener('click', read_message);
+    // msg_btn.addEventListener('click', read_message);
 
     new_msg.setAttribute("class", "msg_box");
     new_msg.appendChild(msg_content);
-    new_msg.appendChild(msg_btn);
-
+    new_msg.appendChild(checkbox_container);
 
     list.insertBefore(new_msg, list.childNodes[0]);
     mess_arr += 1;
@@ -102,18 +118,19 @@ function display_message(text, is_read = 0) // Kasper version
 // listener - function for message buttons
 function read_message() 
 {
+    console.log("LOGGING")
     if(this.getAttribute("name") == "off")
     {
         this.setAttribute("name", "on");
-        this.previousSibling.style.color = "grey";
-        save_message(this.previousSibling.textContent, 1, parseInt(this.getAttribute("id")));
+        this.parentElement.previousSibling.style.color = "grey";
+        save_message(this.parentElement.previousSibling.textContent, 1, parseInt(this.getAttribute("id")));
     }
     else
     {
         this.setAttribute("name", "off");
-        this.previousSibling.style.color = "black";
-        save_message(this.previousSibling.textContent, 0, parseInt(this.getAttribute("id")));
+        this.parentElement.previousSibling.style.color = "white";
+        save_message(this.parentElement.previousSibling.textContent, 0, parseInt(this.getAttribute("id")));
     }
-}
+} 
 
 main();
