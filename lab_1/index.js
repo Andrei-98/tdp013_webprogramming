@@ -17,11 +17,11 @@ function main()
 {
     document.getElementById("send").addEventListener("click", render_message);
     let mess = document.cookie;
-    console.log(mess);
+    
     if(mess != "")
     {
         let mess_arr = mess.split(";");
-        console.log(mess_arr);
+        console.log(mess_arr.length);
 
         for(let i = 0; i < mess_arr.length; i++)
         {
@@ -33,7 +33,10 @@ function main()
 
 function save_message(text)
 {
-    document.cookie = "message" + document.cookie.length + "=" + text; // TODO fix expr date, Is message read/unread.
+    let real_count = document.cookie.length;
+    console.log(real_count);
+
+    document.cookie = "message" + real_count + "=" + text + ";expires=Mon, 01 Nov 2021 12:00:00 UTC"; // TODO Is message read/unread.
 }
 
 function error_msg()
@@ -91,12 +94,12 @@ function display_message(text, index) // Kasper version
     if(this.getAttribute("name") == "off")
     {
         this.setAttribute("name","on");
-        this.parentElement.style.color = "grey";
+        this.previousSibling.style.color = "grey";
     }
     else
     {
         this.setAttribute("name","off");
-        this.parentElement.style.color = "black";
+        this.previousSibling.style.color = "black";
     }
 } */
 

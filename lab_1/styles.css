@@ -59,7 +59,8 @@ span {
 
 .box_text {
     flex: 5;
-    
+    word-wrap: break-word;
+    word-break:break-word;
 }
 
 .box_checkbox {
