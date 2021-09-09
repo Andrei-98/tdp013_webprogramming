@@ -1,6 +1,6 @@
-
-let mess_arr = 0;
-
+let mess_arr = 0; // TODO change with something not global
+ // TODO comments and cleanup
+ // TODO fix button maybe
 function render_message()
 {
     let text = document.getElementById("text_input").value;
@@ -30,11 +30,14 @@ function main()
         for(let i = 0; i < mess_arr.length; i++)
         {
             mess_arr[i] = mess_arr[i].replace(/message\d+\=/, "");
+            console.log(mess_arr[i]);
             sorted_arr.push(JSON.parse(mess_arr[i]));
         }
 
-        sorted_arr.sort((a,b) => parseInt(a.id) > parseInt(b.id));    
-
+        sorted_arr.sort((a,b) => parseInt(a.id) > parseInt(b.id) ? 1 : -1);  
+        
+        console.log(sorted_arr);
+        console.log(mess_arr);
         for(let i = 0; i < sorted_arr.length; i++)
         {
             display_message(sorted_arr[i].content, sorted_arr[i].isRead, i);
