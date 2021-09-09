@@ -26,7 +26,7 @@ function main()
         for(let i = 0; i < mess_arr.length; i++)
         {
             mess_arr[i] = mess_arr[i].replace(/message\d+\=/, "");
-            display_message(mess_arr[i]);
+            display_message(mess_arr[i], i);
         }
     }
 }
@@ -48,16 +48,28 @@ function reset_error()
     error.textContent = "";
 }
 
-function display_message(text) // Kasper version
+function display_message(text, index) // Kasper version
 {
+    console.log("index")
+    console.log(index);
     const list = document.getElementById("container-2");
     const new_msg = document.createElement("div");
-    const msg_btn = document.createElement("button");
 
-    msg_btn.innerHTML = document.createTextNode("Read").textContent;
-    msg_btn.setAttribute("class","box_checkbox");
-    msg_btn.setAttribute("name", "off");
-    msg_btn.addEventListener('click', read_message);
+    const checkbox_container = document.createElement("div");
+    const msg_checkbox = document.createElement("input");
+    msg_checkbox.type = "checkbox";
+    msg_checkbox.className = "btn-check";
+    msg_checkbox.id = "checkbox_" + index;
+    msg_checkbox.name = "off";
+    msg_checkbox.addEventListener("click", read_message);
+
+    const checkbox_label = document.createElement("label");
+    checkbox_label.className = "btn btn-outline-primary";
+    checkbox_label.innerText = "Read";
+    checkbox_label.htmlFor = "checkbox_" + index;
+    checkbox_container.className = "box_checkbox";
+    checkbox_container.appendChild(msg_checkbox);
+    checkbox_container.appendChild(checkbox_label);
 
     const msg_content = document.createElement("p");
     msg_content.setAttribute("class", "box_text");
@@ -65,15 +77,17 @@ function display_message(text) // Kasper version
 
     new_msg.setAttribute("class", "msg_box");
     new_msg.appendChild(msg_content);
-    new_msg.appendChild(msg_btn);
+    new_msg.appendChild(checkbox_container);
+
          
 
     list.insertBefore(new_msg, list.childNodes[0]);
 }
 
 // listener for message buttons
-function read_message() 
+/* function read_message() 
 {
+    console.log("LOGGING")
     if(this.getAttribute("name") == "off")
     {
         this.setAttribute("name","on");
@@ -83,6 +97,21 @@ function read_message()
     {
         this.setAttribute("name","off");
         this.parentElement.style.color = "black";
+    }
+} */
+
+function read_message() 
+{
+    console.log("LOGGING")
+    if(this.getAttribute("name") == "off")
+    {
+        this.setAttribute("name","on");
+        this.parentElement.parentElement.style.color = "grey";
+    }
+    else
+    {
+        this.setAttribute("name","off");
+        this.parentElement.parentElement.style.color = "white";
     }
 }
 
