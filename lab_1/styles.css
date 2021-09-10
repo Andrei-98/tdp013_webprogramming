@@ -1,5 +1,4 @@
 body {
-
     margin-top: 30px;
     font-family: 'Arial', Times, serif;
     background-color: #121212;
@@ -26,38 +25,35 @@ div {
     background-color: #151515;
     margin-left: 3%;
     margin-right: 3%;
-
 }
 
 #text_input {
     background-color: #212121;
     color: white;
-
-}
-
-ul {
-    list-style: none;
 }
 
 #send {
-background-color: #4CAF50; 
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 16px;
+    background-color: #4CAF50; 
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
 }
 
 span {
     display:block;
+    text-align: center;
+    margin-top: 1.2rem;
 }
 
 .msg_box {
 
     display: flex;
+    justify-content: space-between;
     border: solid 1px black;
-    width: 40%;
+    width: 30%;            
     flex-wrap: wrap;
     background-color: #212121;
 
@@ -68,10 +64,11 @@ span {
     word-wrap: break-word;
     word-break:break-word;
     margin: 5px;
-
+    margin-left: 10px;
+    font-size: 1.0rem;
 }
 
 .box_checkbox {
     flex: 1;
-    align-items: center;
+    margin-right: 10px;
 }

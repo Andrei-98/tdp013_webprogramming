@@ -1,6 +1,32 @@
+// TODO fix button maybe
 
-let mess_arr = 0;
+// Event listener for the send button, reads in all cookies sorts them and 
+// displays them on the screen based on when they were posted
+function main()
+{
+    document.getElementById("send").addEventListener("click", render_message);
 
+    let all_cookies = document.cookie;
+    if(all_cookies != "")
+    {
+        all_cookies = all_cookies.split(";");
+        let sorted_cookies = [];
+
+        for(let i = 0; i < all_cookies.length; i++)
+        {
+            all_cookies[i] = all_cookies[i].replace(/message\d+\=/, "");
+            sorted_cookies.push(JSON.parse(all_cookies[i]));
+        }
+
+        sorted_cookies.sort((a,b) => parseInt(a.id) > parseInt(b.id) ? 1 : -1);  
+        
+        for(let i = 0; i < sorted_cookies.length; i++)
+        {
+            display_message(sorted_cookies[i].content, sorted_cookies[i].isRead, i + 1);
+        }
+    }
+}
+// creates a message if approved and puts in on screen after click event
 function render_message()
 {
     let text = document.getElementById("text_input").value;
@@ -11,42 +37,9 @@ function render_message()
     else 
     {
         reset_error();
-        save_message(text);
-        display_message(text, 0, mess_arr);
+        let index = save_message(text);
+        display_message(text, 0, index);
     }
-};
-
-function main()
-{
-    document.getElementById("send").addEventListener("click", render_message);
-    let mess = document.cookie;
-    
-    if(mess != "")
-    {
-        let mess_arr = mess.split(";");
-
-        let sorted_arr = [];
-
-        for(let i = 0; i < mess_arr.length; i++)
-        {
-            mess_arr[i] = mess_arr[i].replace(/message\d+\=/, "");
-            sorted_arr.push(JSON.parse(mess_arr[i]));
-        }
-
-        sorted_arr.sort((a,b) => parseInt(a.id) > parseInt(b.id));    
-
-        for(let i = 0; i < sorted_arr.length; i++)
-        {
-            display_message(sorted_arr[i].content, sorted_arr[i].isRead, i);
-        }
-    }
-
-}
-
-function save_message(text, is_read = 0, id = mess_arr)
-{
-    let message_obj = {"id" : id, "content" : text.replace(/[\r\n]+$/, ''), "isRead" : is_read};
-    document.cookie = "message" + id + "=" + JSON.stringify(message_obj) + ";expires=Mon, 01 Nov 2021 12:00:00 UTC"; // TODO Is message read/unread
 }
 
 function error_msg()
@@ -61,76 +54,96 @@ function reset_error()
     error.textContent = "";
 }
 
-function display_message(text, is_read = 0, index) // Kasper version
+// Saves the message posted.
+// text = text of the message
+// is_read = determines if the read button is on or off
+// id = id of the message, id is null when the message is just created, 
+// if id exists the function will find the specific message related to that id
+function save_message(text, is_read = 0, id = null)
 {
-    const list = document.getElementById("container-2");
+    let index = 0;
+
+    if (id != null)
+    {
+        index = id;
+    }
+    else if (document.cookie == "")
+    {
+        index = 1;
+    }
+    else
+    {
+        index = document.cookie.split(";").length + 1 
+    }
+    
+    let message_obj = {"id" : index, "content" : text.replace(/[\r\n]+$/, ''), "isRead" : is_read};
+    document.cookie = "message" + index + "=" + JSON.stringify(message_obj) + ";expires=Mon, 01 Nov 2021 12:00:00 UTC;SameSite=Lax";
+
+    return index;
+}
+
+// Creates necessary elements and insert into DOM
+function display_message(text, is_read = 0, i)
+{
+    const main_div = document.getElementById("container-2");
     const new_msg = document.createElement("div");
 
+    // checkbox_container holds checkbox and checkbox_label
     const checkbox_container = document.createElement("div");
-    const msg_checkbox = document.createElement("input");
-    msg_checkbox.type = "checkbox";
-    msg_checkbox.className = "btn-check";
-    //msg_checkbox.id = "checkbox_" + index;
-    //msg_checkbox.name = "off";
-
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "btn-check";
+    checkbox.setAttribute("id", i);
     const checkbox_label = document.createElement("label");
     checkbox_label.className = "btn btn-outline-primary";
     checkbox_label.innerText = "Read";
-    checkbox_label.htmlFor = mess_arr;  
+    checkbox_label.htmlFor = i;  
     checkbox_container.className = "box_checkbox";
-    checkbox_container.appendChild(msg_checkbox);
+    checkbox_container.appendChild(checkbox);
     checkbox_container.appendChild(checkbox_label);
+    checkbox.addEventListener("click", read_message);
+
 
     const msg_content = document.createElement("p");
     msg_content.setAttribute("class", "box_text");
     msg_content.innerText = text;
 
-    if (msg_checkbox.getAttribute("id") == null)
-    {
-        msg_checkbox.setAttribute("id", mess_arr);
-       
-    }
-    
-    msg_checkbox.addEventListener("click", read_message);
-
     if(is_read == 0)
     {
-        msg_checkbox.setAttribute("name", "off");
+        checkbox.setAttribute("autocomplete", "off");
+        checkbox.checked;
     }
     else
     {
-        msg_checkbox.setAttribute("name", "on");
-        msg_checkbox.setAttribute("checked", "true");
+        checkbox.checked = "on";
+        checkbox.setAttribute("autocomplete", "on");
         msg_content.style.color = "grey";
     }
-
-    // msg_btn.addEventListener('click', read_message);
 
     new_msg.setAttribute("class", "msg_box");
     new_msg.appendChild(msg_content);
     new_msg.appendChild(checkbox_container);
 
-    list.insertBefore(new_msg, list.childNodes[0]);
-    mess_arr += 1;
+    main_div.insertBefore(new_msg, main_div.childNodes[0]);
 }
 
 
-// listener - function for message buttons
+// Callback function for when listener click read-button
 function read_message() 
 {
-    console.log("LOGGING")
-    if(this.getAttribute("name") == "off")
+    let message_p_tag = this.parentElement.previousSibling
+    if(this.checked)
     {
-        this.setAttribute("name", "on");
-        this.parentElement.previousSibling.style.color = "grey";
-        save_message(this.parentElement.previousSibling.textContent, 1, parseInt(this.getAttribute("id")));
+        this.setAttribute("checked", "true");
+        message_p_tag.style.color = "grey";
+        save_message(message_p_tag.textContent, 1, parseInt(this.getAttribute("id")));
     }
     else
     {
-        this.setAttribute("name", "off");
-        this.parentElement.previousSibling.style.color = "white";
-        save_message(this.parentElement.previousSibling.textContent, 0, parseInt(this.getAttribute("id")));
+        this.setAttribute("checked", "false");
+        message_p_tag.style.color = "white";
+        save_message(message_p_tag.textContent, 0, parseInt(this.getAttribute("id")));
     }
-} 
+}
 
 main();
