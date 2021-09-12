@@ -1,4 +1,4 @@
-// TODO fix button maybe
+// Eventlisteners
 window.addEventListener("beforeunload", save_messages);
 window.addEventListener("load", display_saved);
 document.getElementById("send").addEventListener("click", create_new_message);
@@ -14,15 +14,17 @@ function display_saved()
       {
         all_cookies = all_cookies.replace(/messages\=/, "");
         let all_cookies_arr = all_cookies.split("},");
-        for (let i = 0; i < all_cookies_arr.length - 1; i++)
+        for (let i = all_cookies_arr.length - 1; i >= 0; i--)
         {
-            all_cookies_arr[i] = JSON.parse(all_cookies_arr[i] + "}");
-        }
-        all_cookies_arr[all_cookies_arr.length - 1] = JSON.parse(all_cookies_arr[all_cookies_arr.length - 1]); 
+            if(i == all_cookies_arr.length - 1)
+            {
+                all_cookies_arr[all_cookies_arr.length - 1] = JSON.parse(all_cookies_arr[all_cookies_arr.length - 1]); 
+            }
+            else 
+            {
+                all_cookies_arr[i] = JSON.parse(all_cookies_arr[i] + "}");
+            }
 
-        all_cookies_arr.sort((a,b) => parseInt(a.id) < parseInt(b.id) ? 1 : -1);  
-        for(let i = 0; i < all_cookies_arr.length; i++)
-        {
             display_message(all_cookies_arr[i].content, all_cookies_arr[i].isRead);
         }
       }
@@ -38,21 +40,15 @@ function create_new_message()
     }
     else 
     {
-        reset_error();
+        error_msg("");
         display_message(text);
     }
 }
 
-function error_msg()
+function error_msg(text = "Enter between 1 and 140 characters!")
 {
     const error = document.getElementById("error");
-    error.textContent = "Enter between 1 and 140 characters!";
-}
-
-function reset_error()
-{
-    const error = document.getElementById("error");
-    error.textContent = "";
+    error.textContent = text;
 }
 
 // Saves the message posted.
