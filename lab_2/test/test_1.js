@@ -29,10 +29,57 @@
 // })
 // })
 
-// superagent 
-//   .post("/messages"); 
-//   .send({ name: 'Manny', species: 'cat' }); 
-//   .set('accept', 'json'); 
-//   .end((err, res) => { 
-//     // kontrollera resultat 
-// });
+
+//const databaseHandler = require('../database.js');
+const assert = require('assert'); 
+let server = require('../server.js');
+let databaseHandler = require('../database.js');
+// test/registration.spec.js
+const chai = require('chai')
+const chaiHttp = require('chai-http')
+
+chai.should()
+chai.use(chaiHttp)
+
+let db;
+
+console.log(db);
+//let db = server.db;
+describe('POST for /messages', () => { 
+    it('Should add message to database', () => {
+        databaseHandler.dropColl();
+        return chai.request(server)
+        .post( '/messages' )
+        .send( {"id" : 2, "content" : "Yes", "isRead" : false})
+        .then(res => {
+            res.should.have.status(200);
+        })
+        .catch(err => {
+            throw err;
+        })
+    })
+});
+        // .try {
+        //     superagent
+        //         .post( '/messages' )
+        //         .accept('application/json')
+        //         .field('data', JSON.stringify({
+        //             "id" : 1,
+        //             "content":"HEY",
+        //             "isRead":true
+        //         }));
+        // }
+        // catch ( ex ) {
+        //     // .catch() stuff
+        // }
+    //     let message = db.collection("messages").find({
+    //         "id" : 1,
+    //         "content":"HEY",
+    //         "isRead":true
+    //     })
+    // assert.equal(message, {
+    //     "id" : 1,
+    //     "content":"HEY",
+    //     "isRead":true
+    // } ) 
+    // }) 
