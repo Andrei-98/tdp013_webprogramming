@@ -1,8 +1,9 @@
 const express = require('express');
 const { ServerApiVersion } = require('mongodb');
+const { connect } = require('superagent');
 const app = express();
 app.use(express.static(__dirname), express.json());
-const PORT = 9062;
+const PORT = 9063;
 
 const databaseHandler = require("./database.js");
 
@@ -17,30 +18,129 @@ databaseHandler.startDbConn(() => {
   db = databaseHandler.getDb();
 });
 
+app.use((req, res, next) => {
+  console.log(req.path)
+  console.log(req.method)
+
+  //ERROR HANDLER
+  if (req.path == "/messages")
+  {
+    if (req.method == "POST")
+    {
+      try {
+        JSON.stringify(req.body);
+        next()
+      }
+      catch {
+        res.sendStatus(400)
+      }
+    }
+    else if (req.method == "GET")
+    {
+      next()
+    }
+    else
+    {
+      res.sendStatus(405);
+    }
+  }
+  else if (req.path.match(/messages\/\d+/))
+  {
+    if (req.method == "PUT")
+    {
+      console.log("here");
+      next()
+    }
+    else if (req.method == "GET")
+    {
+      next()
+    }
+    else
+    {
+      res.sendStatus(405);
+    }
+  }
+  else
+  {
+    res.sendStatus(404);
+  }
+})
+
+function validate_message(id, content, isRead)
+{
+  let is_ok = false;
+  console.log(id)
+  console.log(content)
+  console.log(String(isRead));
+  if (typeof id == "number")
+  {
+    console.log("HEK")
+    if (typeof isRead == "boolean")
+    {
+      console.log("WORKING")
+      try
+      {
+        if (typeof content == "object")
+        {
+          return is_ok;
+        }
+        // JSON.parse("{'t':1}") this should not crash
+        JSON.parse(content);
+      }
+      catch 
+      {
+        is_ok = true;
+        // no match = null => false
+        // one or more matches = true
+        if (!!content.match(/\$\{\w+\}/))
+        {
+          is_ok = false;
+        }
+      }
+    }
+  }
+
+  return is_ok;
+}
 
 app.post("/messages", (req, rsp) => {
-  const id = req.body.id;
-  const content = req.body.content;
-  const isRead = req.body.isRead;
-  let message = {"id" : id, "content" : content, "isRead" : isRead}; 
-  db.collection('messages').insertOne(message, (err, result) => {
-  if (err) {
-    return console.log(err);
+  if(validate_message(req.body.id, req.body.content, req.body.isRead))
+  {
+    console.log("IS OK");
+    const id = req.body.id;
+    const content = req.body.content;
+    const isRead = req.body.isRead;
+    let message = {"id" : id, "content" : content, "isRead" : isRead};
+    db.collection('messages').insertOne(message, (err, result) => {
+      if (err) {
+        return console.log(err);
+      }
+      rsp.sendStatus(200);
+    })
   }
-  rsp.sendStatus(200);
-})
+  else
+  {
+    console.log("ERROR")
+    rsp.sendStatus(400);
+  }
 });
 
 app.put(/messages\/\d+/, (req,rsp) => {
     const message_id = Number(req.url.split("/").slice(-1).pop());
     const query = {"id" : message_id};
-    const new_value = {$set: {"isRead" : true} };
-    db.collection('messages').updateOne(query, new_value, (err, result) => {
-      if (err) {
-        return console.log(err);
+    let value = db.collection("messages").findOne({"id":message_id});
+    value.then((res, unf) => {
+      if(unf)
+      {
+        return console.log(unf);
       }
-      rsp.sendStatus(200);
-  })
+      db.collection('messages').updateOne(query, {$set: {"isRead": !(res.isRead)}}, (err, result) => {
+        if (err) {
+          return console.log(err);
+        } 
+        rsp.sendStatus(200);
+    })
+    })
 });
 
 

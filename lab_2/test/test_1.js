@@ -39,9 +39,12 @@ const chaiHttp = require('chai-http')
 chai.should()
 chai.use(chaiHttp)
 
+// POST PUT KASPER
+// GET ANDREI
+
 describe('POST for /messages', () => { 
-    it('Should have status code 200 and add message to database', () => {
-        return chai.request(server)
+    it('Should have status code 200 and add message to database', (done) => {
+        chai.request(server)
         .post( '/messages' )
         .send( {"id" : 10, "content" : "Yes", "isRead" : false})
         .then(res => {
@@ -51,37 +54,37 @@ describe('POST for /messages', () => {
             db.collection("messages").findOne(query,{projection:{_id:0}}, (err, result) => {
             if (err) 
             {
-                return console.log(err);
+                done(err);
             }
-                assert.equal(String(query),String(res));
-                return result;
+                assert.equal(String(query),String(result));
+                done();
             })
          })
         .catch(err => {
-            throw err;
+            done(err);
         })
     })
 });
 
-describe('PUT for /messages{id}', () => { 
-    it('Should have status code 200 and change isRead to true', () => {
-        return chai.request(server)
-        .put( "/messages/" + 10 )
-        .then(res => {
-            let db = databaseHandler.getDb();
-            let query = {"id" : 10};
-            res.should.have.status(200);
-            db.collection("messages").findOne(query,{projection:{_id:0}}, (err, result) => {
-            if (err) 
-            {
-                return console.log(err);
-            }
-                assert.equal(result.isRead, true);
-                return result;
-            })
-        })
-        .catch(err => {
-            throw err;
-        })
-    })
-});
+// describe('PUT for /messages{id}', () => { 
+//     it('Should have status code 200 and change isRead to true', () => {
+//         return chai.request(server)
+//         .put( "/messages/" + 10 )
+//         .then(res => {
+//             let db = databaseHandler.getDb();
+//             let query = {"id" : 10};
+//             res.should.have.status(200);
+//             db.collection("messages").findOne(query,{projection:{_id:0}}, (err, result) => {
+//             if (err) 
+//             {
+//                 return console.log(err);
+//             }
+//                 assert.equal(result.isRead, true);
+//                 return result;
+//             })
+//         })
+//         .catch(err => {
+//             throw err;
+//         })
+//     })
+// });
