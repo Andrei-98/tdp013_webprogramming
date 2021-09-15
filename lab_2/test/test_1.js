@@ -29,57 +29,59 @@
 // })
 // })
 
-
-//const databaseHandler = require('../database.js');
 const assert = require('assert'); 
 let server = require('../server.js');
 let databaseHandler = require('../database.js');
-// test/registration.spec.js
+
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 
 chai.should()
 chai.use(chaiHttp)
 
-let db;
-
-console.log(db);
-//let db = server.db;
 describe('POST for /messages', () => { 
-    it('Should add message to database', () => {
-        databaseHandler.dropColl();
+    it('Should have status code 200 and add message to database', () => {
         return chai.request(server)
         .post( '/messages' )
-        .send( {"id" : 2, "content" : "Yes", "isRead" : false})
+        .send( {"id" : 10, "content" : "Yes", "isRead" : false})
         .then(res => {
+            let db = databaseHandler.getDb();
+            let query = {"id" : 10, "content" : "Yes", "isRead" : false};
             res.should.have.status(200);
+            db.collection("messages").findOne(query,{projection:{_id:0}}, (err, result) => {
+            if (err) 
+            {
+                return console.log(err);
+            }
+                assert.equal(String(query),String(res));
+                return result;
+            })
+         })
+        .catch(err => {
+            throw err;
+        })
+    })
+});
+
+describe('PUT for /messages{id}', () => { 
+    it('Should have status code 200 and change isRead to true', () => {
+        return chai.request(server)
+        .put( "/messages/" + 10 )
+        .then(res => {
+            let db = databaseHandler.getDb();
+            let query = {"id" : 10};
+            res.should.have.status(200);
+            db.collection("messages").findOne(query,{projection:{_id:0}}, (err, result) => {
+            if (err) 
+            {
+                return console.log(err);
+            }
+                assert.equal(result.isRead, true);
+                return result;
+            })
         })
         .catch(err => {
             throw err;
         })
     })
 });
-        // .try {
-        //     superagent
-        //         .post( '/messages' )
-        //         .accept('application/json')
-        //         .field('data', JSON.stringify({
-        //             "id" : 1,
-        //             "content":"HEY",
-        //             "isRead":true
-        //         }));
-        // }
-        // catch ( ex ) {
-        //     // .catch() stuff
-        // }
-    //     let message = db.collection("messages").find({
-    //         "id" : 1,
-    //         "content":"HEY",
-    //         "isRead":true
-    //     })
-    // assert.equal(message, {
-    //     "id" : 1,
-    //     "content":"HEY",
-    //     "isRead":true
-    // } ) 
-    // }) 

@@ -11,7 +11,6 @@ function startDbConn(callback)
     }
     dbm = db.db("tdp013");
     callback();
-    return dbm;
   });
 }
 
@@ -27,16 +26,28 @@ function closeDb()
 
 function dropColl()
 {
-    dbm.collection("messages").drop( (err, delok ) => {
-        if (err)
-        {
-            console.log(err);
-        }
-        if (delok)
-        {
-            console.log("Collection deleted");
-        }
-    } )
+  dbm.collection("messages").drop( (err, delok ) => {
+      if (err)
+      {
+          console.log(err);
+      }
+      if (delok)
+      {
+          console.log("Collection deleted");
+      }
+  } )
 }
 
-module.exports = {startDbConn, getDb, closeDb, dropColl};
+function get_message(id)
+{
+  let query = {"id" : id};
+  dbm.collection("messages").findOne(query, (err, res) => {
+    if (err) 
+    {
+      return console.log(err);
+    }
+    return res;
+  })
+}
+
+module.exports = {startDbConn, getDb, closeDb, dropColl, get_message};

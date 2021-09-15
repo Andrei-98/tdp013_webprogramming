@@ -1,13 +1,14 @@
 const express = require('express');
+const { ServerApiVersion } = require('mongodb');
 const app = express();
 app.use(express.static(__dirname), express.json());
-const PORT = 9000;
+const PORT = 9062;
 
 const databaseHandler = require("./database.js");
 
 //start database by typing in mongo
 
-let db;
+//let db;
 
 databaseHandler.startDbConn(() => {
   app.listen(PORT, () => {
@@ -21,7 +22,6 @@ app.post("/messages", (req, rsp) => {
   const id = req.body.id;
   const content = req.body.content;
   const isRead = req.body.isRead;
- 
   let message = {"id" : id, "content" : content, "isRead" : isRead}; 
   db.collection('messages').insertOne(message, (err, result) => {
   if (err) {
