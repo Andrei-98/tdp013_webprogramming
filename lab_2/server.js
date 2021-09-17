@@ -56,6 +56,7 @@ app.use((req, res, next) => {
   }
   else
   {
+    console.log("-----404 sent");
     res.sendStatus(404);
   }
 })
@@ -81,7 +82,7 @@ function validate_message(id, content, isRead)
         is_ok = true;
         // no match = null => false
         // one or more matches = true
-        if (!!content.match(/\$\{\w+\}/))
+        if (!!content.match(/\$\{.*\}/))
         {
           is_ok = false;
         }
