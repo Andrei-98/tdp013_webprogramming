@@ -31,6 +31,7 @@
 
 const assert = require('assert'); 
 let server = require('../server.js');
+const { exit } = require('process');
 let databaseHandler = require('../database.js');
 
 const chai = require('chai')
@@ -88,3 +89,85 @@ describe('POST for /messages', () => {
 //         })
 //     })
 // });
+
+
+describe('GET all /messages', () => { 
+    it('Should return an array with 2 messages', (done) => {
+        let db = databaseHandler.getDb();
+        db.collection("messages").drop();
+        
+        let query1 = {"id" : 1, "content" : "Msg1", "isRead" : false};
+        let query2 = {"id" : 1, "content" : "Msg2", "isRead" : false};
+
+        db.collection('messages').insertOne(query1);
+        db.collection('messages').insertOne(query2);
+
+        chai.request(server)
+        .get( '/messages' )
+        .end(function(err, res) {
+            res.should.have.status(200);
+
+            db.collection("messages").find({}).toArray()
+                .then(result => {
+                    assert.equal(2, result.length);
+                    done();
+
+                })
+                .catch(err => {
+                    done(err);
+                })
+
+        
+          });
+        
+    })
+});
+
+
+describe('GET on non-existent function /hi', () => { 
+    it('Should return status 404, Not found', (done) => {
+        chai.request(server)
+        .get( '/hi' )
+        .end(function(err, res) {
+            res.should.have.status(404);
+            done();
+            });
+    })
+});
+
+
+describe('GET on specific MSG id', () => { 
+    it('Should return status 200, OK', (done) => {
+        chai.request(server)
+        .get( '/messages/1' )
+        .end(function(err, res) {
+            res.should.have.status(200);
+
+            let msg1_id = res.body.id;
+            let msg1_content = res.body.content;
+            //let msg1_isRead = res.body.isRead;
+
+            assert.equal(msg1_id,1);
+            assert.equal(msg1_content, "Msg1");
+            //assert.equal()
+
+            console.log(msg1_content);
+            done();
+            });
+    })
+});
+
+
+
+
+
+// describe('GET on non-existent function "/hi', () => { 
+    
+// });
+
+
+after(() => {
+    databaseHandler.closeDb(); 
+    exit();
+  })
+  

@@ -21,7 +21,7 @@ function getDb()
 
 function closeDb()
 {
-  dbm.close();
+  dbm.s.client.close();
 }
 
 function dropColl()
