@@ -1,1 +1,1 @@
-{"processes":{"3aa009fc-7141-4f87-8087-faedf2030561":{"parent":null,"children":[]}},"files":{},"externalIds":{}}
+{"processes":{"29286aa6-6b04-4ac0-8970-2e0dfb126202":{"parent":null,"children":["616d520d-5441-4cec-bbe7-dd126f2c8811"]},"616d520d-5441-4cec-bbe7-dd126f2c8811":{"parent":"29286aa6-6b04-4ac0-8970-2e0dfb126202","children":[]}},"files":{"/home/andrei/school/tdp013/lab_2/server.js":["616d520d-5441-4cec-bbe7-dd126f2c8811"],"/home/andrei/school/tdp013/lab_2/database.js":["616d520d-5441-4cec-bbe7-dd126f2c8811"]},"externalIds":{}}

@@ -3,7 +3,7 @@ const { ServerApiVersion } = require('mongodb');
 const { connect } = require('superagent');
 const app = express();
 app.use(express.static(__dirname), express.json());
-const PORT = 8043;
+const PORT = 8050;
 
 const databaseHandler = require("./database.js");
 
@@ -90,7 +90,7 @@ function validate_message(id, content, isRead)
         is_ok = true;
         // no match = null => false
         // one or more matches = true
-        if (!!content.match(/\$\{\w+\}/))
+        if (!!content.match(/\$\{.*\}/))
         {
           is_ok = false;
         }

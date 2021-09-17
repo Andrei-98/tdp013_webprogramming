@@ -91,6 +91,42 @@ describe('POST for /messages', () => {
 // });
 
 
+describe('POST malicious msg with content as JSON object', () => { 
+    it('Should have status code 400, Bad request', (done) => {
+        let db = databaseHandler.getDb();
+        db.collection("messages").drop();
+        
+        let malicious_query = {"id" : 9991, "content" : {"hacking" : true}, "isRead" : false};
+
+        chai.request(server)
+        .post('/messages')
+        .send(malicious_query)
+        .then(res => {
+            res.should.have.status(400)
+            done();
+        })
+    })
+});
+
+
+describe('POST malicious msg with content as JSON object', () => { 
+    it('Should have status code 400, Bad request', (done) => {
+        let db = databaseHandler.getDb();
+        db.collection("messages").drop();
+        
+        let malicious_query = {"id" : 9991, "content" : "${console.log(exploit)}", "isRead" : false};
+
+        chai.request(server)
+        .post('/messages')
+        .send(malicious_query)
+        .then(res => {
+            res.should.have.status(400)
+            done();
+        })
+    })
+});
+
+
 describe('GET all /messages', () => { 
     it('Should return an array with 2 messages', (done) => {
         let db = databaseHandler.getDb();
@@ -161,6 +197,8 @@ describe('GET on specific MSG id', () => {
 
 
 
+
+
 // describe('GET on non-existent function "/hi', () => { 
     
 // });
@@ -169,5 +207,5 @@ describe('GET on specific MSG id', () => {
 after(() => {
     databaseHandler.closeDb(); 
     exit();
-  })
+  });
   
