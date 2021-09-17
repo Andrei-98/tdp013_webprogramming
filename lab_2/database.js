@@ -1,5 +1,5 @@
 
-let dbm;
+//let dbm;
 const url = "mongodb://localhost:27017"
 
 function startDbConn(callback)
@@ -7,7 +7,7 @@ function startDbConn(callback)
   const MongoClient = require('mongodb').MongoClient;
   MongoClient.connect(url, (err, db) => {
     if(err) {
-      return console.log(err);
+      throw err;
     }
     dbm = db.db("tdp013");
     callback();
@@ -21,7 +21,7 @@ function getDb()
 
 function closeDb()
 {
-  dbm.close();
+  dbm.s.client.close();
 }
 
 function dropColl()
@@ -29,7 +29,7 @@ function dropColl()
   dbm.collection("messages").drop( (err, delok ) => {
       if (err)
       {
-          console.log(err);
+          throw err
       }
       if (delok)
       {
@@ -38,16 +38,19 @@ function dropColl()
   } )
 }
 
-function get_message(id)
-{
-  let query = {"id" : id};
-  dbm.collection("messages").findOne(query, (err, res) => {
-    if (err) 
-    {
-      return console.log(err);
-    }
-    return res;
-  })
-}
+// async function get_message(query)
+// {
+//   let result = await dbm.collection("messages").findOne(query,{projection:{_id:0}}, async (err, res) => {
+//     if (err) 
+//     {
+//       throw err;
+//     }
 
-module.exports = {startDbConn, getDb, closeDb, dropColl, get_message};
+//     return res;
+//   })
+
+//   return result;
+// }
+
+
+module.exports = {startDbConn, getDb, closeDb, dropColl};

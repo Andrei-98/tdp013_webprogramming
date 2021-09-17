@@ -3,7 +3,7 @@ const { ServerApiVersion } = require('mongodb');
 const { connect } = require('superagent');
 const app = express();
 app.use(express.static(__dirname), express.json());
-const PORT = 9063;
+const PORT = 9070;
 
 const databaseHandler = require("./database.js");
 
@@ -18,26 +18,21 @@ databaseHandler.startDbConn(() => {
   db = databaseHandler.getDb();
 });
 
+
 app.use((req, res, next) => {
-  console.log(req.path)
-  console.log(req.method)
+  console.log("Requested URL: " + req.path)
+  console.log("Requested method: " + req.method)
 
   //ERROR HANDLER
   if (req.path == "/messages")
   {
     if (req.method == "POST")
     {
-      try {
-        JSON.stringify(req.body);
-        next()
-      }
-      catch {
-        res.sendStatus(400)
-      }
+      next();
     }
     else if (req.method == "GET")
     {
-      next()
+      next();
     }
     else
     {
@@ -48,7 +43,6 @@ app.use((req, res, next) => {
   {
     if (req.method == "PUT")
     {
-      console.log("here");
       next()
     }
     else if (req.method == "GET")
@@ -69,15 +63,10 @@ app.use((req, res, next) => {
 function validate_message(id, content, isRead)
 {
   let is_ok = false;
-  console.log(id)
-  console.log(content)
-  console.log(String(isRead));
   if (typeof id == "number")
   {
-    console.log("HEK")
     if (typeof isRead == "boolean")
     {
-      console.log("WORKING")
       try
       {
         if (typeof content == "object")
@@ -106,26 +95,24 @@ function validate_message(id, content, isRead)
 app.post("/messages", (req, rsp) => {
   if(validate_message(req.body.id, req.body.content, req.body.isRead))
   {
-    console.log("IS OK");
     const id = req.body.id;
     const content = req.body.content;
     const isRead = req.body.isRead;
     let message = {"id" : id, "content" : content, "isRead" : isRead};
     db.collection('messages').insertOne(message, (err, result) => {
       if (err) {
-        return console.log(err);
+        throw(err);
       }
       rsp.sendStatus(200);
     })
   }
   else
   {
-    console.log("ERROR")
     rsp.sendStatus(400);
   }
 });
 
-app.put(/messages\/\d+/, (req,rsp) => {
+app.put(/\/messages\/\d+/, (req,rsp) => {
     const message_id = Number(req.url.split("/").slice(-1).pop());
     const query = {"id" : message_id};
     let value = db.collection("messages").findOne({"id":message_id});
@@ -134,12 +121,20 @@ app.put(/messages\/\d+/, (req,rsp) => {
       {
         return console.log(unf);
       }
-      db.collection('messages').updateOne(query, {$set: {"isRead": !(res.isRead)}}, (err, result) => {
-        if (err) {
-          return console.log(err);
-        } 
-        rsp.sendStatus(200);
-    })
+      // occurs when user admit an id for message that dosent exist in database
+      if (res == null)
+      {
+        rsp.sendStatus(400);
+      }
+      else 
+      {
+        db.collection('messages').updateOne(query, {$set: {"isRead": !(res.isRead)}}, (err, result) => {
+          if (err) {
+            return console.log(err);
+          } 
+          rsp.sendStatus(200);
+          })
+      }
     })
 });
 
@@ -164,42 +159,7 @@ app.get(/messages\/\d+/, (req,rsp) => {
     rsp.json(result);
 })
 }); 
-// runServer();
-// startDbConn();
-// callHTTP();
 
-// let sa = require('superagent');
-// sa.post('/messages')
-// .send({"id": 1, "content":"Should work", "isRead":true})
-// .end(function(err, res) {
-//   if(err)
-//   {
-//     console.log(err);
-//   }
-//   else
-//   {
-//     console.log("HALLELUJA");
-//   }
-// });
-
-
-// WORKS
-// const MongoClient  = require('mongodb').MongoClient; 
-// let url = "mongodb://localhost:27017"; 
-// MongoClient.connect(url, (err, db) => { 
-//     if(err){ throw err; } 
-//     let dbo = db.db("tdp013"); 
-//     let myobjects = [ 
-//       { _id: 7, name: 'Chocolate Heaven'}, 
-//       { _id: 8, name: 'Tasty Lemon'}, 
-//       { _id: 9, name: 'Vanilla Dream'} 
-//     ]; 
-//     dbo.collection("products").insertMany(myobjects, (err, res) => { 
-//       if (err){ throw err; } 
-//       console.log(res); 
-//       db.close(); 
-//     }) 
-//   })
 
 
 module.exports = app;
