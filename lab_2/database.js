@@ -14,6 +14,7 @@ function startDbConn(callback)
   });
 }
 
+
 function getDb() 
 {
   return dbm;
@@ -24,6 +25,8 @@ function closeDb()
   dbm.s.client.close();
 }
 
+
+// delete all entries in the "messages" collection
 function dropColl()
 {
   dbm.collection("messages").drop( (err, delok ) => {
@@ -37,20 +40,6 @@ function dropColl()
       }
   } )
 }
-
-// async function get_message(query)
-// {
-//   let result = await dbm.collection("messages").findOne(query,{projection:{_id:0}}, async (err, res) => {
-//     if (err) 
-//     {
-//       throw err;
-//     }
-
-//     return res;
-//   })
-
-//   return result;
-// }
 
 
 module.exports = {startDbConn, getDb, closeDb, dropColl};

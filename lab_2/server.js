@@ -7,9 +7,6 @@ const PORT = 9070;
 
 const databaseHandler = require("./database.js");
 
-//start database by typing in mongo
-
-//let db;
 
 databaseHandler.startDbConn(() => {
   app.listen(PORT, () => {
@@ -36,6 +33,7 @@ app.use((req, res, next) => {
     }
     else
     {
+      // method is known but not supported, example: DELETE
       res.sendStatus(405);
     }
   }
@@ -51,16 +49,23 @@ app.use((req, res, next) => {
     }
     else
     {
+      // method is known but not supported
       res.sendStatus(405);
     }
   }
   else
   {
-    console.log("-----404 sent");
+    // path is not supported example: /hi
     res.sendStatus(404);
   }
 })
 
+/*
+ * Function that runs multiple tests on the information the user typed in
+ * id = id of the message, should be Integer
+ * content = the text, should be a string
+ * isRead = should be boolean
+ */
 function validate_message(id, content, isRead)
 {
   let is_ok = false;
@@ -74,24 +79,25 @@ function validate_message(id, content, isRead)
         {
           return is_ok;
         }
-        // JSON.parse("{'t':1}") this should not crash
+        // content could be a JSON object desguised as a string
+        // try to turn it into a JSON object, should fail -> catch.
         JSON.parse(content);
       }
       catch 
       {
         is_ok = true;
+        // in the string content try to find ${variable}
         // no match = null => false
         // one or more matches = true
         if (!!content.match(/\$\{.*\}/))
-        {
           is_ok = false;
-        }
       }
     }
   }
 
   return is_ok;
 }
+
 
 app.post("/messages", (req, rsp) => {
   if(validate_message(req.body.id, req.body.content, req.body.isRead))
@@ -109,26 +115,28 @@ app.post("/messages", (req, rsp) => {
   }
   else
   {
+    // request is malicious or invalid
     rsp.sendStatus(400);
   }
 });
 
+
 app.put(/\/messages\/\d+/, (req,rsp) => {
+    
     const message_id = Number(req.url.split("/").slice(-1).pop());
     const query = {"id" : message_id};
     let value = db.collection("messages").findOne({"id":message_id});
-    value.then((res, unf) => {
-      if(unf)
-      {
-        return console.log(unf);
-      }
-      // occurs when user admit an id for message that dosent exist in database
+
+    value.then((res) => {
+      // --------------------------------------unf-------------------------------
+      // id requested for message that dosent exist in database
       if (res == null)
       {
         rsp.sendStatus(400);
       }
       else 
       {
+        // change the isRead value of a specific message based on the id
         db.collection('messages').updateOne(query, {$set: {"isRead": !(res.isRead)}}, (err, result) => {
           if (err) {
             return console.log(err);
@@ -141,6 +149,7 @@ app.put(/\/messages\/\d+/, (req,rsp) => {
 
 
 app.get("/messages", (req, rsp) => {
+  // send an array with all messages in database
   db.collection('messages').find({}).toArray((err, result) => {
     if (err) {
       return console.log(err);
@@ -149,10 +158,12 @@ app.get("/messages", (req, rsp) => {
   }) 
 })
 
+
 app.get(/messages\/\d+/, (req,rsp) => {
   const message_id = Number(req.url.split("/").slice(-1).pop());
   const query = {"id" : message_id};
 
+  //find a specific message based on id
   db.collection('messages').findOne(query,(err, result) => {
     if (err) {
       return console.log(err);
@@ -160,7 +171,6 @@ app.get(/messages\/\d+/, (req,rsp) => {
     rsp.json(result);
 })
 }); 
-
 
 
 module.exports = app;

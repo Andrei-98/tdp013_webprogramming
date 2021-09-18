@@ -9,9 +9,6 @@ const chaiHttp = require('chai-http');
 chai.should()
 chai.use(chaiHttp)
 
-// POST PUT KASPER
-// GET ANDREI
-
 
 describe('POST for /messages', () => { 
     it('Should have status code 200 and add one message to database', (done) => {
@@ -37,6 +34,7 @@ describe('POST for /messages', () => {
     })
 });
     
+
 describe('PUT for /messages{id}', () => { 
     it('Should have status code 200 and change isRead to true', (done) => {
         chai.request(server)
@@ -60,6 +58,7 @@ describe('PUT for /messages{id}', () => {
     })
 });
 
+
 describe('PUT for /messages{id} again sam id', () => { 
     it('Should have status code 200 and change isRead to false', (done) => {
         chai.request(server)
@@ -81,6 +80,7 @@ describe('PUT for /messages{id} again sam id', () => {
         })
     })
 });
+
 
 describe('POST /messages, add 3 messages and find them in database', () => { 
     describe('add first message', () => {
@@ -155,6 +155,7 @@ describe('POST /messages, add 3 messages and find them in database', () => {
     });
 });
 
+
 describe('PUT for /messages{id}, only one message is changed', () => { 
     it('Should have status code 200 and only one message in database has isRead changed', (done) => {
         chai.request(server)
@@ -202,6 +203,7 @@ describe('PUT for /messages{id}, trying to change isRead on message that doesnt 
     })
 });
 
+
 describe('POST for /messages, requesting message in wrong format, wrong keys in json', () => { 
     it('Should have status code 400 and not exist in database', (done) => {
         chai.request(server)
@@ -224,6 +226,7 @@ describe('POST for /messages, requesting message in wrong format, wrong keys in 
         })
     })
 });
+
 
 describe('POST for /messages, requesting message in wrong format as string', () => { 
     it('Should have status code 400 and not exist in database', (done) => {
@@ -248,28 +251,6 @@ describe('POST for /messages, requesting message in wrong format as string', () 
     })
 });
 
-describe('POST for /messages, requesting message in wrong format, wrong value', () => { 
-    it('Should have status code 400 and not exist in database', (done) => {
-        chai.request(server)
-        .post( '/messages' )
-        .send( {"id" : 10, "content" : "Yes", "WRONG" : false})
-        .then(res => {
-            let query = {"id" : 10, "content" : "Yes", "isRead" : {"WRONG" : false}};
-            res.should.have.status(400);
-            db.collection("messages").findOne(query,{projection:{_id:0}}, (err, result) => {
-                if (err) 
-                {
-                    done(err);
-                }
-                assert.equal(result,null);
-                done();
-            })
-            })
-        .catch(err => {
-            done(err);
-        })
-    })
-});
 
 describe('POST for /messages, requesting message in wrong format, wrong value', () => { 
     it('Should have status code 400 and not exist in database', (done) => {
@@ -293,6 +274,31 @@ describe('POST for /messages, requesting message in wrong format, wrong value', 
         })
     })
 });
+
+
+describe('POST for /messages, requesting message in wrong format, wrong value', () => { 
+    it('Should have status code 400 and not exist in database', (done) => {
+        chai.request(server)
+        .post( '/messages' )
+        .send( {"id" : 10, "content" : "Yes", "WRONG" : false})
+        .then(res => {
+            let query = {"id" : 10, "content" : "Yes", "isRead" : {"WRONG" : false}};
+            res.should.have.status(400);
+            db.collection("messages").findOne(query,{projection:{_id:0}}, (err, result) => {
+                if (err) 
+                {
+                    done(err);
+                }
+                assert.equal(result,null);
+                done();
+            })
+            })
+        .catch(err => {
+            done(err);
+        })
+    })
+});
+
 
 describe('Using wrong request-method', () => { 
     it('Should have status code 405', (done) => {
@@ -308,6 +314,7 @@ describe('Using wrong request-method', () => {
     })
 });
 
+
 describe('Using wrong request-method', () => { 
     it('Should have status code 405', (done) => {
         chai.request(server)
@@ -321,6 +328,7 @@ describe('Using wrong request-method', () => {
         })
     })
 });
+
 
 describe('Using wrong request-url', () => { 
     it('Should have status code 404', (done) => {
@@ -427,11 +435,9 @@ describe('GET on specific MSG id', () => {
 
             let msg1_id = res.body.id;
             let msg1_content = res.body.content;
-            //let msg1_isRead = res.body.isRead;
 
             assert.equal(msg1_id,1);
             assert.equal(msg1_content, "Msg1");
-            //assert.equal()
 
             console.log(msg1_content);
             done();
@@ -439,13 +445,7 @@ describe('GET on specific MSG id', () => {
     })
 });
 
-
-
-// describe('GET on non-existent function "/hi', () => { 
-    
-// });
-
-
+// close database
 after(() => {
     databaseHandler.closeDb(); 
     exit();
