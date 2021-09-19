@@ -26,5 +26,5 @@ module.exports = {
 3. install mongodb
 
 4. in  terminal type: npm test
-The test file creates an instace of mongodb that will be closed 
+The test file creates an instance of mongodb that will be closed 
 after all the tests are run.
