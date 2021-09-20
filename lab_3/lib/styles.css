@@ -1,0 +1,74 @@
+body {
+    margin-top: 30px;
+    font-family: 'Arial', Times, serif;
+    background-color: #121212;
+    color: white;
+}
+
+div {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.container-1 {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+
+#container-2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: solid 1px black;
+    background-color: #151515;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+#text_input {
+    background-color: #212121;
+    color: white;
+}
+
+#send {
+    background-color: #4CAF50; 
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+span {
+    display:block;
+    text-align: center;
+    margin-top: 1.2rem;
+}
+
+.msg_box {
+
+    display: flex;
+    justify-content: space-between;
+    border: solid 1px black;
+    width: 30%;            
+    flex-wrap: wrap;
+    background-color: #212121;
+
+}
+
+.box_text {
+    flex: 5;
+    word-wrap: break-word;
+    word-break:break-word;
+    margin: 5px;
+    margin-left: 10px;
+    font-size: 1.0rem;
+}
+
+.box_checkbox {
+    flex: 1;
+    margin-right: 10px;
+}
