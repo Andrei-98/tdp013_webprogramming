@@ -3,11 +3,8 @@
 window.addEventListener("load", display_saved);
 document.getElementById("send").addEventListener("click", create_new_message);
 
-// Global constant used for checking if client clears cookies
-const COOKIE_LENGTH = document.cookie.length;
-
 // Retrieve cookie information and converting each message to js-objects, sort them by index and display them.
-async function display_saved()
+async function display_saved() // kasper
 {
     let all_messages = await retrieve_messages();
 
@@ -17,7 +14,8 @@ async function display_saved()
     }
 }
 
-function send_message(id, content, isRead)
+
+function send_message(id, content, isRead) // Andrei
 {
   fetch('http://localhost:9070/messages', 
     {
@@ -26,7 +24,7 @@ function send_message(id, content, isRead)
     body : JSON.stringify({"id" : id, "content" : content, "isRead" : isRead})
     })
   .then((response) => {
-    return response.json; // Skickas till nästa ".then"
+    return response.json(); // Skickas till nästa ".then"
   })    
   .then((rsp) => {
     console.log(rsp);
@@ -34,7 +32,7 @@ function send_message(id, content, isRead)
 }
 
 
-async function retrieve_messages()
+async function retrieve_messages() // kasper
 {
    return fetch('http://localhost:9070/messages', 
     {
@@ -49,8 +47,9 @@ async function retrieve_messages()
   })
 }
 
+
 // Creates a message if approved and puts in on screen after click event
-function create_new_message()
+function create_new_message() // andrei
 {
     const text = document.getElementById("text_input").value;
     if (text.length == 0 || text.length > 140) 
@@ -67,7 +66,8 @@ function create_new_message()
     }
 }
 
-function error_msg(text = "Enter between 1 and 140 characters!")
+
+function error_msg(text = "Enter between 1 and 140 characters!") // andrei
 {
     const error = document.getElementById("error");
     error.textContent = text;
@@ -75,7 +75,7 @@ function error_msg(text = "Enter between 1 and 140 characters!")
 
 
 // Creates necessary elements and insert into DOM
-function display_message(id, text, is_read = false)
+function display_message(id, text, is_read = false) // Kasper
 {
     const main_div = document.getElementById("container-2");
 
@@ -111,12 +111,11 @@ function display_message(id, text, is_read = false)
     new_msg.appendChild(checkbox_container);
 
     main_div.insertBefore(new_msg, main_div.childNodes[0]);
-
 }
 
 
 // Callback function for when listener click read-button
-function read_message() 
+function read_message() //Andrei
 {
     let message_p_tag = this.parentElement.previousSibling
     if(this.checked)
