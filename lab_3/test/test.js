@@ -5,8 +5,9 @@ let databaseHandler = require('../lib/database.js');
 
 const chai = require('chai')
 const chaiHttp = require('chai-http');
-chai.should();
-chai.use(chaiHttp);
+const { copyFileSync } = require('fs');
+chai.should()
+chai.use(chaiHttp)
 
 before(() => {
     server.use(async () => { 
@@ -324,6 +325,28 @@ describe('GET on non-existent function /hi', () => {
         });
     })
 });
+
+/*
+FROM SERVER:
+    'Access-Control-Allow-Origin'  = '*'
+    'Access-Control-Allow-Headers' = 'Origin, X-Requested-With, Content-Type, Accept'
+    'Access-Control-Allow-Methods' = 'POST, GET, PUT, OPTIONS'
+*/
+
+describe('Check that cors-headers are equal to servers configuration', () => { 
+    it('Headers should have same preset', (done) => {
+        chai.request(server)
+        .post( '/messages' )
+        .send({"id" : 99, "content" : "1234", "isRead" : false})
+        .end((err, res) => {
+            assert.equal('*', res.header['access-control-allow-origin']);
+            assert.equal('Origin, X-Requested-With, Content-Type, Accept', res.header['access-control-allow-headers']);
+            assert.equal('POST, GET, PUT, OPTIONS', res.header['access-control-allow-methods']); 
+            done();
+        });
+    })
+});
+
 
 
 // close database and exit app

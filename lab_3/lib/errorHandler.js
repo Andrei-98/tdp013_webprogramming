@@ -16,12 +16,11 @@ function validate_message(id, content, isRead)
           return is_ok;
         }
 
-        // content could be a JSON object desguised as a string
-        // try to turn it into a JSON object, should fail -> catch.
-        // in the string content try to find ${variable}
+        // in the string content try to find mongodb commands like: ${variable}
         // no match = null => false
         // one or more matches = true
-        if (!!content.match(/\$\*{.*\}/))
+
+        if (!!content.match(/\$.*\{.*\}/))
         {
           is_ok = false;
         }

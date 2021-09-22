@@ -79,10 +79,10 @@ router.get(/messages\/\d+/, (req,rsp) => {
     //find a specific message based on id
     let value = dbHandler.find_message(query);
     value.then((res) => {
-        if (res == null)
-        {
-            rsp.sendStatus(400)
-        }
+        // if (res == null)
+        // {
+        //     rsp.sendStatus(400)
+        // }
         rsp.json(res);
     })      
 });

@@ -32,7 +32,7 @@ function send_message(id, content, isRead) // Andrei
 }
 
 
-async function retrieve_messages() // kasper
+export async function retrieve_messages() // kasper
 {
    return fetch('http://localhost:9070/messages', 
     {
@@ -142,3 +142,4 @@ function read_message() //Andrei
 }
 
 
+exports.module = {retrieve_messages};
