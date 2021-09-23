@@ -24,11 +24,8 @@ function send_message(id, content, isRead) // Andrei
     body : JSON.stringify({"id" : id, "content" : content, "isRead" : isRead})
     })
   .then((response) => {
-    return response.json(); // Skickas till nästa ".then"
+    return response.status; // Skickas till nästa ".then"
   })    
-  .then((rsp) => {
-    console.log(rsp);
-  })
 }
 
 
@@ -42,9 +39,6 @@ export async function retrieve_messages() // kasper
   .then((response) => {
     return response.json(); // Skickas till nästa ".then"
   })    
-  .then((rsp) => {
-    return rsp
-  })
 }
 
 
@@ -134,12 +128,6 @@ function read_message() //Andrei
         method: 'PUT'
     })
   .then((response) => {
-    return console.log(response); // Skickas till nästa ".then"
+    return response.status; // Skickas till nästa ".then"
   })    
-  .then((rsp) => {
-    console.log(rsp);
-  })
 }
-
-
-exports.module = {retrieve_messages};
