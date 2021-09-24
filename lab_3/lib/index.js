@@ -15,7 +15,7 @@ async function display_saved() // kasper
 }
 
 
-function send_message(id, content, isRead) // Andrei
+function send_message(id, content, isRead)
 {
   fetch('http://localhost:9070/messages', 
     {
@@ -29,7 +29,7 @@ function send_message(id, content, isRead) // Andrei
 }
 
 
-export async function retrieve_messages() // kasper
+export async function retrieve_messages()
 {
    return fetch('http://localhost:9070/messages', 
     {
@@ -42,16 +42,41 @@ export async function retrieve_messages() // kasper
 }
 
 
-// Creates a message if approved and puts in on screen after click event
-function create_new_message() // andrei
-{
-    const text = document.getElementById("text_input").value;
+function IsJsonString(str) {
+  try {
+      str = JSON.parse(str);
+      if(typeof str === "object")
+      {
+        return true;
+      }
+  } catch (e) {
+      return false;
+  }
+  return false;
+}
+
+function validate_message(text) {
     if (text.length == 0 || text.length > 140) 
     {
-        error_msg();
+        error_msg("Enter between 1 and 140 characters!");
+        return false;
+    } else if (!!text.match(/\$.*\{.*\}/)) {
+        error_msg("Forbidden ${} notation not allowed!");
+        return false;
+    } else if (IsJsonString(text)) {
+        error_msg("Cannot send JSON object!");
+        return false;
+    } else {
+        return true;
     }
-    else 
-    {
+}
+
+
+// Creates a message if approved and puts in on screen after click event
+function create_new_message()
+{
+    const text = document.getElementById("text_input").value;
+    if (validate_message(text)) {
         const main_div = document.getElementById("container-2");
         const id = main_div.childNodes.length;
         error_msg("");
@@ -61,7 +86,8 @@ function create_new_message() // andrei
 }
 
 
-function error_msg(text = "Enter between 1 and 140 characters!") // andrei
+
+function error_msg(text = "Enter between 1 and 140 characters!")
 {
     const error = document.getElementById("error");
     error.textContent = text;
@@ -69,7 +95,7 @@ function error_msg(text = "Enter between 1 and 140 characters!") // andrei
 
 
 // Creates necessary elements and insert into DOM
-function display_message(id, text, is_read = false) // Kasper
+function display_message(id, text, is_read = false)
 {
     const main_div = document.getElementById("container-2");
 
@@ -109,7 +135,7 @@ function display_message(id, text, is_read = false) // Kasper
 
 
 // Callback function for when listener click read-button
-function read_message() //Andrei
+function read_message()
 {
     let message_p_tag = this.parentElement.previousSibling
     if(this.checked)
