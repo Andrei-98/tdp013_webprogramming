@@ -1,15 +1,13 @@
 import PropTypes from 'prop-types'
-import { Component } from 'react'
 
-export class Button extends Component {
-    render() {
-        return (
-            <div>
-                <button className="btn" style={{ backgroundColor: this.props.color }} onClick={this.props.onClick}>{this.props.text}</button>
-            </div>
-        )
-    }
+function Button({color, text, onClick }) {
+    return (
+        <div>
+            <button className="btn" style={{ backgroundColor: color }} onClick={onClick}>{text}</button>
+        </div>
+    )
 }
+
 
 Button.defaultProps = {
     color: "green",

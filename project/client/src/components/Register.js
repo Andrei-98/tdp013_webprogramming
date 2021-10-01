@@ -1,10 +1,9 @@
-import React, { Component } from 'react'
 import Button from './Button';
 
 
-export class Login extends Component {
-    render() {
-        return (
+function Register() {
+    return (
+        <div>
             <div>
                 <form action='#' method="post" className="login">
                     <input type="text" id="uname3" placeholder="Username"></input>
@@ -13,9 +12,9 @@ export class Login extends Component {
 
                     <Button />
                 </form>
-            </div>
-        )
-    }
+            </div>           
+        </div>
+    )
 }
 
-export default Login
+export default Register

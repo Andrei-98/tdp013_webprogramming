@@ -34,3 +34,9 @@ code {
 .btn:active {
   transform: scale(0.98);
 }
+
+.simple-container {
+  border-style: solid;
+  border-color: black;
+  margin: 30px;
+}
