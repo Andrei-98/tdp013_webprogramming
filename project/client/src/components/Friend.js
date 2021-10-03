@@ -3,8 +3,8 @@ import React from 'react'
 
 function Friend({ friend, onDelete }) {
     return (
-        <div>
-            <p>{friend.name}</p>
+        <div className="friend-container">
+            <span>{friend.name}</span>
             <FaTimes
                 style={{ color: 'red', cursor: 'pointer'}}
                 onClick={() => onDelete(friend.name)}

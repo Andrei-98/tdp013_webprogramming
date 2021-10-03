@@ -4,6 +4,8 @@ import './App.css';
 import Login from './components/Login';
 import Register from './components/Register'
 import Profile from './components/Profile';
+import Navigation from './components/Navigation'
+
 
 
 
@@ -51,6 +53,8 @@ function App() {
   return (
     <div className="App">
       <Router>
+      <Navigation />
+
         <Switch>
           <Route exact path="/">  <Login /> </Route>
           <Route exact path="/register"> <Register /> </Route>
