@@ -34,3 +34,37 @@ code {
 .btn:active {
   transform: scale(0.98);
 }
+
+.friends-list-container {
+  border-style: solid;
+  border-color: black;
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+
+}
+
+.friend-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.friends-list-container {
+
+}
+
+.message-container {
+  border-style: solid;
+  border-color: black;
+  margin: 30px;
+
+}
