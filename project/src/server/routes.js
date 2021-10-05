@@ -85,8 +85,7 @@ router.get("/chat", (req, rsp) => {
 });
 
 
-router.get("/profile", (req, rsp) => {
-    // profile 
+router.get("/profile/messages", (req, rsp) => {
 });
 
 
