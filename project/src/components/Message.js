@@ -2,10 +2,9 @@ import React from 'react'
 
 function Message({ msg }) {
     return (
-        <div>
-            {/* <p>From: {msg.from}</p> */}
-            <p>{msg}</p>
-            {/* <p>Is read {msg.isRead}</p> */}
+        <div className="message">
+            <p>From: {msg.from}</p>
+            <p>{msg.content}</p>
         </div>
     )
 }

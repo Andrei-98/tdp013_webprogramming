@@ -66,6 +66,7 @@ code {
   border-style: solid;
   border-color: black;
   margin: 30px;
+  width: 750px;
 
 }
 
@@ -73,4 +74,10 @@ code {
   display: flex;
   justify-content: center;
   align-items: stretch;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }

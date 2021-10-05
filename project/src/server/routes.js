@@ -87,7 +87,17 @@ router.get("/chat", (req, rsp) => {
 });
 
 
-router.get("/profile/messages", (req, rsp) => {
+router.get(/profile\/\w+/, (req, rsp) => {
+    console.log("helllo trying to fetch shit")
+    const user = String(req.url.split("/").slice(-1).pop());
+    let messages = dbHandler.get_messages_from(user)
+    messages
+    .then((res) => {
+
+        rsp.json(res.messages)
+    })
+    .catch((e) => console.log(e))
+    console.log(user)
 });
 
 

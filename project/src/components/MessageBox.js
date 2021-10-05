@@ -10,7 +10,7 @@ function MessageBox({from}) {
         const msg = {content, from}
         console.log("submitting")
         console.log(msg)
-        fetch('http://localhost:9070/profile', {
+        fetch(`http://localhost:9070/profile`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(msg)

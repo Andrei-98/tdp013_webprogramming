@@ -10,12 +10,11 @@ function Profile({ user }) {
 
     return (
         <div>
-            <h1>{user.username}</h1>
-            {/* <h1>{user}</h1> */}
-            {/* <MessageBox from={user}/> */}
+            <h1>John</h1>
+            <MessageBox from="John"/>
             <div className="profile-container">
                 <FriendList all_friends={user.friends}  />
-                <MessageList all_msg={user.messages} />
+                <MessageList user="John" />
             </div>
         </div>
     )

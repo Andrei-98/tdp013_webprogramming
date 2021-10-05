@@ -2,12 +2,15 @@ import Message from './Message'
 import { useEffect, useState } from "react";
 
 
-function MessageList({all_msg}) {
+function MessageList({user}) {
 
     const [messages, setMessages] = useState(null)
 
     useEffect(() => {
-        fetch('http://localhost:9070/profile')
+        // const fetchMessages = async () => {
+        //     const res = await fetch(`http://localhost:9070/profile/${user}`)
+        // }
+        fetch(`http://localhost:9070/profile/${user}`)
         .then(res => {
             return res.json();
         })
