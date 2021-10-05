@@ -15,15 +15,19 @@ let dbHandler = require('./database.js');
 //     next;
 // });
 
-router.post("/", (req, rsp) => {
+router.post("/login", (req, rsp) => {
 
     // log in
+    //const username = req.url.split("/").slice(-1).pop();
 
     const user = {username : req.body.username, password : req.body.password};
     const status = dbHandler.sign_in(user);
     status.then((res) => {
-        if(res != null)
-            rsp.sendStatus(200);
+        if(res != null){
+            console.log(res, "HELLO")
+            console.log(res)
+            rsp.json(res);
+        }
         else
             rsp.sendStatus(401);
     })

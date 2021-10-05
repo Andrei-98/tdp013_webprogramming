@@ -1,15 +1,18 @@
 import FriendList from './FriendList.js'
 import MessageList from './MessageList'
+import { useState } from 'react'
 
-function Profile({ user, all_msg, all_friends, onDelete }) {
+function Profile({ user }) {
 
+    //const [user2, setUser] = useState(user);
+    
 
     return (
         <div>
-            <h1>{user}</h1>
+            <h1>{user.username}</h1>
             <div className="profile-container">
-                <FriendList all_friends={all_friends} onDelete={onDelete} />
-                <MessageList all_msg={all_msg} />
+                <FriendList all_friends={user.friends}  />
+                <MessageList all_msg={user.messages} />
             </div>
         </div>
     )
