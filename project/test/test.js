@@ -112,6 +112,31 @@ describe('PUT for /profile/fr', () => {
     });
 });
 
+
+describe('POST for /profile', () => {
+    it('Should have status code 200, add message to John', (done) => {
+        const from = "John";
+        const text = "Hello there";
+
+        const message = {text: text, from: from}
+
+        chai.request(server)
+            .post('/profile')
+            .send(message)
+            .then((res) => {
+                res.should.have.status(200);
+                let obj = databaseHandler.find_user(from);
+                obj.then((r) => {
+                    r.username.should.be.equal(from);
+                    r.message.should.be.equal(message);
+                    //console.log(r.message);
+                    done();
+                })
+                done();
+            })
+    });
+});
+
 // close database and exit app
 after(() => {
     databaseHandler.closeDb();

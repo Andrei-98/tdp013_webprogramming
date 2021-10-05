@@ -68,3 +68,9 @@ code {
   margin: 30px;
 
 }
+
+.container-msg-box {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
