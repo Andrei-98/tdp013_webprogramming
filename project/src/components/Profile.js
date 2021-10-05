@@ -2,14 +2,16 @@ import FriendList from './FriendList.js'
 import MessageList from './MessageList'
 import { useState } from 'react'
 import MessageBox from './MessageBox'
+import Navigation from './Navigation.js'
 
-function Profile({ user }) {
+function Profile({ user, logout }) {
 
     //const [user2, setUser] = useState(user);
     
 
     return (
         <div>
+           
             <h1>{user.username}</h1>
             {/* <h1>{user}</h1> */}
             {/* <MessageBox from={user}/> */}

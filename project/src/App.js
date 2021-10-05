@@ -6,48 +6,102 @@ import Register from './components/Register'
 import Profile from './components/Profile';
 import Navigation from './components/Navigation'
 import { Redirect } from "react-router";
+import { useEffect } from "react";
+import { FaWindowRestore } from "react-icons/fa";
+
+
 
 function App() {
 
+
+
   const [user, setUser] = useState(
     {
-      username : "",
-      password : "",
-      sent_req : [],
-      received_req : [],
-      friends : [],
-      messages : []
+      username: "",
+      password: "",
+      sent_req: [],
+      received_req: [],
+      friends: [],
+      messages: []
     }
   )
 
+  const [isLoggedIn, setLogged] = useState({
+    isLoggedIn: false,
+    firstLogg: null
+  });
+
+  window.addEventListener('load', (event) => {
+    const signed_in = localStorage.getItem("isLoggedIn");
+    if (signed_in == 'true') {
+      const user_storage = JSON.parse(localStorage.getItem('user'));
+
+      setUser({
+        username: user_storage.username,
+        sent_req: user_storage.sent_req,
+        received_req: user_storage.received_req,
+        friends: user_storage.friends,
+        messages: user_storage.messages
+      })
+      setLogged({
+        isLoggedIn: true,
+        firstLogg: true
+      })
+    }
+  }
+  );
+  // useEffect(() => {
+  //   localStorage.setItem('isLoggedIn', 'false')
+  // }, [])
+
+  // useEffect(() => {
+  //   const loggedIn = localStorage.getItem('isLoggedIn');
+  //   if (loggedIn == "false")
+  //   {
+  //     localStorage.setItem('isLoggedIn', 'true')
+  //   }
+  // }, [user.username])
+
   const login = user_det => {
-    setUser( {
-      username : user_det.username,
-      password : user_det.password,
-      sent_req : user_det.sent_req,
-      received_req : user_det.received_req,
-      friends : user_det.friends,
-      messages : user_det.messages
+    setUser({
+      username: user_det.username,
+      sent_req: user_det.sent_req,
+      received_req: user_det.received_req,
+      friends: user_det.friends,
+      messages: user_det.messages
     });
+
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('user', JSON.stringify(user_det));
+    setLogged({
+      isLoggedIn: true,
+      firstLogg: true
+    })
+
 
     //console.log(user);
   }
 
   const logout = () => {
     setUser({
-      username : "",
-      password : "",
-      sent_req : [],
-      received_req : [],
-      friends : [],
-      messages : []
+      username: "",
+      sent_req: [],
+      received_req: [],
+      friends: [],
+      messages: []
     });
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    setLogged({
+      isLoggedIn: false
+    })
+
+
+
   }
 
-  const isLoggedIn = user.username != "";
-  console.log(isLoggedIn);
-
-
+  console.log(isLoggedIn.isLoggedIn);
+  console.log(user);
 
   // const [all_msg, setMsg] = useState([
   //   {
@@ -90,28 +144,31 @@ function App() {
 
   return (
     <div className="App">
+
       <Router>
-      <Navigation />
-
+        {isLoggedIn.isLoggedIn ? (
+          <Navigation logout={logout} />
+        )
+          : (
+            null
+          )
+        }
         <Switch>
-          <Route exact path="/">  <Login login={login}/> </Route>
           <Route exact path="/register"> <Register /> </Route>
-           <Route exact path="/profile"> <Profile user={user} /> </Route>
-           {/* user="John"
-            all_msg={all_msg} all_friends={all_friends} onDelete={ deleteFriend }/ */}
+          <Route exact path="/login">
+          {isLoggedIn.isLoggedIn ? (
+            <Redirect to="/profile"> </Redirect>
+          )
+          : (
+              <Login login={login}/>
+            )
+          }  
+          </Route>
+          <Route exact path="/profile"> <Profile user={user} logout={logout} /> </Route>
         </Switch>
-        {isLoggedIn ? ( 
-          //console.log(user)
-
-        <Redirect to="/profile"> <Profile user={user} /></Redirect>
-      ) : (
-        console.log("not signed in")
-      )}
       </Router>
 
-     
-
-      </div>
+    </div>
   )
 }
 

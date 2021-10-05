@@ -3,10 +3,14 @@ import Link from "react-router-dom/Link";
 import Button from 'react-bootstrap/Button'
 import {LinkContainer} from 'react-router-bootstrap'
 import {useState} from 'react'
+import { Redirect } from "react-router";
+import { useHistory } from "react-router-dom";
+
 
 
 function Login({login}) {
 
+    const history = useHistory();
     const [user, setUser] = useState({username : "", password : ""});
 
     const submitHandler = e => {
@@ -29,6 +33,7 @@ function Login({login}) {
             stream.then((res) => {
                 console.log(JSON.parse(res))
                 login(JSON.parse(res));
+                history.push("/profile")
                 //login(response)
             })
         }) 

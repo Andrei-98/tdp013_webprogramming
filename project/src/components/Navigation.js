@@ -4,10 +4,21 @@ import Navbar from 'react-bootstrap/Navbar'
 import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 import { LinkContainer } from 'react-router-bootstrap'
+import { useHistory } from "react-router-dom";
+
 
 import Button from 'react-bootstrap/Button'
 
-function Navigation() {
+function Navigation({ logout }) {
+
+    const history = useHistory();
+
+    function logging_out() {
+        logout()
+        history.push("/login")
+    }
+
+
     return (
         <div>
             <Navbar bg="light" expand="lg">
@@ -26,7 +37,7 @@ function Navigation() {
                                 <Nav.Link>Chat</Nav.Link>
                             </LinkContainer>
                         </Nav>
-                        <Button variant="outline-danger">Log out</Button>{' '}
+                        <Button variant="outline-danger" onClick={logging_out}>Log out</Button>{' '}
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
