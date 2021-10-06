@@ -67,13 +67,12 @@ router.put("/profile/fr", (req, rsp) => {
 });
 
 router.post("/profile", (req, rsp) => {
-    console.log("HI IM TRYING TO INSERT A MESSAGE")
+    console.log("hi, trying to insert shit")
     const content = req.body.content;
-    console.log(content)
     const from = req.body.from;
     let message = { "content": content, "from": from }
+    console.log(message)
     dbHandler.insert_message(message, from)
-
     rsp.sendStatus(200);
 });
 
@@ -89,13 +88,10 @@ router.get("/chat", (req, rsp) => {
 
 
 router.get(/profile\/\w+/, (req, rsp) => {
-    console.log("helllo trying to fetch shit")
     const user = String(req.url.split("/").slice(-1).pop());
     let messages = dbHandler.get_messages_from(user)
     messages
     .then((res) => {
-        console.log("GOT THIS-----------")
-        //console.log(res.messages)
         rsp.json(res.messages)
     })
     .catch((e) => console.log(e))

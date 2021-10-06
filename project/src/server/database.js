@@ -24,16 +24,23 @@ async function dropColl() {
 }
 
 
-function insert_message(message, user) {
-  dbm.collection(coll).updateOne({ "username": user }, { $push: { "messages": message } });
+async function insert_message(message, user) {
+  dbm.collection(coll).updateOne({ "username": user },
+    {
+      $push: {
+        "messages": {
+          $each: [message], 
+          $position: 0
+        }
+      }
+    });
 }
 
+
 async function get_messages_from(from) {
-  console.log("in get_messages_from")
-  let user = dbm.collection(coll).findOne( { "username": from } , { messages:1 })
-  // db.users.findOne({username:"John"}, {messages:1})
+  let user = dbm.collection(coll).findOne({ "username": from }, { messages: 1 })
   return user
-  
+
 
 }
 

@@ -15,6 +15,7 @@ function Profile({ user }) {
         getMessages()
     }, [])
 
+    
     // Fetch Messages
     const fetchMessages = async () => {
         console.log("MESSAGES HAVE BEEN FETCHED")
@@ -22,41 +23,30 @@ function Profile({ user }) {
         const res = await fetch(`http://localhost:9070/profile/${user}`)
         const data = await res.json()
         return data
-    } 
-
-    // const addMessage = async (msg) => {
-    //     const res = await fetch('http://localhost:9070/profile', {
-    //       method: 'POST',
-    //       headers: { 'Content-type': 'application/json',},
-    //       body: JSON.stringify(msg),
-    //     })
-    
-    //     const data = await res.json()
-    
-    //     setMessages([...messages, data])
-    
-    //   }
+    }
 
 
     // Add Message
     const addMessage = async (msg) => {
         const res = await fetch('http://localhost:9070/profile', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(msg)
         })
         setMessages([msg, ...messages])
+        const data = await res.json()
+
+        // setMessages([...messages, data])
     }
 
-   
 
     return (
         <div>
             <h1>John</h1>
-            <MessageBox from="John" onAdd={addMessage}/>
+            <MessageBox from="John" onAdd={addMessage} />
             <div className="profile-container">
                 {/* <FriendList all_friends={user.friends}  /> */}
-                {messages && <MessageList messages={messages}/>}
+                {messages && <MessageList messages={messages} />}
             </div>
         </div>
     )
