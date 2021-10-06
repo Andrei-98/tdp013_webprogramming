@@ -95,8 +95,14 @@ router.get(/\/friends\/.+/, (req, rsp) => {
     let friends = dbHandler.get_data_from(friend)
     friends
     .then((res) => {
-        console.log(res.friends)
-        rsp.json(res.friends)
+        if (res != null)
+        {
+            console.log(res.friends)
+            rsp.json(res.friends)
+        }
+        else{
+            rsp.json([]);
+        }
     })
     .catch((e) => console.log(e))
     // find friends

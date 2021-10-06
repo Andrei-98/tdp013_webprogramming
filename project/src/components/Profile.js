@@ -17,9 +17,10 @@ function Profile({ user, logout }) {
             const serverMessages = await fetchMessages()
             setMessages(serverMessages)
         }
-
+        
+        
         getProfile()
-    }, [])
+    }, [user])
 
     
     // Fetch Messages
@@ -52,8 +53,8 @@ function Profile({ user, logout }) {
 
     return (
         <div>
-            <h1>{user.username}</h1>
-            <MessageBox from="John" onAdd={addMessage} />
+            <h1>{user}</h1>
+            <MessageBox from={user} onAdd={addMessage} />
             <div className="profile-container">
                 {friends && <FriendList friends={friends} />}
                 {messages && <MessageList messages={messages} />}
