@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Message from './Message';
 import SearchRes from './SearchRes';
 
-function Find({ user }) {
+function Find({ user, update }) {
 
     const [users, setUsers] = useState(null);
 
@@ -37,7 +37,7 @@ function Find({ user }) {
 
             <div className="search_list">
                 {hasData && users.map((us) => (
-                    <SearchRes msg={us.username} user={user} className="msg"/>))}
+                    <SearchRes msg={us.username} user={user} update={update} className="msg"/>))}
             </div>
         </div>  
     );

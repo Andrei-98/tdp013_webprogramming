@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'react-router-dom/Link';
 
-function SearchRes({ msg, user }) {
+function SearchRes({ msg, user, update }) {
 
     // const [status, setStatus] = useState(null);
 
@@ -34,6 +34,8 @@ function SearchRes({ msg, user }) {
 
     function sent_req() {
         if (user.sent_req.includes(msg)) {
+            console.log(user.sent_req)
+            console.log(msg);
             return true
         }
         else {
@@ -49,6 +51,30 @@ function SearchRes({ msg, user }) {
         }
     }
 
+    function add_friend() {
+        fetch('http://localhost:9070/find',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ "sender": user.username, "receiver": msg })
+            })
+            .then((response) => {
+                update();
+                return response.status;
+            })
+    }
+    function accept_friend() {
+        fetch('http://localhost:9070/find',
+            {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ "sender": msg, "receiver": user.username })
+            })
+            .then((response) => {
+                update();
+                return response.status;
+            })
+    }
 
     return (
         <div>
@@ -61,14 +87,45 @@ function SearchRes({ msg, user }) {
                         <p>{msg}</p>
                     </Link>
                 </div>
+
             )
                 : (
-                    <div className="clickable-profile">
-                        <button className="Add-btn">Add friend</button>
-                        <p>{msg}</p>
-                    </div>
+                    null
                 )
             }
+            {sent_req() ? (
+                <div className="clickable-profile" >
+                    <p> Already sent friend request</p>
+                    <p>{msg}</p>
+                </div>
+            )
+                : (
+                    null
+                )
+            }
+            {received_req() ? (
+                <div className="clickable-profile" >
+                    <p> Already received friend request</p>
+                    <button onClick={accept_friend}>Accept request</button>
+                    <p>{msg}</p>
+                </div>
+            )
+                : (
+                    null
+                )
+            }
+            {!is_friend() && !sent_req() && !received_req() && msg != user.username ? (
+                <div className="clickable-profile" >
+                    <button className="Add-btn" onClick={add_friend}>Add friend</button>
+                    <p>{msg}</p>
+                </div>
+            )
+                : (
+                    null
+                )
+            }
+
+
             {/* <div className="clickable-profile">
                 <Link to={`/profile/${msg}`}>
                     {/* <button className="friend_button">{check_status()}</button> 

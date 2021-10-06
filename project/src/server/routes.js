@@ -32,10 +32,28 @@ router.post("/login", (req, rsp) => {
 
 });
 
-router.put("/profile", (req, rsp) => {
+router.post("/update", (req, rsp) => {
+
+    // log in
+    //const username = req.url.split("/").slice(-1).pop();
+
+    const user = { username: req.body.username};
+    const status = dbHandler.find_user(user);
+    status.then((res) => {
+        if(res != null){
+            rsp.json(res);
+        }
+        else
+            rsp.sendStatus(401);
+    })
+
+});
+
+router.post("/find", (req, rsp) => {
 
     const friend_target = req.body.receiver;
     const friend_requester = req.body.sender;
+
 
     dbHandler.send_friend_request(friend_requester, friend_target);
     rsp.sendStatus(200);
@@ -47,22 +65,20 @@ router.post("/register", (req, rsp) => {
 
     const user = {
         username: req.body.username, password: req.body.password,
-        "sent_req": [], "received_req": [], "friends": ["Andrei", "Lala", "Raul", "Bill"], "messages": []
+        "sent_req": [], "received_req": [], "friends": [], "messages": []
     };
     dbHandler.add_user(user);
     rsp.sendStatus(200);
-
-
 });
 
-router.put("/profile/fr", (req, rsp) => {
+router.put("/find", (req, rsp) => {
 
     const friend_target = req.body.receiver;
     const friend_requester = req.body.sender;
 
+
     dbHandler.accept_friend(friend_requester, friend_target);
     rsp.sendStatus(200);
-
 });
 
 router.post("/profile", (req, rsp) => {
@@ -70,7 +86,7 @@ router.post("/profile", (req, rsp) => {
     const from = req.body.from;
     const to = req.body.to;
     let message = { "content": content, "from": from, "to" : to }
-    console.log(message)
+    
     dbHandler.insert_message(message, to)
     rsp.sendStatus(200);
 });
@@ -81,8 +97,6 @@ router.get(/\/find\/.+/, (req,rsp) => {
     const found_users = dbHandler.get_users(user);
 
     found_users.then((res) => {
-        // const matches = res.filter(s => s.toLowerCase().includes(user.toLowerCase()));
-        console.log(res);
         rsp.json(res);
     })
     
@@ -98,7 +112,7 @@ router.get(/\/friends\/.+/, (req, rsp) => {
     .then((res) => {
         if (res != null)
         {
-            console.log(res.friends)
+            
             rsp.json(res.friends)
         }
         else{
