@@ -48,7 +48,7 @@ router.post("/register", (req, rsp) => {
 
     const user = {
         username: req.body.username, password: req.body.password,
-        "sent_req": [], "received_req": [], "friends": [], "messages": ["hello", "welcome"]
+        "sent_req": [], "received_req": [], "friends": [], "messages": []
     };
     dbHandler.add_user(user);
     rsp.sendStatus(200);
@@ -67,8 +67,9 @@ router.put("/profile/fr", (req, rsp) => {
 });
 
 router.post("/profile", (req, rsp) => {
-    console.log("------------")
+    console.log("HI IM TRYING TO INSERT A MESSAGE")
     const content = req.body.content;
+    console.log(content)
     const from = req.body.from;
     let message = { "content": content, "from": from }
     dbHandler.insert_message(message, from)
@@ -93,11 +94,11 @@ router.get(/profile\/\w+/, (req, rsp) => {
     let messages = dbHandler.get_messages_from(user)
     messages
     .then((res) => {
-
+        console.log("GOT THIS-----------")
+        //console.log(res.messages)
         rsp.json(res.messages)
     })
     .catch((e) => console.log(e))
-    console.log(user)
 });
 
 

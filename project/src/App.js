@@ -96,14 +96,14 @@ function App() {
         <Switch>
           <Route exact path="/">  <Login login={login}/> </Route>
           <Route exact path="/register"> <Register /> </Route>
-           <Route exact path="/profile"> <Profile user={user} /> </Route>
+           <Route exact path="/profile"> <Profile user="John" /> </Route>
            {/* user="John"
             all_msg={all_msg} all_friends={all_friends} onDelete={ deleteFriend }/ */}
         </Switch>
         {isLoggedIn ? ( 
           //console.log(user)
 
-        <Redirect to="/profile"> <Profile user={user} /></Redirect>
+        <Redirect to="/profile"> <Profile user="John" /></Redirect>
       ) : (
         console.log("not signed in")
       )}

@@ -24,7 +24,7 @@ async function dropColl() {
 }
 
 
-async function insert_message(message, user) {
+function insert_message(message, user) {
   dbm.collection(coll).updateOne({ "username": user }, { $push: { "messages": message } });
 }
 

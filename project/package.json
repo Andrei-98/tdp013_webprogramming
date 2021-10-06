@@ -37,6 +37,7 @@
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha",
     "start": "react-scripts start",
+    "server": "nodemon ./src/server/server.js",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "coverage": "nyc --reporter=html npm test"
