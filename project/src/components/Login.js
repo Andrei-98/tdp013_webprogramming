@@ -7,12 +7,11 @@ import {useState} from 'react'
 import { Redirect } from "react-router";
 import { useHistory } from "react-router-dom";
 
-
-
 function Login({login}) {
 
     const history = useHistory();
     const [user, setUser] = useState({username : "", password : ""});
+    const [error, setError] = useState(false);
 
     const submitHandler = e => {
         e.preventDefault(); 
@@ -29,26 +28,41 @@ function Login({login}) {
             body: JSON.stringify( { "username": user.username, "password" : user.password} )
         })
         .then((response) => {
-            //console.log(response.text(), "hello");
             let stream = response.text();
             stream.then((res) => {
-                console.log(JSON.parse(res))
-                login(JSON.parse(res));
-                history.push("/profile")
-                
+                if (res == "Unauthorized")
+                {
+                    setError(error => true)
+                    return;
+                }
+                else {
+                    login(JSON.parse(res));
+                    history.push("/profile")                
+                }
             })
         }) 
+    }
+    function clearError() {
+        setError(error => false);
     }
 
     return (
             <div>
                 <form className="login" onSubmit={submitHandler} method="POST">
-                    <input type="text" name="username" placeholder="Username" id="username" onChange={ e => setUser({...user, username : e.target.value})} value={user.username}></input>
-                    <input type="password" name="password" placeholder="Password" id="password" onChange={ e => setUser({...user, password : e.target.value})} value={user.password}></input>
+                    <input type="text" name="username" onInput={clearError} placeholder="Username" id="username" onChange={ e => setUser({...user, username : e.target.value})} value={user.username}></input>
+                    <input type="password" name="password" onInput={clearError} placeholder="Password" id="password" onChange={ e => setUser({...user, password : e.target.value})} value={user.password}></input>
                     {/* <Link to="/profile">  <Button>Click</Button> </Link> */}
                     <input type="submit" value="Login"></input>
                 </form>
+               
                 <Link to="/register">Register</Link>
+                {!error ? (
+                    null
+                ) :
+                (
+                    <p>No account with that input.</p>
+                )
+                }
             </div>
     )
 }

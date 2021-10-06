@@ -55,6 +55,10 @@ function get_users(user) {
   return dbm.collection(coll).find({username : {$regex : user, $options: 'i' }}).toArray(); 
 }
 
+function get_user(user) {
+  return dbm.collection(coll).find({username : {$regex : user, $options: 'i' }}).toArray(); 
+}
+
 function find_user(user) {
   return dbm.collection(coll).findOne(user);
 }
@@ -65,6 +69,7 @@ function send_friend_request(sender, target) {
 }
 
 function accept_friend(sender, target) {
+
   dbm.collection(coll).updateOne({ "username": sender }, { $pull: { "sent_req": target } });
   dbm.collection(coll).updateOne({ "username": target }, { $pull: { "received_req": sender } });
   dbm.collection(coll).updateOne({ "username": sender }, { $push: { "friends": target } });
@@ -90,5 +95,5 @@ async function find_all() {
 
 module.exports = {
   startDbConn, closeDb, dropColl, insert_message, find_message,
-  update_message, find_all, add_user, find_user, sign_in, send_friend_request, accept_friend, get_users ,get_data_from
+  update_message, find_all, add_user, find_user, sign_in, send_friend_request, accept_friend, get_users, get_user ,get_data_from
 };
