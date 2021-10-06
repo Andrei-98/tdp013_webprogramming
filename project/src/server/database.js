@@ -55,8 +55,8 @@ function get_users(user) {
   return dbm.collection(coll).find({username : {$regex : user, $options: 'i' }}).toArray(); 
 }
 
-function find_user(username) {
-  return dbm.collection(coll).findOne({ "username": username });
+function find_user(user) {
+  return dbm.collection(coll).findOne(user);
 }
 
 function send_friend_request(sender, target) {

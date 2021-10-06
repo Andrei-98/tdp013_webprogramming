@@ -8,12 +8,10 @@ import Profile from './components/Profile';
 import Navigation from './components/Navigation'
 import { Redirect } from "react-router";
 import Find from "./components/Find"
-import OtherProfile from "./components/OtherProfile"
+
 
 
 function App() {
-
-
 
   const [user, setUser] = useState(
     {
@@ -30,6 +28,24 @@ function App() {
     isLoggedIn: false,
     firstLogg: null
   });
+
+  function update() {
+    fetch('http://localhost:9070/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            json:true,
+            body: JSON.stringify( { "username": user.username} )
+        })
+        .then((response) => {
+            let stream = response.text();
+            
+            stream.then((res) => {
+              console.log(res);
+              console.log("WtF");
+                login(JSON.parse(res));                
+            })
+        }) 
+  }
 
   window.addEventListener('load', (event) => {
     const signed_in = localStorage.getItem("isLoggedIn");
@@ -103,7 +119,7 @@ function App() {
         }
         <Switch>
           <Route exact path="/register"> <Register /> </Route>
-          <Route exact path="/find"> <Find user={user} /> </Route>
+          <Route exact path="/find"> <Find user={user} update={update} /> </Route>
           <Route exact path="/profile/:username"> <Profile from={user.username} /> </Route> 
           <Route exact path="/login">
             {isLoggedIn.isLoggedIn ? (
@@ -114,7 +130,7 @@ function App() {
               )
             }
           </Route>
-          <Route exact path="/profile"> <Profile to={user.username} user={user.received_req}/> </Route>
+          <Route exact path="/profile"> <Profile from={user.username} to={user.username}/> </Route>
           <Route exact path="/">
             {isLoggedIn.isLoggedIn ? (
               <Redirect to="/profile"> </Redirect>
