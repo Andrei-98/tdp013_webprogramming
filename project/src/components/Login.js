@@ -34,7 +34,7 @@ function Login({login}) {
                 console.log(JSON.parse(res))
                 login(JSON.parse(res));
                 history.push("/profile")
-                //login(response)
+                
             })
         }) 
     }

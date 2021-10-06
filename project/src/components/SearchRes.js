@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'react-router-dom/Link';
 
-function Message({ msg, user }) {
+function SearchRes({ msg, user }) {
 
     // const [status, setStatus] = useState(null);
 
@@ -64,4 +64,4 @@ function Message({ msg, user }) {
     )
 }
 
-export default Message
+export default SearchRes

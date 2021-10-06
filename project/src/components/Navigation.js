@@ -1,4 +1,3 @@
-import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Navbar from 'react-bootstrap/Navbar'
 import Container from 'react-bootstrap/Container'
@@ -30,8 +29,8 @@ function Navigation({ logout }) {
                             <LinkContainer to="/profile">
                                 <Nav.Link>Profile</Nav.Link>
                             </LinkContainer>
-                            <LinkContainer to="/friends">
-                                <Nav.Link>Friends</Nav.Link>
+                            <LinkContainer to="/find">
+                            <Nav.Link>Find</Nav.Link>
                             </LinkContainer>
                             <LinkContainer to="/chat">
                                 <Nav.Link>Chat</Nav.Link>

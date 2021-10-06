@@ -1,6 +1,5 @@
 const url = "mongodb://localhost:27017"
 const coll = 'users';
-
 function startDbConn(callback) {
   const MongoClient = require('mongodb').MongoClient;
   MongoClient.connect(url, (err, db) => {
@@ -36,7 +35,11 @@ function sign_in(user) {
   return dbm.collection(coll).findOne({ "username": user.username, "password": user.password });
 }
 
-async function find_user(username) {
+function get_users(user) {
+  return dbm.collection(coll).find({username : {$regex : user, $options: 'i' }}).toArray(); 
+}
+
+function find_user(username) {
   return dbm.collection(coll).findOne({ "username": username });
 }
 
@@ -71,5 +74,5 @@ async function find_all() {
 
 module.exports = {
   startDbConn, closeDb, dropColl, insert_message, find_message,
-  update_message, find_all, add_user, find_user, sign_in, send_friend_request, accept_friend
+  update_message, find_all, add_user, find_user, sign_in, send_friend_request, accept_friend, get_users
 };

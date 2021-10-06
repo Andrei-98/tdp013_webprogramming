@@ -1,19 +1,16 @@
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { useState } from "react";
+import React from 'react';
 import './App.css';
 import Login from './components/Login';
 import Register from './components/Register'
 import Profile from './components/Profile';
 import Navigation from './components/Navigation'
 import { Redirect } from "react-router";
-import { useEffect } from "react";
-import { FaWindowRestore } from "react-icons/fa";
-
-
+import Find from "./components/Find"
+import OtherProfile from "./components/OtherProfile"
 
 function App() {
-
-
 
   const [user, setUser] = useState(
     {
@@ -50,17 +47,6 @@ function App() {
     }
   }
   );
-  // useEffect(() => {
-  //   localStorage.setItem('isLoggedIn', 'false')
-  // }, [])
-
-  // useEffect(() => {
-  //   const loggedIn = localStorage.getItem('isLoggedIn');
-  //   if (loggedIn == "false")
-  //   {
-  //     localStorage.setItem('isLoggedIn', 'true')
-  //   }
-  // }, [user.username])
 
   const login = user_det => {
     setUser({
@@ -77,9 +63,6 @@ function App() {
       isLoggedIn: true,
       firstLogg: true
     })
-
-
-    //console.log(user);
   }
 
   const logout = () => {
@@ -95,52 +78,12 @@ function App() {
     setLogged({
       isLoggedIn: false
     })
-
-
-
   }
-
-  console.log(isLoggedIn.isLoggedIn);
-  console.log(user);
-
-  // const [all_msg, setMsg] = useState([
-  //   {
-  //     id: 1,
-  //     from: "John",
-  //     text: "Did you know that Coca-Cola was originally green?",
-  //     isRead: false
-  //   },
-  //   {
-  //     id: 2,
-  //     from: "Anna",
-  //     text: "Are you free this weekend?",
-  //     isRead: true
-  //   },
-  //   {
-  //     id: 3,
-  //     from: "Bear",
-  //     text: "Somebody toucha ma spaghet! Was it you?",
-  //     isRead: true
-  //   }
-  // ])
-
-  // const [all_friends, setFriends] = useState([
-  //   {
-  //     name: "George"
-  //   },
-  //   {
-  //     name: "Bear"
-  //   },
-  //   {
-  //     name: "Anna"
-  //   }
-  // ])
-
+  
   // const deleteFriend = (name) => {
   //   setFriends(all_friends.filter((friend) => friend.name != name))
   //   // should be able to send something to the server here and delete from db also
   // }
-
 
   return (
     <div className="App">
@@ -155,16 +98,27 @@ function App() {
         }
         <Switch>
           <Route exact path="/register"> <Register /> </Route>
+          <Route exact path="/find"> <Find user={user} /> </Route>
+          <Route exact path="/profile/:username" > <OtherProfile /> </Route> 
           <Route exact path="/login">
-          {isLoggedIn.isLoggedIn ? (
-            <Redirect to="/profile"> </Redirect>
-          )
-          : (
-              <Login login={login}/>
+            {isLoggedIn.isLoggedIn ? (
+              <Redirect to="/profile"> </Redirect>
             )
-          }  
+              : (
+                <Login login={login} />
+              )
+            }
           </Route>
           <Route exact path="/profile"> <Profile user={user} logout={logout} /> </Route>
+          <Route exact path="/">
+            {isLoggedIn.isLoggedIn ? (
+              <Redirect to="/profile"> </Redirect>
+            )
+              : (
+                <Redirect to="/login"> </Redirect>
+              )
+            }
+          </Route>
         </Switch>
       </Router>
 

@@ -1,5 +1,5 @@
 const assert = require('assert');
-let server = require('../src/server/server');
+let server = require('../src/server/server.js');
 const { exit } = require('process');
 let databaseHandler = require('../src/server/database.js');
 
@@ -20,6 +20,7 @@ describe('POST for /register', () => {
                 res.should.have.status(200);
                 let obj = databaseHandler.find_user(query.username);
                 obj.then((r) => {
+                    console.log(r);
                     r.username.should.be.equal(query.username);
                     r.password.should.be.equal(query.password);
                     done();
@@ -38,6 +39,7 @@ describe('POST for /register', () => {
                 res.should.have.status(200);
                 let obj = databaseHandler.find_user(query.username);
                 obj.then((r) => {
+                    console.log(r)
                     r.username.should.be.equal(query.username);
                     r.password.should.be.equal(query.password);
                     done();
@@ -46,11 +48,11 @@ describe('POST for /register', () => {
     });
 });
 
-describe('POST for /', () => {
+describe('POST for /login', () => {
     it('Should have status code 200 and return correct user', (done) => {
         let query = { username: "Kasper", password: "123456" };
         chai.request(server)
-            .post('/')
+            .post('/login')
             .send(query)
             .then((res) => {
                 res.should.have.status(200);
@@ -64,11 +66,11 @@ describe('POST for /', () => {
     });
 });
 
-describe('POST for /', () => {
+describe('POST for /login', () => {
     it('Should have status code 401 and return null', (done) => {
         let query = { username: "Fredrik", password: "123456" };
         chai.request(server)
-            .post('/')
+            .post('/login')
             .send(query)
             .then((res) => {
                 res.should.have.status(401);
@@ -113,29 +115,28 @@ describe('PUT for /profile/fr', () => {
 });
 
 
-describe('POST for /profile', () => {
-    it('Should have status code 200, add message to John', (done) => {
-        const from = "John";
-        const text = "Hello there";
+// describe('POST for /profile', () => {
+//     it('Should have status code 200, add message to John', (done) => {
+//         const from = "John";
+//         const text = "Hello there";
 
-        const message = {text: text, from: from}
+//         const message = {text: text, from: from}
 
-        chai.request(server)
-            .post('/profile')
-            .send(message)
-            .then((res) => {
-                res.should.have.status(200);
-                let obj = databaseHandler.find_user(from);
-                obj.then((r) => {
-                    r.username.should.be.equal(from);
-                    r.message.should.be.equal(message);
-                    //console.log(r.message);
-                    done();
-                })
-                done();
-            })
-    });
-});
+//         chai.request(server)
+//             .post('/profile')
+//             .send(message)
+//             .then((res) => {
+//                 res.should.have.status(200);
+//                 let obj = databaseHandler.find_user(from);
+//                 obj.then((r) => {
+//                     r.username.should.be.equal(from);
+//                     r.message.should.be.equal(message);
+//                     //console.log(r.message);
+//                     done();
+//                 })
+//             })
+//     });
+// });
 
 // close database and exit app
 after(() => {

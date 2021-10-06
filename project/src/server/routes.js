@@ -76,6 +76,19 @@ router.post("/profile", (req, rsp) => {
     rsp.sendStatus(200);
 });
 
+router.get(/\/find\/.+/, (req,rsp) => {
+    
+    const user = req.url.split("/").pop();
+    const found_users = dbHandler.get_users(user);
+
+    found_users.then((res) => {
+        // const matches = res.filter(s => s.toLowerCase().includes(user.toLowerCase()));
+        console.log(res);
+        rsp.json(res);
+    })
+    
+})
+
 router.get("/friends", (req, rsp) => {
 
     // find friends
