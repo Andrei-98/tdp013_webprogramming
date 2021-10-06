@@ -5,8 +5,7 @@ function SearchRes({ msg, user }) {
 
     // const [status, setStatus] = useState(null);
 
-    function check_status()
-    {
+    function check_status() {
         if (is_friend()) {
             return "Friends";
         }
@@ -23,10 +22,12 @@ function SearchRes({ msg, user }) {
 
     function is_friend() {
         if (user.friends.includes(msg)) {
+            // console.log(msg);
+            // console.log(user.friends);
+
             return true;
         }
-        else 
-        {
+        else {
             return false;
         }
     }
@@ -51,14 +52,31 @@ function SearchRes({ msg, user }) {
 
     return (
         <div>
-            <div className="clickable-profile">
-                <Link to={`/profile/${msg}`} params={{ username: msg }}>
-                    {/* <button className="friend_button">{check_status()}</button> */}
+            {is_friend() ? (
+                <div className="clickable-profile">
+                    <Link to={`/profile/${msg}`}>
+                        {/* <button className="friend_button">{check_status()}</button> */}
+                        {/* <p>Sent request: {sent_req()}</p>
+                    <p>Received request: {received_req()}</p> */}
+                        <p>{msg}</p>
+                    </Link>
+                </div>
+            )
+                : (
+                    <div className="clickable-profile">
+                        <button className="Add-btn">Add friend</button>
+                        <p>{msg}</p>
+                    </div>
+                )
+            }
+            {/* <div className="clickable-profile">
+                <Link to={`/profile/${msg}`}>
+                    {/* <button className="friend_button">{check_status()}</button> 
                     {/* <p>Sent request: {sent_req()}</p>
-                        <p>Received request: {received_req()}</p> */}
+                        <p>Received request: {received_req()}</p> 
                     <p>{msg}</p>
                 </Link>
-            </div>
+            </div> */}
 
         </div>
     )

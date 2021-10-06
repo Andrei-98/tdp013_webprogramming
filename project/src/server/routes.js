@@ -68,9 +68,10 @@ router.put("/profile/fr", (req, rsp) => {
 router.post("/profile", (req, rsp) => {
     const content = req.body.content;
     const from = req.body.from;
-    let message = { "content": content, "from": from }
+    const to = req.body.to;
+    let message = { "content": content, "from": from, "to" : to }
     console.log(message)
-    dbHandler.insert_message(message, from)
+    dbHandler.insert_message(message, to)
     rsp.sendStatus(200);
 });
 

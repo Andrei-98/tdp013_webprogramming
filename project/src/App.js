@@ -10,7 +10,10 @@ import { Redirect } from "react-router";
 import Find from "./components/Find"
 import OtherProfile from "./components/OtherProfile"
 
+
 function App() {
+
+
 
   const [user, setUser] = useState(
     {
@@ -85,6 +88,8 @@ function App() {
   //   // should be able to send something to the server here and delete from db also
   // }
 
+  
+
   return (
     <div className="App">
 
@@ -99,7 +104,7 @@ function App() {
         <Switch>
           <Route exact path="/register"> <Register /> </Route>
           <Route exact path="/find"> <Find user={user} /> </Route>
-          <Route exact path="/profile/:username" > <OtherProfile /> </Route> 
+          <Route exact path="/profile/:username"> <Profile from={user.username} /> </Route> 
           <Route exact path="/login">
             {isLoggedIn.isLoggedIn ? (
               <Redirect to="/profile"> </Redirect>
@@ -109,7 +114,7 @@ function App() {
               )
             }
           </Route>
-          <Route exact path="/profile"> <Profile user={user.username} logout={logout} /> </Route>
+          <Route exact path="/profile"> <Profile to={user.username}/> </Route>
           <Route exact path="/">
             {isLoggedIn.isLoggedIn ? (
               <Redirect to="/profile"> </Redirect>

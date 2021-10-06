@@ -2,13 +2,13 @@ import React from 'react'
 import Button from 'react-bootstrap/Button'
 import { useState } from 'react'
 
-function MessageBox({ from, onAdd }) {
+function MessageBox({ to, from, onAdd }) {
 
     const [content, setContent] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        const msg = { content, from }
+        const msg = { content, to, from }
         onAdd(msg)
         setContent('')
     }

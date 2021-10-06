@@ -26,10 +26,9 @@ function Find({ user }) {
         }) 
     }
 
-    console.log(users);
-    console.log("HELLP");
 
     return (  
+
         <div>
             <form method="GET" onSubmit={handleSubmit}>
                 <input type="text" placeholder="Find user"></input>

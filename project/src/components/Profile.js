@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import MessageBox from './MessageBox'
 import Navigation from './Navigation.js'
 
-function Profile({ user, logout }) {
+function Profile({from, to=window.location.pathname.split("/").pop()}) {
 
     const [messages, setMessages] = useState([])
     const [friends, setFriends] = useState([])
@@ -20,12 +20,12 @@ function Profile({ user, logout }) {
         
         
         getProfile()
-    }, [user])
+    }, [to])
 
     
     // Fetch Messages
     const fetchMessages = async () => {
-        const res = await fetch(`http://localhost:9070/messages/${user}`)
+        const res = await fetch(`http://localhost:9070/messages/${to}`)
         const data = await res.json()
         return data
     }
@@ -46,15 +46,15 @@ function Profile({ user, logout }) {
 
     // Fetch Friend List
     const fetchFriends = async () => {
-        const res = await fetch(`http://localhost:9070/friends/${user}`)
+        const res = await fetch(`http://localhost:9070/friends/${to}`)
         const data = await res.json()
         return data
     }
 
     return (
         <div>
-            <h1>{user}</h1>
-            <MessageBox from={user} onAdd={addMessage} />
+            <h1>{to}</h1>
+            <MessageBox to={to} from={from} onAdd={addMessage} />
             <div className="profile-container">
                 {friends && <FriendList friends={friends} />}
                 {messages && <MessageList messages={messages} />}
