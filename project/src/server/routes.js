@@ -47,7 +47,7 @@ router.post("/register", (req, rsp) => {
 
     const user = {
         username: req.body.username, password: req.body.password,
-        "sent_req": [], "received_req": [], "friends": ["Andrei", "Lala", "Raul", "Bill"], "messages": []
+        "sent_req": [], "received_req": ["Kasper", "Yololo", "Zenos"], "friends": ["Andrei", "Lala", "Raul", "Bill", "John"], "messages": []
     };
     dbHandler.add_user(user);
     rsp.sendStatus(200);

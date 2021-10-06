@@ -114,7 +114,7 @@ function App() {
               )
             }
           </Route>
-          <Route exact path="/profile"> <Profile to={user.username}/> </Route>
+          <Route exact path="/profile"> <Profile to={user.username} user={user.received_req}/> </Route>
           <Route exact path="/">
             {isLoggedIn.isLoggedIn ? (
               <Redirect to="/profile"> </Redirect>
