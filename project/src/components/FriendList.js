@@ -1,11 +1,12 @@
+import React from "react"
 import Friend from "./Friend"
 
-function FriendList({ all_friends }) {
+function FriendList({ friends }) {
+
     return (
         <div className="friends-list-container">
-            {console.log(all_friends)}
 
-            {all_friends.map((friend) => (
+            {friends.map((friend) => (
                 <Friend friend={friend} key={String(friend)} />
             ))
             }

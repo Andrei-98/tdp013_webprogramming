@@ -115,12 +115,38 @@ describe('PUT for /profile/fr', () => {
 });
 
 
-// describe('POST for /profile', () => {
+describe('POST for /profile from logged in user', () => {
+    it('Should have status code 200, add message to John', (done) => {
+        const from = "John";
+        const content = "Hello there";
+
+        const message = {content: content, from: from}
+
+        chai.request(server)
+            .post('/profile')
+            .send(message)
+            .then((res) => {
+                res.should.have.status(200);
+                let obj = databaseHandler.find_user(from);
+                obj.then((r) => {
+                    r.username.should.be.equal(from);
+                    r.messages.should.be.equal(message)
+                    console.log(r.messages)
+                    done();
+                })
+                //databaseHandler.dropColl()
+                done();
+            })
+    });
+});
+
+
+// describe('POST to friend /profile/Andrei from user logged in as John', () => {
 //     it('Should have status code 200, add message to John', (done) => {
 //         const from = "John";
-//         const text = "Hello there";
+//         const content = "Hello there";
 
-//         const message = {text: text, from: from}
+//         const message = {content: content, from: from}
 
 //         chai.request(server)
 //             .post('/profile')
@@ -130,13 +156,28 @@ describe('PUT for /profile/fr', () => {
 //                 let obj = databaseHandler.find_user(from);
 //                 obj.then((r) => {
 //                     r.username.should.be.equal(from);
-//                     r.message.should.be.equal(message);
-//                     //console.log(r.message);
+//                     r.messages.should.be.equal(message)
+//                     console.log(r.messages)
 //                     done();
 //                 })
+//                 //databaseHandler.dropColl()
+//                 done();
 //             })
 //     });
-// });
+// })
+
+// TODO TESTS
+// test get friends
+// test get messages 
+// test to post to nonexistet user --fail
+// test for post to nonfriend --ok
+// test for post with 0 chars --fail
+// register user with nonmatching passwords --fail
+// register user with username already take --fail
+// ? test to post to a friend profile as a different person
+// ----client side 
+// log in to existing user but wrong password
+// log in to non-existing user
 
 // close database and exit app
 after(() => {

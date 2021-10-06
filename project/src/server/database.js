@@ -24,7 +24,23 @@ async function dropColl() {
 
 
 async function insert_message(message, user) {
-  dbm.collection(coll).updateOne({ "username": user }, { $push: { "messages": message } });
+  dbm.collection(coll).updateOne({ "username": user },
+    {
+      $push: {
+        "messages": {
+          $each: [message], 
+          $position: 0
+        }
+      }
+    });
+}
+
+
+async function get_data_from(from) {
+  let user = dbm.collection(coll).findOne({ "username": from })
+  return user
+
+
 }
 
 function add_user(user) {
@@ -74,5 +90,5 @@ async function find_all() {
 
 module.exports = {
   startDbConn, closeDb, dropColl, insert_message, find_message,
-  update_message, find_all, add_user, find_user, sign_in, send_friend_request, accept_friend, get_users
+  update_message, find_all, add_user, find_user, sign_in, send_friend_request, accept_friend, get_users ,get_data_from
 };

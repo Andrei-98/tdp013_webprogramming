@@ -2,7 +2,6 @@
 //  /profile/username
 //  /friends
 //  /chat
-let ObjectId = require('mongodb').ObjectID
 
 let express = require('express');
 let router = express.Router();
@@ -48,7 +47,7 @@ router.post("/register", (req, rsp) => {
 
     const user = {
         username: req.body.username, password: req.body.password,
-        "sent_req": [], "received_req": [], "friends": [], "messages": ["hello", "welcome"]
+        "sent_req": [], "received_req": [], "friends": ["Andrei", "Lala", "Raul", "Bill"], "messages": []
     };
     dbHandler.add_user(user);
     rsp.sendStatus(200);
@@ -67,12 +66,11 @@ router.put("/profile/fr", (req, rsp) => {
 });
 
 router.post("/profile", (req, rsp) => {
-    console.log("------------")
     const content = req.body.content;
     const from = req.body.from;
     let message = { "content": content, "from": from }
+    console.log(message)
     dbHandler.insert_message(message, from)
-
     rsp.sendStatus(200);
 });
 
@@ -89,8 +87,18 @@ router.get(/\/find\/.+/, (req,rsp) => {
     
 })
 
-router.get("/friends", (req, rsp) => {
 
+//Get friends of specific user
+router.get(/\/friends\/.+/, (req, rsp) => {
+    console.log("--------fetching friends")
+    const friend = String(req.url.split("/").slice(-1).pop());
+    let friends = dbHandler.get_data_from(friend)
+    friends
+    .then((res) => {
+        console.log(res.friends)
+        rsp.json(res.friends)
+    })
+    .catch((e) => console.log(e))
     // find friends
 });
 
@@ -99,8 +107,16 @@ router.get("/chat", (req, rsp) => {
     // chatting, if time
 });
 
-
-router.get("/profile/messages", (req, rsp) => {
+// Get messages of specific user
+router.get(/\/messages\/\w+/, (req, rsp) => {
+    console.log("----fetching messages")
+    const user = String(req.url.split("/").slice(-1).pop());
+    let messages = dbHandler.get_data_from(user)
+    messages
+    .then((res) => {
+        rsp.json(res.messages)
+    })
+    .catch((e) => console.log(e))
 });
 
 

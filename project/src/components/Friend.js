@@ -5,10 +5,10 @@ function Friend({ friend }) {
     return (
         <div className="friend-container">
             <span>{friend}</span>
-            <FaTimes
+            {/* <FaTimes
                 style={{ color: 'red', cursor: 'pointer'}}
                 //onClick={() => onDelete(friend.name)}
-            />
+            /> */}
         </div>
     )
 }
