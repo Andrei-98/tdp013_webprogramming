@@ -10,7 +10,6 @@ function MessageBox({ from, onAdd }) {
         e.preventDefault()
         const msg = { content, from }
         onAdd(msg)
-        console.log("hiii i should be resetted")
         setContent('')
     }
 

@@ -6,21 +6,23 @@ import MessageBox from './MessageBox'
 function Profile({ user }) {
 
     const [messages, setMessages] = useState([])
+    const [friends, setFriends] = useState([])
 
     useEffect(() => {
-        const getMessages = async () => {
+        const getProfile = async () => {
+            const serverFriends = await fetchFriends()
+            setFriends(serverFriends)
             const serverMessages = await fetchMessages()
             setMessages(serverMessages)
         }
-        getMessages()
+
+        getProfile()
     }, [])
 
     
     // Fetch Messages
     const fetchMessages = async () => {
-        console.log("MESSAGES HAVE BEEN FETCHED")
-        console.log(user)
-        const res = await fetch(`http://localhost:9070/profile/${user}`)
+        const res = await fetch(`http://localhost:9070/messages/${user}`)
         const data = await res.json()
         return data
     }
@@ -35,17 +37,23 @@ function Profile({ user }) {
         })
         setMessages([msg, ...messages])
         const data = await res.json()
-
         // setMessages([...messages, data])
     }
 
+
+    // Fetch Friend List
+    const fetchFriends = async () => {
+        const res = await fetch(`http://localhost:9070/friends/${user}`)
+        const data = await res.json()
+        return data
+    }
 
     return (
         <div>
             <h1>John</h1>
             <MessageBox from="John" onAdd={addMessage} />
             <div className="profile-container">
-                {/* <FriendList all_friends={user.friends}  /> */}
+                {friends && <FriendList friends={friends} />}
                 {messages && <MessageList messages={messages} />}
             </div>
         </div>

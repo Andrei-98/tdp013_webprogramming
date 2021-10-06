@@ -37,8 +37,8 @@ async function insert_message(message, user) {
 }
 
 
-async function get_messages_from(from) {
-  let user = dbm.collection(coll).findOne({ "username": from }, { messages: 1 })
+async function get_data_from(from) {
+  let user = dbm.collection(coll).findOne({ "username": from })
   return user
 
 
@@ -86,6 +86,6 @@ async function find_all() {
 
 
 module.exports = {
-  startDbConn, closeDb, dropColl, insert_message, get_messages_from, find_message,
+  startDbConn, closeDb, dropColl, insert_message, get_data_from, find_message,
   update_message, find_all, add_user, find_user, sign_in, send_friend_request, accept_friend
 };
