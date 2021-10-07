@@ -31,18 +31,18 @@ function App() {
 
   function update() {
     fetch('http://localhost:9070/update', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            json:true,
-            body: JSON.stringify( { "username": user.username} )
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      json: true,
+      body: JSON.stringify({ "username": user.username })
+    })
+      .then((response) => {
+        let stream = response.text();
+
+        stream.then((res) => {
+          login(JSON.parse(res));
         })
-        .then((response) => {
-            let stream = response.text();
-            
-            stream.then((res) => {
-                login(JSON.parse(res));                
-            })
-        }) 
+      })
   }
 
   window.addEventListener('load', (event) => {
@@ -96,7 +96,15 @@ function App() {
       isLoggedIn: false
     })
   }
-  
+
+  const isFriend = () => {
+
+    const to = window.location.pathname.split("/").pop()
+    console.log("in isfriend")
+    console.log(user.friends.includes(to))
+    return user.friends.includes(to)
+  }
+
 
   return (
     <div className="App">
@@ -111,8 +119,14 @@ function App() {
         }
         <Switch>
           <Route exact path="/register"> <Register /> </Route>
-          <Route exact path="/find"> <Find user={user} update={update} username={user.username}/> </Route>
-          <Route exact path="/profile/:username"> <Profile from={user.username} showRequests={false}/> </Route> 
+          <Route exact path="/find"> <Find user={user} update={update} username={user.username} /> </Route>
+          {/* {isFriend() ? (<Route exact path="/profile/:username"> <Profile from={user.username} showRequests={false} /> </Route>
+          )
+            : (<Redirect to={"/notworking"}></Redirect>
+          )} */}
+
+          {isFriend() && <Route exact path="/profile/:username"> <Profile from={user.username} showRequests={false} /> </Route>}
+
           <Route exact path="/login">
             {isLoggedIn.isLoggedIn ? (
               <Redirect to="/profile"> </Redirect>
@@ -122,7 +136,7 @@ function App() {
               )
             }
           </Route>
-          <Route exact path="/profile"> <Profile from={user.username} to={user.username} showRequests={true}/> </Route>
+          <Route exact path="/profile"> <Profile from={user.username} to={user.username} showRequests={true} /> </Route>
           <Route exact path="/">
             {isLoggedIn.isLoggedIn ? (
               <Redirect to="/profile"> </Redirect>
