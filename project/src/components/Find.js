@@ -1,14 +1,33 @@
-import { updateExpression } from '@babel/types';
 import React from 'react'
 import { useState, useEffect } from 'react'
-import Message from './Message';
 import SearchRes from './SearchRes';
+import FriendList from './FriendList.js'
 
 function Find({ user, update }) {
 
-    const [users, setUsers] = useState(null);
 
-    const [hasData, setData] = useState(false);
+    const [users, setUsers] = useState(null)
+
+    const [hasData, setData] = useState(false)
+    const [friends, setFriends] = useState([])
+
+    useEffect(() => {
+        const getProfile = async () => {
+            const serverFriends = await fetchFriends()
+            setFriends(serverFriends)
+        }
+        
+        
+        getProfile()
+    }, [user])
+
+    const fetchFriends = async () => {
+        console.log(user.username)
+        const res = await fetch(`http://localhost:9070/friends/${user.username}`)
+        const data = await res.json()
+        return data
+    }
+
 
     const handleSubmit = e => {
         e.preventDefault(); 
@@ -39,6 +58,7 @@ function Find({ user, update }) {
                 {hasData && users.map((us) => (
                     <SearchRes msg={us.username} user={user} update={update} className="msg"/>))}
             </div>
+            {friends && <FriendList friends={friends} />}
         </div>  
     );
 }

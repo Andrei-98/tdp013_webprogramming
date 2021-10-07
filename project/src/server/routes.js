@@ -66,7 +66,8 @@ router.post("/register", (req, rsp) => {
     let user_exist = dbHandler.get_user(req.body.username);
     
     user_exist.then((res) => {
-        if (res == null) {
+        console.log(res)
+        if (res.length == 0) {
             const user = {
                 username: req.body.username, password: req.body.password,
                 "sent_req": [], "received_req": [], "friends": [], "messages": []

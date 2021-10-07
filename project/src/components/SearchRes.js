@@ -22,9 +22,6 @@ function SearchRes({ msg, user, update }) {
 
     function is_friend() {
         if (user.friends.includes(msg)) {
-            // console.log(msg);
-            // console.log(user.friends);
-
             return true;
         }
         else {
@@ -34,8 +31,6 @@ function SearchRes({ msg, user, update }) {
 
     function sent_req() {
         if (user.sent_req.includes(msg)) {
-            console.log(user.sent_req)
-            console.log(msg);
             return true
         }
         else {

@@ -1,4 +1,6 @@
 import React from 'react'
+import { FcCheckmark } from "react-icons/fc"
+
 
 function Request({sender, target, onAdd}) {
 
@@ -12,7 +14,8 @@ function Request({sender, target, onAdd}) {
         <div>
             <p>Friend Requests</p>
             <p>{sender}</p>
-            <button onClick={handleClick}>Add</button>
+            <FcCheckmark onClick={handleClick} style={{ cursor: 'pointer'}} />
+            {/* <button onClick={handleClick}>Add</button> */}
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import FriendList from './FriendList.js'
+
 import MessageList from './MessageList'
 import { useState, useEffect } from 'react'
 import MessageBox from './MessageBox'
@@ -8,14 +8,12 @@ import FriendRequests from './FriendRequests.js'
 function Profile({from, to=window.location.pathname.split("/").pop()}) {
 
     const [messages, setMessages] = useState([])
-    const [friends, setFriends] = useState([])
     const [friendRequests, setFriendRequests] = useState([])
+
 
 
     useEffect(() => {
         const getProfile = async () => {
-            const serverFriends = await fetchFriends()
-            setFriends(serverFriends)
             const serverMessages = await fetchMessages()
             setMessages(serverMessages)
             const serverRequests = await fetchRequests()
@@ -82,7 +80,7 @@ function Profile({from, to=window.location.pathname.split("/").pop()}) {
             <h1>{to}</h1>
             <MessageBox to={to} from={from} onAdd={addMessage} />
             <div className="profile-container">
-                {friends && <FriendList friends={friends} />}
+                
                 {friendRequests && <FriendRequests requests={friendRequests} target={to} onAdd={addFriend}/>}
                 {messages && <MessageList messages={messages} />}
             </div>

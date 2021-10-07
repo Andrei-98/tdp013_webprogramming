@@ -49,7 +49,7 @@ function App() {
 
   window.addEventListener('load', (event) => {
     const signed_in = localStorage.getItem("isLoggedIn");
-    if (signed_in == 'true') {
+    if (signed_in === 'true') {
       const user_storage = JSON.parse(localStorage.getItem('user'));
 
       setUser({
@@ -119,7 +119,7 @@ function App() {
         }
         <Switch>
           <Route exact path="/register"> <Register /> </Route>
-          <Route exact path="/find"> <Find user={user} update={update} /> </Route>
+          <Route exact path="/find"> <Find user={user} update={update} username={user.username}/> </Route>
           <Route exact path="/profile/:username"> <Profile from={user.username} /> </Route> 
           <Route exact path="/login">
             {isLoggedIn.isLoggedIn ? (
@@ -130,7 +130,7 @@ function App() {
               )
             }
           </Route>
-          <Route exact path="/profile"> <Profile from={user.username} to={user.username} user={user.received_req} setUser={setUser}/> </Route>
+          <Route exact path="/profile"> <Profile from={user.username} to={user.username}/> </Route>
           <Route exact path="/">
             {isLoggedIn.isLoggedIn ? (
               <Redirect to="/profile"> </Redirect>
