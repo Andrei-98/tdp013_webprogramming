@@ -4,14 +4,15 @@ import Link from 'react-router-dom/Link';
 import {useState} from "react";
 function Register() {
 
-    const [errorPass, setError] = useState(false);
-    const [errorName, setNameError] = useState(false);
+    const [error, setError] = useState('')
 
     const handleSubmit = e => {
         e.preventDefault();
 
         if (e.target[1].value === e.target[2].value && e.target[1].value.length >= 1 && e.target[0].value.length >= 1 && e.target[2].value.length >= 1 )
         {
+            console.log("1 val")
+            console.log(e.target[1].value)
             fetch('http://localhost:9070/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -21,9 +22,11 @@ function Register() {
              
                 if(response.status === 409)
                 {
-                    setNameError(errorName => true);
+                    setError("Username is already in use.")
+                } else if (response.status === 400) {
+                    setError("Forbidden characters detected, your input is either ${} or a JSON string.")
                 }
-                else {
+                 else {
                     e.target[0].value = "";
                     e.target[1].value = "";
                     e.target[2].value = "";
@@ -31,44 +34,25 @@ function Register() {
                 
                 return response.status;
             })
-        }
-        else
+        } else
         {
-            setError(errorPass => true);
+            setError("Passwords must match and they cannot be empty.")
         }
     }
 
-    function clearName() {
-        setNameError(errorName => false);
-    }
-    function clearPass() {
-        setError(errorPass => false);
-    }
+    const resetError = () => {setError(error => "")}
 
     return (
         <div>
             <form method="post" className="register" onSubmit={handleSubmit}>
-                <input type="text" onInput={clearName} id="uname3" placeholder="Username"></input>
-                <input type="password" id="pword1" onInput={clearPass} placeholder="Password"></input>
-                <input type="password" id="pword2" placeholder="Password"></input> 
+                <input type="text" onInput={resetError} id="uname3" placeholder="Username"></input>
+                <input type="password" id="pword1" onInput={resetError} placeholder="Password"></input>
+                <input type="password" id="pword2" onInput={resetError} placeholder="Password"></input> 
                 <Button type="submit" />
             </form>
 
             <Link to="./login">Log in again</Link>
-            {!errorPass ? (
-                    null
-                ) :
-                (
-                    <p>Passwords must match</p>
-                )
-            }
-              {!errorName ? (
-                    null
-                ) :
-                (
-                    <p>Username is already in use</p>
-                )
-            }
+            <span>{error}</span>
         </div>
        )
 }

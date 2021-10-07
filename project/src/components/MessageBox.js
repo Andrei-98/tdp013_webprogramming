@@ -5,13 +5,49 @@ import { useState } from 'react'
 function MessageBox({ to, from, onAdd }) {
 
     const [content, setContent] = useState('');
+    const [failed, setFailed] = useState('');
+
+    function IsJsonString(str) {
+        try {
+            str = JSON.parse(str);
+            if (typeof str === "object") {
+                return true;
+            }
+        } catch (e) {
+            return false;
+        }
+        return false;
+    }
+
+
+    const verifyMessage = (text) => {
+        if (text.length == 0 || text.length > 140) {
+            setFailed("Enter between 1 and 140 characters!");
+            return false;
+        } else if (!!text.match(/\$.*\{.*\}/)) {
+            //not allowed ${console.log(content)}
+            setFailed("Forbidden ${} notation not allowed!");
+            return false;
+        } else if (IsJsonString(text)) {
+            // not allowed : {"content": "this"}
+            setFailed("Forbidden syntax. Cannot send JSON object!");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        const msg = { content, to, from }
-        onAdd(msg)
-        setContent('')
+        if (verifyMessage(content)) {
+            const msg = { content, to, from }
+            onAdd(msg)
+            setContent('')
+            setFailed('')
+        }
     }
+
 
     return (
         <div>
@@ -22,6 +58,7 @@ function MessageBox({ to, from, onAdd }) {
                 </textarea>
                 <Button variant="primary" id="message-box-send-btn" type="submit">Send</Button>{' '}
             </form>
+            <span>{failed}</span>
         </div>
     )
 }

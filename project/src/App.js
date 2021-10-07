@@ -105,7 +105,6 @@ function App() {
     return user.friends.includes(to)
   }
 
-
   return (
     <div className="App">
 
@@ -137,7 +136,7 @@ function App() {
               )
             }
           </Route>
-          <Route exact path="/profile"> <Profile from={user.username} to={user.username} showRequests={true} /> </Route>
+          {isLoggedIn.isLoggedIn && <Route exact path="/profile"> <Profile from={user.username} to={user.username} showRequests={true} /> </Route>}
           <Route exact path="/">
             {isLoggedIn.isLoggedIn ? (
               <Redirect to="/profile"> </Redirect>

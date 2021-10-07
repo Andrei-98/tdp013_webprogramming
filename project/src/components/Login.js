@@ -5,18 +5,13 @@ import { useHistory } from "react-router-dom";
 
 function Login({login}) {
 
-    const history = useHistory();
-    const [user, setUser] = useState({username : "", password : ""});
-    const [error, setError] = useState(false);
+    const history = useHistory()
+    const [user, setUser] = useState({username : "", password : ""})
+    const [error, setError] = useState(false)
 
     const submitHandler = e => {
         e.preventDefault(); 
-        // login({username : "Kasper",
-        // password : "123",
-        // sent_req : [],
-        // received_req : [],
-        // friends : ["Andrei"],
-        // messages : ["Hello"]})
+
         fetch('http://localhost:9070/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -26,10 +21,14 @@ function Login({login}) {
         .then((response) => {
             let stream = response.text();
             stream.then((res) => {
+                console.log(res)
                 if (res === "Unauthorized")
                 {
-                    setError(error => true)
+                    setError("Wrong password or name.")
                     return;
+                } else if (res === "Bad Request") {
+
+                    setError("Forbidden characters detected, your input is either ${} or a JSON string.")
                 }
                 else {
                     login(JSON.parse(res));
@@ -39,7 +38,7 @@ function Login({login}) {
         }) 
     }
     function clearError() {
-        setError(error => false);
+        setError("")
     }
 
     return (
@@ -52,13 +51,7 @@ function Login({login}) {
                 </form>
                
                 <Link to="/register">Register</Link>
-                {!error ? (
-                    null
-                ) :
-                (
-                    <p>No account with that input.</p>
-                )
-                }
+                <span>{error}</span>
             </div>
     )
 }

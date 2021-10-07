@@ -11,24 +11,37 @@ let dbHandler = require('./database.js');
 
 
 // router.use((req, res, next) => {
-//     // validate request
-//     next;
-// });
+//     let requestStatus = errorHandler.validateRequest(req.method, req.path);
+
+//     if (requestStatus == 200)
+//     {
+//         next();
+//     }
+//     else
+//     {
+//         res.sendStatus(requestStatus);
+//     }
+// })
 
 router.post("/login", (req, rsp) => {
+    //console.log(errorHandler.validate_string(req.body.username, req.body.password))
 
-    // log in
-    //const username = req.url.split("/").slice(-1).pop();
+    if (errorHandler.validate_string(req.body.username, req.body.password)) {
+        const user = { username: req.body.username, password: req.body.password };
+        const status = dbHandler.sign_in(user);
+        status.then((res) => {
+            if (res != null) {
+                rsp.json(res);
+            }
+            else
+                rsp.sendStatus(401);
+        })
+    } else {
+        // request is malicious or invalid
+        rsp.sendStatus(400);
+    }
 
-    const user = { username: req.body.username, password: req.body.password };
-    const status = dbHandler.sign_in(user);
-    status.then((res) => {
-        if (res != null) {
-            rsp.json(res);
-        }
-        else
-            rsp.sendStatus(401);
-    })
+
 
 });
 
@@ -37,69 +50,96 @@ router.post("/update", (req, rsp) => {
     // log in
     //const username = req.url.split("/").slice(-1).pop();
 
-    const user = { username: req.body.username };
-    const status = dbHandler.find_user(user);
-    status.then((res) => {
-        if (res != null) {
-            rsp.json(res);
-        }
-        else
-            rsp.sendStatus(401);
-    })
+    if (errorHandler.validate_string(req.body.username)) {
 
+        const user = { username: req.body.username };
+        const status = dbHandler.find_user(user);
+        status.then((res) => {
+            if (res != null) {
+                rsp.json(res);
+            }
+            else
+                rsp.sendStatus(401);
+        })
+    } else {
+        // request is malicious or invalid
+        rsp.sendStatus(400);
+    }
 });
+
 
 router.post("/find", (req, rsp) => {
 
-    const friend_target = req.body.receiver;
-    const friend_requester = req.body.sender;
+    if (errorHandler.validate_string(req.body.receiver, req.body.sender)) {
+
+        const friend_target = req.body.receiver;
+        const friend_requester = req.body.sender;
 
 
-    dbHandler.send_friend_request(friend_requester, friend_target);
-    rsp.sendStatus(200);
+        dbHandler.send_friend_request(friend_requester, friend_target);
+        rsp.sendStatus(200);
+    } else {
+        // request is malicious or invalid
+        rsp.sendStatus(400);
+    }
 });
+
 
 router.post("/register", (req, rsp) => {
 
     // register
+    if (errorHandler.validate_string(req.body.username, req.body.password)) {
+        let user_exist = dbHandler.get_user(req.body.username);
 
-    let user_exist = dbHandler.get_user(req.body.username);
-    
-    user_exist.then((res) => {
-        console.log(res)
-        if (res.length == 0) {
-            const user = {
-                username: req.body.username, password: req.body.password,
-                "sent_req": [], "received_req": [], "friends": [], "messages": []
-            };
-            dbHandler.add_user(user);
-            rsp.sendStatus(200);
-        }
-        else {
-            rsp.sendStatus(409);
-        }
-    })
+        user_exist.then((res) => {
+            console.log(res)
+            if (res.length == 0) {
+                const user = {
+                    username: req.body.username, password: req.body.password,
+                    "sent_req": [], "received_req": [], "friends": [], "messages": []
+                };
+                dbHandler.add_user(user);
+                rsp.sendStatus(200);
+            }
+            else {
+                rsp.sendStatus(409);
+            }
+        })
+    } else {
+        // request is malicious or invalid
+        rsp.sendStatus(400);
+    }
 });
 
 router.put("/find", (req, rsp) => {
+    if (errorHandler.validate_string(req.body.receiver, req.body.sender)) {
 
-    const friend_target = req.body.receiver;
-    const friend_requester = req.body.sender;
+        const friend_target = req.body.receiver;
+        const friend_requester = req.body.sender;
 
 
-    dbHandler.accept_friend(friend_requester, friend_target);
-    rsp.sendStatus(200);
+        dbHandler.accept_friend(friend_requester, friend_target);
+        rsp.sendStatus(200);
+    } else {
+        // request is malicious or invalid
+        rsp.sendStatus(400);
+    }
 });
 
 
 router.put("/profile/", (req, rsp) => {
-    const sender = req.body.sender
-    const target = req.body.target
+    if (errorHandler.validate_string(req.body.sender, req.body.target)) {
+        const sender = req.body.sender
+        const target = req.body.target
 
-    dbHandler.accept_friend(sender, target)
+        dbHandler.accept_friend(sender, target)
+    } else {
+        // request is malicious or invalid
+        rsp.sendStatus(400);
+    }
 });
 
-
+// Get friend request of specific user.
 router.get(/\/fr\/.+/, (req, rsp) => {
     const friend_requests_for = String(req.url.split("/").slice(-1).pop());
     let requests = dbHandler.get_data_from(friend_requests_for)
@@ -119,13 +159,18 @@ router.get(/\/fr\/.+/, (req, rsp) => {
 
 
 router.post("/profile", (req, rsp) => {
-    const content = req.body.content;
-    const from = req.body.from;
-    const to = req.body.to;
-    let message = { "content": content, "from": from, "to": to }
+    if (errorHandler.validate_string(req.body.sender, req.body.target)) {
+        const content = req.body.content;
+        const from = req.body.from;
+        const to = req.body.to;
+        let message = { "content": content, "from": from, "to": to }
 
-    dbHandler.insert_message(message, to)
-    rsp.sendStatus(200);
+        dbHandler.insert_message(message, to)
+        rsp.sendStatus(200);
+    } else {
+        // request is malicious or invalid
+        rsp.sendStatus(400);
+    }
 });
 
 router.get(/\/find\/.+/, (req, rsp) => {
@@ -164,7 +209,7 @@ router.get("/chat", (req, rsp) => {
 });
 
 // Get messages of specific user
-router.get(/\/messages\/\w+/, (req, rsp) => {
+router.get(/\/messages\/.+/, (req, rsp) => {
     console.log("----fetching messages")
     const user = String(req.url.split("/").slice(-1).pop());
     let messages = dbHandler.get_data_from(user)

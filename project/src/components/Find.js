@@ -10,10 +10,10 @@ function Find({ user, update }) {
 
     const [hasData, setData] = useState(false)
     const [friends, setFriends] = useState([])
+    const [error, setError] = useState("")
 
     useEffect(() => {
         const fetchFriends = async () => {
-            console.log(user.username)
             const res = await fetch(`http://localhost:9070/friends/${user.username}`)
             const data = await res.json()
             return data
@@ -28,10 +28,8 @@ function Find({ user, update }) {
     }, [user])
 
 
-
-
     const handleSubmit = e => {
-        e.preventDefault(); 
+        e.preventDefault(e.target[0].value); 
 
         fetch('http://localhost:9070/find/' + e.target[0].value, {
             method: 'GET',
@@ -39,6 +37,9 @@ function Find({ user, update }) {
         .then((response) => {
             let stream = response.text();
             stream.then((res) => {
+                if (res.length === 2) {
+                    setError("No users with that name.")
+                }
                 res = JSON.parse(res);
                 setUsers(users => res);
                 setData(hasData => true);
@@ -46,18 +47,20 @@ function Find({ user, update }) {
         }) 
     }
 
+    const resetError = () => {setError(error => "")}
 
     return (  
 
         <div>
             <form method="GET" onSubmit={handleSubmit}>
-                <input type="text" placeholder="Find user"></input>
+                <input type="text" placeholder="Find user" onInput={resetError}></input>
                 <input type="submit" value="Find"></input>
             </form>
 
             <div className="search_list">
                 {hasData && users.map((us) => (
                     <SearchRes msg={us.username} user={user} update={update} className="msg"/>))}
+                <span>{error}</span>
             </div>
             {friends && <FriendList friends={friends} />}
         </div>  
