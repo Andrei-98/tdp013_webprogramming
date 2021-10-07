@@ -130,7 +130,7 @@ function App() {
               )
             }
           </Route>
-          <Route exact path="/profile"> <Profile from={user.username} to={user.username}/> </Route>
+          <Route exact path="/profile"> <Profile from={user.username} to={user.username} user={user.received_req} setUser={setUser}/> </Route>
           <Route exact path="/">
             {isLoggedIn.isLoggedIn ? (
               <Redirect to="/profile"> </Redirect>

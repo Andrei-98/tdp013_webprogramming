@@ -23,7 +23,7 @@ router.post("/login", (req, rsp) => {
     const user = { username: req.body.username, password: req.body.password };
     const status = dbHandler.sign_in(user);
     status.then((res) => {
-        if(res != null){
+        if (res != null) {
             rsp.json(res);
         }
         else
@@ -37,10 +37,10 @@ router.post("/update", (req, rsp) => {
     // log in
     //const username = req.url.split("/").slice(-1).pop();
 
-    const user = { username: req.body.username};
+    const user = { username: req.body.username };
     const status = dbHandler.find_user(user);
     status.then((res) => {
-        if(res != null){
+        if (res != null) {
             rsp.json(res);
         }
         else
@@ -81,45 +81,70 @@ router.put("/find", (req, rsp) => {
     rsp.sendStatus(200);
 });
 
+
+router.put("/profile/", (req, rsp) => {
+    const sender = req.body.sender
+    const target = req.body.target
+
+    dbHandler.accept_friend(sender, target)
+});
+
+
+router.get(/\/fr\/.+/, (req, rsp) => {
+    const friend_requests_for = String(req.url.split("/").slice(-1).pop());
+    let requests = dbHandler.get_data_from(friend_requests_for)
+    requests
+        .then((res) => {
+            if (res != null) {
+
+                rsp.json(res.received_req)
+            }
+            else {
+                rsp.json([]);
+            }
+        })
+        .catch((e) => console.log(e))
+
+})
+
+
 router.post("/profile", (req, rsp) => {
     const content = req.body.content;
     const from = req.body.from;
     const to = req.body.to;
-    let message = { "content": content, "from": from, "to" : to }
-    
+    let message = { "content": content, "from": from, "to": to }
+
     dbHandler.insert_message(message, to)
     rsp.sendStatus(200);
 });
 
-router.get(/\/find\/.+/, (req,rsp) => {
-    
+router.get(/\/find\/.+/, (req, rsp) => {
+
     const user = req.url.split("/").pop();
     const found_users = dbHandler.get_users(user);
 
     found_users.then((res) => {
         rsp.json(res);
     })
-    
+
 })
 
 
 //Get friends of specific user
 router.get(/\/friends\/.+/, (req, rsp) => {
-    console.log("--------fetching friends")
     const friend = String(req.url.split("/").slice(-1).pop());
     let friends = dbHandler.get_data_from(friend)
     friends
-    .then((res) => {
-        if (res != null)
-        {
-            
-            rsp.json(res.friends)
-        }
-        else{
-            rsp.json([]);
-        }
-    })
-    .catch((e) => console.log(e))
+        .then((res) => {
+            if (res != null) {
+
+                rsp.json(res.friends)
+            }
+            else {
+                rsp.json([]);
+            }
+        })
+        .catch((e) => console.log(e))
     // find friends
 });
 
@@ -134,10 +159,10 @@ router.get(/\/messages\/\w+/, (req, rsp) => {
     const user = String(req.url.split("/").slice(-1).pop());
     let messages = dbHandler.get_data_from(user)
     messages
-    .then((res) => {
-        rsp.json(res.messages)
-    })
-    .catch((e) => console.log(e))
+        .then((res) => {
+            rsp.json(res.messages)
+        })
+        .catch((e) => console.log(e))
 });
 
 

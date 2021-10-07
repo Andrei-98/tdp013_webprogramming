@@ -1,11 +1,18 @@
 import React from 'react'
 
-function Request({req}) {
+function Request({sender, target, onAdd}) {
+
+    const handleClick = (e) => {
+        e.preventDefault()
+        const req = {"sender": sender, "target":target}
+        onAdd(req)
+    }
+
     return (
         <div>
             <p>Friend Requests</p>
-            <p>{req}</p>
-            <button>Add</button>
+            <p>{sender}</p>
+            <button onClick={handleClick}>Add</button>
         </div>
     )
 }
