@@ -5,20 +5,20 @@ function SearchRes({ msg, user, update }) {
 
     // const [status, setStatus] = useState(null);
 
-    function check_status() {
-        if (is_friend()) {
-            return "Friends";
-        }
-        else if (sent_req()) {
-            return "Sent request"
-        }
-        else if (received_req()) {
-            return "Received request"
-        }
-        else {
-            return "Add friend";
-        }
-    }
+    // function check_status() {
+    //     if (is_friend()) {
+    //         return "Friends";
+    //     }
+    //     else if (sent_req()) {
+    //         return "Sent request"
+    //     }
+    //     else if (received_req()) {
+    //         return "Received request"
+    //     }
+    //     else {
+    //         return "Add friend";
+    //     }
+    // }
 
     function is_friend() {
         if (user.friends.includes(msg)) {
@@ -109,7 +109,7 @@ function SearchRes({ msg, user, update }) {
                     null
                 )
             }
-            {!is_friend() && !sent_req() && !received_req() && msg != user.username ? (
+            {!is_friend() && !sent_req() && !received_req() && msg !== user.username ? (
                 <div className="clickable-profile" >
                     <button className="Add-btn" onClick={add_friend}>Add friend</button>
                     <p>{msg}</p>

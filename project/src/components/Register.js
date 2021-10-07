@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+//import React, { Component } from 'react'
 import Button from './Button';
 import Link from 'react-router-dom/Link';
 import {useState} from "react";
@@ -19,7 +19,7 @@ function Register() {
             })
             .then((response) => {
              
-                if(response.status == 409)
+                if(response.status === 409)
                 {
                     setNameError(errorName => true);
                 }

@@ -40,8 +40,6 @@ function App() {
             let stream = response.text();
             
             stream.then((res) => {
-              console.log(res);
-              console.log("WtF");
                 login(JSON.parse(res));                
             })
         }) 
@@ -99,12 +97,6 @@ function App() {
     })
   }
   
-  // const deleteFriend = (name) => {
-  //   setFriends(all_friends.filter((friend) => friend.name != name))
-  //   // should be able to send something to the server here and delete from db also
-  // }
-
-  
 
   return (
     <div className="App">
@@ -120,7 +112,7 @@ function App() {
         <Switch>
           <Route exact path="/register"> <Register /> </Route>
           <Route exact path="/find"> <Find user={user} update={update} username={user.username}/> </Route>
-          <Route exact path="/profile/:username"> <Profile from={user.username} /> </Route> 
+          <Route exact path="/profile/:username"> <Profile from={user.username} showRequests={false}/> </Route> 
           <Route exact path="/login">
             {isLoggedIn.isLoggedIn ? (
               <Redirect to="/profile"> </Redirect>
@@ -130,7 +122,7 @@ function App() {
               )
             }
           </Route>
-          <Route exact path="/profile"> <Profile from={user.username} to={user.username}/> </Route>
+          <Route exact path="/profile"> <Profile from={user.username} to={user.username} showRequests={true}/> </Route>
           <Route exact path="/">
             {isLoggedIn.isLoggedIn ? (
               <Redirect to="/profile"> </Redirect>

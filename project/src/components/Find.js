@@ -12,21 +12,22 @@ function Find({ user, update }) {
     const [friends, setFriends] = useState([])
 
     useEffect(() => {
+        const fetchFriends = async () => {
+            console.log(user.username)
+            const res = await fetch(`http://localhost:9070/friends/${user.username}`)
+            const data = await res.json()
+            return data
+        }
+
         const getProfile = async () => {
             const serverFriends = await fetchFriends()
             setFriends(serverFriends)
         }
         
-        
         getProfile()
     }, [user])
 
-    const fetchFriends = async () => {
-        console.log(user.username)
-        const res = await fetch(`http://localhost:9070/friends/${user.username}`)
-        const data = await res.json()
-        return data
-    }
+
 
 
     const handleSubmit = e => {

@@ -1,10 +1,6 @@
-//import Button from './Button';
 import React from 'react';
 import Link from "react-router-dom/Link";
-import Button from 'react-bootstrap/Button'
-import {LinkContainer} from 'react-router-bootstrap'
 import {useState} from 'react'
-import { Redirect } from "react-router";
 import { useHistory } from "react-router-dom";
 
 function Login({login}) {
@@ -30,7 +26,7 @@ function Login({login}) {
         .then((response) => {
             let stream = response.text();
             stream.then((res) => {
-                if (res == "Unauthorized")
+                if (res === "Unauthorized")
                 {
                     setError(error => true)
                     return;
