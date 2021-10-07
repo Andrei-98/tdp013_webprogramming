@@ -8,7 +8,7 @@ import Profile from './components/Profile';
 import Navigation from './components/Navigation'
 import { Redirect } from "react-router";
 import Find from "./components/Find"
-
+import NotFriend from "./components/NotFriend"
 
 
 function App() {
@@ -126,6 +126,7 @@ function App() {
           )} */}
 
           {isFriend() && <Route exact path="/profile/:username"> <Profile from={user.username} showRequests={false} /> </Route>}
+          {!isFriend() && <Route exact path="/profile/:username"> <NotFriend user={user} update={update}/> </Route>}
 
           <Route exact path="/login">
             {isLoggedIn.isLoggedIn ? (
