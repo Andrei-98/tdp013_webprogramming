@@ -12,7 +12,6 @@ function IsJsonString(str) {
 
 
 function validate_string(...string) {
-
     for (let i = 0; i < string.length; i++) {
         console.log(string[i])
         if (typeof string[i] != "string") {

@@ -142,9 +142,12 @@ router.put("/profile/", (req, rsp) => {
 // Get friend request of specific user.
 router.get(/\/fr\/.+/, (req, rsp) => {
     const friend_requests_for = String(req.url.split("/").slice(-1).pop());
+    console.log("here")
+    console.log(friend_requests_for)
     let requests = dbHandler.get_data_from(friend_requests_for)
     requests
         .then((res) => {
+            console.log(res.received_req)
             if (res != null) {
 
                 rsp.json(res.received_req)
@@ -158,8 +161,9 @@ router.get(/\/fr\/.+/, (req, rsp) => {
 })
 
 
-router.post("/profile", (req, rsp) => {
-    if (errorHandler.validate_string(req.body.sender, req.body.target)) {
+router.post(/\/profile\/.+/, (req, rsp) => {
+    // if (errorHandler.validate_string(req.body.sender, req.body.target)) {
+        console.log("here")
         const content = req.body.content;
         const from = req.body.from;
         const to = req.body.to;
@@ -167,10 +171,10 @@ router.post("/profile", (req, rsp) => {
 
         dbHandler.insert_message(message, to)
         rsp.sendStatus(200);
-    } else {
+    // } else {
         // request is malicious or invalid
-        rsp.sendStatus(400);
-    }
+        // rsp.sendStatus(400);
+    // }
 });
 
 router.get(/\/find\/.+/, (req, rsp) => {
