@@ -9,9 +9,14 @@ import Navigation from './components/Navigation'
 import { Redirect } from "react-router";
 import Find from "./components/Find"
 import NotFriend from "./components/NotFriend"
+import { useEffect } from "react";
+import { FaMapPin } from "react-icons/fa";
+import { loadPartialConfig } from "@babel/core";
+
 
 
 function App() {
+  
 
   const [user, setUser] = useState(
     {
@@ -28,6 +33,8 @@ function App() {
     isLoggedIn: false,
     firstLogg: null
   });
+
+
 
   function update() {
     fetch('http://localhost:9070/update', {
@@ -50,13 +57,7 @@ function App() {
     if (signed_in === 'true') {
       const user_storage = JSON.parse(localStorage.getItem('user'));
 
-      setUser({
-        username: user_storage.username,
-        sent_req: user_storage.sent_req,
-        received_req: user_storage.received_req,
-        friends: user_storage.friends,
-        messages: user_storage.messages
-      })
+      setUser(user => user_storage)
       setLogged({
         isLoggedIn: true,
         firstLogg: true
@@ -65,21 +66,13 @@ function App() {
   }
   );
 
-  const login = user_det => {
-    setUser({
-      username: user_det.username,
-      sent_req: user_det.sent_req,
-      received_req: user_det.received_req,
-      friends: user_det.friends,
-      messages: user_det.messages
-    });
+  function login(user_det) {
+    setUser(user => user_det);
 
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('user', JSON.stringify(user_det));
-    setLogged({
-      isLoggedIn: true,
-      firstLogg: true
-    })
+    setLogged(oldState => ({...oldState, isLoggedIn:true}))
+    console.log(isLoggedIn.isLoggedIn)
   }
 
   const logout = () => {
@@ -90,19 +83,11 @@ function App() {
       friends: [],
       messages: []
     });
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('user');
+     localStorage.removeItem('isLoggedIn');
+     localStorage.removeItem('user');
     setLogged({
       isLoggedIn: false
     })
-  }
-
-  const isFriend = () => {
-
-    const to = window.location.pathname.split("/").pop()
-    console.log("in isfriend")
-    console.log(user.friends.includes(to))
-    return user.friends.includes(to)
   }
 
   return (
@@ -110,7 +95,7 @@ function App() {
 
       <Router>
         {isLoggedIn.isLoggedIn ? (
-          <Navigation logout={logout} />
+          <Navigation logout={logout} username={user.username} />
         )
           : (
             null
@@ -124,22 +109,22 @@ function App() {
             : (<Redirect to={"/notworking"}></Redirect>
           )} */}
 
-          {isFriend() && <Route exact path="/profile/:username"> <Profile from={user.username} showRequests={false} /> </Route>}
-          {!isFriend() && <Route exact path="/profile/:username"> <NotFriend user={user} update={update}/> </Route>}
+          {/* <Route exact path="/profile/:username"> <Profile from={user.username} user={user} update={update} showRequests={false} /> </Route> */}
+           {/* <Route exact path="/profile/:username"> <NotFriend user={user} update={update}/> </Route> */}
 
           <Route exact path="/login">
             {isLoggedIn.isLoggedIn ? (
-              <Redirect to="/profile"> </Redirect>
+              <Redirect to="/profile/:username"> </Redirect>
             )
               : (
                 <Login login={login} />
               )
             }
           </Route>
-          {isLoggedIn.isLoggedIn && <Route exact path="/profile"> <Profile from={user.username} to={user.username} showRequests={true} /> </Route>}
+          <Route exact path="/profile/:username"> <Profile from={user.username} user={user} update={update} showRequests={true}/> </Route>
           <Route exact path="/">
             {isLoggedIn.isLoggedIn ? (
-              <Redirect to="/profile"> </Redirect>
+              <Redirect to="/profile/:username"> </Redirect>
             )
               : (
                 <Redirect to="/login"> </Redirect>

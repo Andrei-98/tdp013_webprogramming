@@ -4,23 +4,33 @@ import MessageList from './MessageList'
 import { useState, useEffect } from 'react'
 import MessageBox from './MessageBox'
 import FriendRequests from './FriendRequests.js'
+import NotFriend from './NotFriend'
+import { useParams } from 'react-router'
 
-function Profile({from, to=window.location.pathname.split("/").pop(), showRequests}) {
+function Profile({from, user, showRequests, update={update}}) {
 
+    const { username } = useParams()
+    
     const [messages, setMessages] = useState([])
     const [friendRequests, setFriendRequests] = useState([])
-
+    
+    let other_profile = true
+    if(username == from)
+    {
+        other_profile=false;
+    }
 
     useEffect(() => {
         const fetchMessages = async () => {
-            const res = await fetch(`http://localhost:9070/messages/${to}`)
+            const res = await fetch(`http://localhost:9070/messages/${username}`)
             const data = await res.json()
             return data
         }
     
         const fetchRequests = async () => {
-            const res = await fetch(`http://localhost:9070/fr/${to}`)
+            const res = await fetch(`http://localhost:9070/fr/${username}`)
             const data = await res.json()
+            
             return data
         }
 
@@ -28,17 +38,25 @@ function Profile({from, to=window.location.pathname.split("/").pop(), showReques
             const serverMessages = await fetchMessages()
             setMessages(serverMessages)
             const serverRequests = await fetchRequests()
+            
             setFriendRequests(serverRequests)
         }
         
         
         getProfile()
-    }, [to])
+    }, [username])
 
+    const isFriend = () => {
 
+        if(!other_profile)
+        {
+            return true;
+        }
+        return user.friends.includes(username);
+      }
     // Add Message
     const addMessage = async (msg) => {
-        const res = await fetch('http://localhost:9070/profile', {
+        const res = await fetch('http://localhost:9070/profile/' + username, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(msg)
@@ -64,13 +82,15 @@ function Profile({from, to=window.location.pathname.split("/").pop(), showReques
     }
 
     return (
-        <div>
-            <h1>{to}</h1>
-            <MessageBox to={to} from={from} onAdd={addMessage} />
+        <div> 
+
+            <h1>{username}</h1>
+            {isFriend() && <MessageBox to={username} from={from} onAdd={addMessage} />}
             <div className="profile-container">
                 {/* bad fix maybe? */}
-                {showRequests && friendRequests && <FriendRequests requests={friendRequests} target={to} onAdd={addFriend}/>}
-                {messages && <MessageList messages={messages} />}
+                {!other_profile && isFriend() && friendRequests  && <FriendRequests requests={friendRequests} target={username} onAdd={addFriend}/>}
+                {messages && isFriend() && <MessageList messages={messages} />}
+                {!isFriend() && <NotFriend user={user} update={update}/>}
             </div>
         </div>
     )

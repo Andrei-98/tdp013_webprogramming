@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom";
 
 import Button from 'react-bootstrap/Button'
 
-function Navigation({ logout }) {
+function Navigation({ logout, username }) {
 
     const history = useHistory();
 
@@ -27,7 +27,7 @@ function Navigation({ logout }) {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mx-auto parent">
-                            <LinkContainer to="/profile">
+                            <LinkContainer to={"/profile/" + username}>
                                 <Nav.Link>Profile</Nav.Link>
                             </LinkContainer>
                             <LinkContainer to="/find">

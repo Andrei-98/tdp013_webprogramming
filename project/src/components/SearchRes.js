@@ -21,7 +21,6 @@ function SearchRes({ msg, user, update }) {
     // }
 
     function is_friend() {
-        console.log(user)
         if (user.friends.includes(msg)) {
             return true;
         }

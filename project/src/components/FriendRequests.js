@@ -3,6 +3,7 @@ import Request from './Request'
 
 function FriendRequests({requests, target, onAdd}) {
 
+    
     return (
         <div>
             {requests.map((req) => (

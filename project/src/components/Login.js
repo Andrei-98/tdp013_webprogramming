@@ -21,7 +21,6 @@ function Login({login}) {
         .then((response) => {
             let stream = response.text();
             stream.then((res) => {
-                console.log(res)
                 if (res === "Unauthorized")
                 {
                     setError("Wrong password or name.")
@@ -32,7 +31,7 @@ function Login({login}) {
                 }
                 else {
                     login(JSON.parse(res));
-                    history.push("/profile")                
+                    history.push("/profile/"+user.username)                
                 }
             })
         }) 
