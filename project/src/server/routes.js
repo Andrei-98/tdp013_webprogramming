@@ -145,7 +145,7 @@ router.get(/\/profile\/.+/, (req, rsp) => {
     let result = dbHandler.find_user({username: user});
     result.then((res) => { 
         if(res != null) {
-            rsp.sendStatus(200);
+            rsp.json(res);
         }
         else {
             rsp.sendStatus(400);

@@ -7,25 +7,23 @@ function Find({ user, update }) {
 
 
     const [users, setUsers] = useState(null)
-
-    const [hasData, setData] = useState(false)
-    const [friends, setFriends] = useState([])
+    // const [friends, setFriends] = useState([])
     const [error, setError] = useState("")
 
-    useEffect(() => {
-        const fetchFriends = async () => {
-            const res = await fetch(`http://localhost:9070/friends/${user.username}`)
-            const data = await res.json()
-            return data
-        }
+    // useEffect(() => {
+    //     const fetchFriends = async () => {
+    //         const res = await fetch(`http://localhost:9070/friends/${user.username}`)
+    //         const data = await res.json()
+    //         return data
+    //     }
 
-        const getProfile = async () => {
-            const serverFriends = await fetchFriends()
-            setFriends(serverFriends)
-        }
+    //     const getProfile = async () => {
+    //         const serverFriends = await fetchFriends()
+    //         setFriends(serverFriends)
+    //     }
         
-        getProfile()
-    }, [user])
+    //     getProfile()
+    // }, [user])
 
 
     const handleSubmit = e => {
@@ -42,7 +40,6 @@ function Find({ user, update }) {
                 }
                 res = JSON.parse(res);
                 setUsers(users => res);
-                setData(hasData => true);
             })
         }) 
     }
@@ -58,11 +55,11 @@ function Find({ user, update }) {
             </form>
 
             <div className="search_list">
-                {hasData && users.map((us) => (
+                {users && users.map((us) => (
                     <SearchRes msg={us.username} user={user} update={update} className="msg"/>))}
                 <span>{error}</span>
             </div>
-            {friends && <FriendList friends={friends} />}
+            {<FriendList friends={user.friends} />}
         </div>  
     );
 }

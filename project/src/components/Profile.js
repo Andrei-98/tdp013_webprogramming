@@ -1,71 +1,71 @@
 import React from 'react'
-
-import MessageList from './MessageList'
 import { useState, useEffect } from 'react'
-import MessageBox from './MessageBox'
-import FriendRequests from './FriendRequests.js'
 import NotFriend from './NotFriend'
 import { useParams } from 'react-router'
+import MyProfile from './MyProfile'
+import InvalidProfile from './InvalidProfile'
+import FriendProfile from './FriendProfile'
 
-function Profile({from, user, showRequests, update={update}}) {
+function Profile({from, user, showRequests, update}) {
 
     const { username } = useParams()
-    
     const [messages, setMessages] = useState([])
     const [friendRequests, setFriendRequests] = useState([])
+    const [invalid_user, setInvalid] = useState(false);
     
-    let other_profile = true
-    let invalid_profile = false;
+    let other_profile = true;
+    
     if(username == from)
     {
         other_profile=false;
     }
-
+   
+    
     useEffect(() => {
+        // const fetchMessages = async () => {
+        //     const res = await fetch(`http://localhost:9070/messages/${username}`)
+        //     const data = await res.json()
+        //     return data
+        // }
+
         const validProfile = async () => {
             const res = await fetch(`http://localhost:9070/profile/${username}`)
-            return res.status == 200
-        }
-
-        const fetchMessages = async () => {
-            const res = await fetch(`http://localhost:9070/messages/${username}`)
+            if (Number(res.status) == 400)
+                return null;
             const data = await res.json()
             return data
         }
     
-        const fetchRequests = async () => {
-            const res = await fetch(`http://localhost:9070/fr/${username}`)
-            const data = await res.json()
+        // const fetchRequests = async () => {
+        //     const res = await fetch(`http://localhost:9070/fr/${username}`)
+        //     const data = await res.json()
             
-            return data
-        }
+        //     return data
+        // }
 
         const getProfile = async () => {
-            const serverMessages = await fetchMessages()
-            setMessages(serverMessages)
-            const serverRequests = await fetchRequests()
+            const valid_user = await validProfile();
+            if(valid_user != null)
+            {
+                setMessages(valid_user.messages);
+                setFriendRequests(valid_user.received_req);
+                setInvalid(false);
+            }
+            else
+            {
+                setInvalid(true);
+            }
+            // const serverRequests = await fetchRequests()
             
-            setFriendRequests(serverRequests)
         }
-        
-        if (validProfile())
-        {
+           
             getProfile()
-        }
-        else
-        {
-            invalid_profile = true;
-        }
     }, [username])
 
     const isFriend = () => {
-
-        if(!other_profile)
-        {
-            return true;
-        }
         return user.friends.includes(username);
       }
+      
     // Add Message
     const addMessage = async (msg) => {
         const res = await fetch('http://localhost:9070/profile/' + username, {
@@ -95,14 +95,11 @@ function Profile({from, user, showRequests, update={update}}) {
 
     return (
         <div> 
-            <h1>{username}</h1>
-            {console.log(invalid_profile)}
-            {isFriend() && <MessageBox to={username} from={from} onAdd={addMessage} />}
-            <div className="profile-container">
-                {/* bad fix maybe? */}
-                {!other_profile && isFriend() && friendRequests  && <FriendRequests requests={friendRequests} target={username} onAdd={addFriend}/>}
-                {messages && isFriend() && <MessageList messages={messages} />}
-                {!isFriend() &&  <NotFriend user={user} update={update}/>}
+            <div>
+                {invalid_user && <InvalidProfile />}
+                {!other_profile && <MyProfile username={username} from={from} addMessage={addMessage} update={update} friendRequests={friendRequests} addFriend={addFriend} messages={messages} />}
+                {other_profile && isFriend() && <FriendProfile username={username} from={from} addMessage={addMessage} friendRequests={friendRequests} addFriend={addFriend} messages={messages} />}
+                {!isFriend() && other_profile && !invalid_user && <NotFriend user={user} update={update} />}
             </div>
         </div>
     )

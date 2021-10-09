@@ -2,23 +2,13 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { useState } from "react";
 import React from 'react';
 import './App.css';
-import Login from './components/Login';
-import Register from './components/Register'
-import Profile from './components/Profile';
-import Navigation from './components/Navigation'
-import { Redirect } from "react-router";
-import Find from "./components/Find"
-import NotFriend from "./components/NotFriend"
-import { useEffect } from "react";
 import { FaMapPin } from "react-icons/fa";
 import { loadPartialConfig } from "@babel/core";
 import SecureRoutes from "./components/SecureRoutes";
-import NoMatch from "./components/NoMatch"
 import UnsecureRoutes from "./components/UnsecureRoutes"
 
 
 function App() {
-
 
   const [user, setUser] = useState(
     {
@@ -32,11 +22,9 @@ function App() {
   )
 
   const [isLoggedIn, setLogged] = useState({
-    isLoggedIn: false,
-    firstLogg: null
+    isLoggedIn: false
+
   });
-
-
 
   function update() {
     fetch('http://localhost:9070/update', {
@@ -58,11 +46,9 @@ function App() {
     const signed_in = localStorage.getItem("isLoggedIn");
     if (signed_in === 'true') {
       const user_storage = JSON.parse(localStorage.getItem('user'));
-
       setUser(user => user_storage)
       setLogged({
-        isLoggedIn: true,
-        firstLogg: true
+        isLoggedIn: true
       })
     }
   }
@@ -74,7 +60,6 @@ function App() {
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('user', JSON.stringify(user_det));
     setLogged(oldState => ({ ...oldState, isLoggedIn: true }))
-    console.log(isLoggedIn.isLoggedIn)
   }
 
   const logout = () => {
@@ -97,11 +82,12 @@ function App() {
 
       <Router>
         <Switch>
-          {!isLoggedIn.isLoggedIn ? (
-            <UnsecureRoutes login={login} />
+          {isLoggedIn.isLoggedIn ? (
+            <SecureRoutes logout={logout} user={user} update={update} />
+
           )
             : (
-              <SecureRoutes logout={logout} user={user} update={update} />
+              <UnsecureRoutes login={login} />
             )
           }
         </Switch>

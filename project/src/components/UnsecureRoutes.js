@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Register from './Register';
 import Login from './Login';
 
-function SecureRoutes({ login }) {
+function UnsecureRoutes({ login }) {
 
     
     return (
@@ -18,5 +18,5 @@ function SecureRoutes({ login }) {
     )
 }
 
-export default SecureRoutes
+export default UnsecureRoutes;
 

@@ -2,12 +2,13 @@ import React from 'react'
 import { FcCheckmark } from "react-icons/fc"
 
 
-function Request({sender, target, onAdd}) {
+function Request({sender, target, onAdd, update}) {
 
     const handleClick = (e) => {
         e.preventDefault()
         const req = {"sender": sender, "target":target}
         onAdd(req)
+        update()
     }
 
     return (
