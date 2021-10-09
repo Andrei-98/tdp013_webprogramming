@@ -12,11 +12,13 @@ import NotFriend from "./components/NotFriend"
 import { useEffect } from "react";
 import { FaMapPin } from "react-icons/fa";
 import { loadPartialConfig } from "@babel/core";
-
+import SecureRoutes from "./components/SecureRoutes";
+import NoMatch from "./components/NoMatch"
+import UnsecureRoutes from "./components/UnsecureRoutes"
 
 
 function App() {
-  
+
 
   const [user, setUser] = useState(
     {
@@ -71,7 +73,7 @@ function App() {
 
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('user', JSON.stringify(user_det));
-    setLogged(oldState => ({...oldState, isLoggedIn:true}))
+    setLogged(oldState => ({ ...oldState, isLoggedIn: true }))
     console.log(isLoggedIn.isLoggedIn)
   }
 
@@ -83,8 +85,8 @@ function App() {
       friends: [],
       messages: []
     });
-     localStorage.removeItem('isLoggedIn');
-     localStorage.removeItem('user');
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
     setLogged({
       isLoggedIn: false
     })
@@ -94,43 +96,14 @@ function App() {
     <div className="App">
 
       <Router>
-        {isLoggedIn.isLoggedIn ? (
-          <Navigation logout={logout} username={user.username} />
-        )
-          : (
-            null
-          )
-        }
         <Switch>
-          <Route exact path="/register"> <Register /> </Route>
-          <Route exact path="/find"> <Find user={user} update={update} username={user.username} /> </Route>
-          {/* {isFriend() ? (<Route exact path="/profile/:username"> <Profile from={user.username} showRequests={false} /> </Route>
+          {!isLoggedIn.isLoggedIn ? (
+            <UnsecureRoutes login={login} />
           )
-            : (<Redirect to={"/notworking"}></Redirect>
-          )} */}
-
-          {/* <Route exact path="/profile/:username"> <Profile from={user.username} user={user} update={update} showRequests={false} /> </Route> */}
-           {/* <Route exact path="/profile/:username"> <NotFriend user={user} update={update}/> </Route> */}
-
-          <Route exact path="/login">
-            {isLoggedIn.isLoggedIn ? (
-              <Redirect to="/profile/:username"> </Redirect>
+            : (
+              <SecureRoutes logout={logout} user={user} update={update} />
             )
-              : (
-                <Login login={login} />
-              )
-            }
-          </Route>
-          <Route exact path="/profile/:username"> <Profile from={user.username} user={user} update={update} showRequests={true}/> </Route>
-          <Route exact path="/">
-            {isLoggedIn.isLoggedIn ? (
-              <Redirect to="/profile/:username"> </Redirect>
-            )
-              : (
-                <Redirect to="/login"> </Redirect>
-              )
-            }
-          </Route>
+          }
         </Switch>
       </Router>
 

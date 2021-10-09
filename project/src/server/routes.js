@@ -139,6 +139,20 @@ router.put("/profile/", (req, rsp) => {
     }
 });
 
+router.get(/\/profile\/.+/, (req, rsp) => {
+    //if (errorHandler.validate_string(req.body.sender, req.body.target)) {
+    const user = String(req.url.split("/").slice(-1).pop());
+    let result = dbHandler.find_user({username: user});
+    result.then((res) => { 
+        if(res != null) {
+            rsp.sendStatus(200);
+        }
+        else {
+            rsp.sendStatus(400);
+        }
+    } )
+});
+
 // Get friend request of specific user.
 router.get(/\/fr\/.+/, (req, rsp) => {
     const friend_requests_for = String(req.url.split("/").slice(-1).pop());

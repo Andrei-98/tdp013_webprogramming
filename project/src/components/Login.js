@@ -31,7 +31,7 @@ function Login({login}) {
                 }
                 else {
                     login(JSON.parse(res));
-                    history.push("/profile/"+user.username)                
+                    history.push("/profile/" + user.username)                
                 }
             })
         }) 

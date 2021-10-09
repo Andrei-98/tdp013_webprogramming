@@ -1,13 +1,13 @@
 import React from 'react'
 
 
-function NoMatch() {
+function NoMatch({msg = "404 error no page found"}){
 
 
 
     return (
         <div>
-            <h1>404 error no page found</h1>
+            <h1>{msg}</h1>
         </div>
     )
 }

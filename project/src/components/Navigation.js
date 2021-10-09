@@ -28,7 +28,7 @@ function Navigation({ logout, username }) {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mx-auto parent">
                             <LinkContainer to={"/profile/" + username}>
-                                <Nav.Link>Profile</Nav.Link>
+                                <Nav.Link>My profile</Nav.Link>
                             </LinkContainer>
                             <LinkContainer to="/find">
                             <Nav.Link>Find</Nav.Link>

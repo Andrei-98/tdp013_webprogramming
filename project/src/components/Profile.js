@@ -15,12 +15,18 @@ function Profile({from, user, showRequests, update={update}}) {
     const [friendRequests, setFriendRequests] = useState([])
     
     let other_profile = true
+    let invalid_profile = false;
     if(username == from)
     {
         other_profile=false;
     }
 
     useEffect(() => {
+        const validProfile = async () => {
+            const res = await fetch(`http://localhost:9070/profile/${username}`)
+            return res.status == 200
+        }
+
         const fetchMessages = async () => {
             const res = await fetch(`http://localhost:9070/messages/${username}`)
             const data = await res.json()
@@ -42,8 +48,14 @@ function Profile({from, user, showRequests, update={update}}) {
             setFriendRequests(serverRequests)
         }
         
-        
-        getProfile()
+        if (validProfile())
+        {
+            getProfile()
+        }
+        else
+        {
+            invalid_profile = true;
+        }
     }, [username])
 
     const isFriend = () => {
@@ -83,14 +95,14 @@ function Profile({from, user, showRequests, update={update}}) {
 
     return (
         <div> 
-
             <h1>{username}</h1>
+            {console.log(invalid_profile)}
             {isFriend() && <MessageBox to={username} from={from} onAdd={addMessage} />}
             <div className="profile-container">
                 {/* bad fix maybe? */}
                 {!other_profile && isFriend() && friendRequests  && <FriendRequests requests={friendRequests} target={username} onAdd={addFriend}/>}
                 {messages && isFriend() && <MessageList messages={messages} />}
-                {!isFriend() && <NotFriend user={user} update={update}/>}
+                {!isFriend() &&  <NotFriend user={user} update={update}/>}
             </div>
         </div>
     )
