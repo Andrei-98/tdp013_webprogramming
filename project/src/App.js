@@ -1,12 +1,11 @@
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { useState } from "react";
+import { BrowserRouter as Router} from "react-router-dom";
+import { useEffect, useState } from "react";
 import React from 'react';
 import './App.css';
-import { FaMapPin } from "react-icons/fa";
-import { loadPartialConfig } from "@babel/core";
+// import { FaMapPin } from "react-icons/fa";
+// import { loadPartialConfig } from "@babel/core";
 import SecureRoutes from "./components/SecureRoutes";
 import UnsecureRoutes from "./components/UnsecureRoutes"
-
 
 function App() {
 
@@ -21,10 +20,13 @@ function App() {
     }
   )
 
-  const [isLoggedIn, setLogged] = useState({
-    isLoggedIn: false
+  function isStored() {
 
-  });
+    return localStorage.getItem("isLoggedIn") != null;
+  }
+
+  const [isLoggedIn, setLogged] = useState(isStored());
+  const [init, setInit] = useState(false);
 
   function update() {
     fetch('http://localhost:9070/update', {
@@ -42,29 +44,65 @@ function App() {
       })
   }
 
-  window.addEventListener('load', (event) => {
+
+  function check_user(userName, userPassword, callback) {
+    fetch('http://localhost:9070/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      json: true,
+      body: JSON.stringify({ "username": userName, "password": userPassword })
+    })
+      .then((response) => {
+        let stream = response.text();
+        stream.then((res) => {
+          if (res === "Unauthorized") {
+            logout();
+          } else if (res === "Bad Request") {
+            logout();
+          }
+          else {
+            callback();
+          }
+        })
+      })
+  }
+
+  useEffect(() => {
     const signed_in = localStorage.getItem("isLoggedIn");
     if (signed_in === 'true') {
-      const user_storage = JSON.parse(localStorage.getItem('user'));
-      setUser(user => user_storage)
-      setLogged({
-        isLoggedIn: true
-      })
+      let stored_user = localStorage.getItem('user');
+      if (stored_user != null) {
+        stored_user = JSON.parse(stored_user);
+        check_user(stored_user.username, stored_user.password, () => {
+          setUser(user => stored_user)
+          setLogged(true);
+          setInit(true);
+        })
+      }
+      else {
+        logout();
+      }
+    }
+    else {
+      logout();
     }
   }
-  );
+    , []);
+
 
   function login(user_det) {
-    setUser(user => user_det);
 
+    setUser(user => user_det);
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('user', JSON.stringify(user_det));
-    setLogged(oldState => ({ ...oldState, isLoggedIn: true }))
+    setLogged(true);
+    setInit(true);
   }
 
   const logout = () => {
     setUser({
       username: "",
+      password: "",
       sent_req: [],
       received_req: [],
       friends: [],
@@ -72,27 +110,28 @@ function App() {
     });
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('user');
-    setLogged({
-      isLoggedIn: false
-    })
+    setLogged(false);
   }
 
   return (
     <div className="App">
-
       <Router>
-        <Switch>
-          {isLoggedIn.isLoggedIn ? (
-            <SecureRoutes logout={logout} user={user} update={update} />
-
+        {!isLoggedIn ? (
+            <UnsecureRoutes login={login} />
+        )
+          : (
+            null
           )
-            : (
-              <UnsecureRoutes login={login} />
-            )
-          }
-        </Switch>
-      </Router>
+        }
+        {isLoggedIn && init ? (
+            <SecureRoutes logout={logout} user={user} update={update} />
+        )
+          : (
+            null
+          )
+        }
 
+      </Router>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from "react-router-dom/Link";
+
 import {useState} from 'react'
 import { useHistory } from "react-router-dom";
 
@@ -49,7 +49,7 @@ function Login({login}) {
                     <input type="submit" value="Login"></input>
                 </form>
                
-                <Link to="/register">Register</Link>
+                <a href="/register">Register</a>
                 <span>{error}</span>
             </div>
     )

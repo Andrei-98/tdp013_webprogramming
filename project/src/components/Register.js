@@ -1,7 +1,6 @@
 //import React, { Component } from 'react'
 import Button from './Button';
-import Link from 'react-router-dom/Link';
-import {useState} from "react";
+import { useState } from "react";
 function Register() {
 
     const [error, setError] = useState('')
@@ -51,7 +50,7 @@ function Register() {
                 <Button type="submit" />
             </form>
 
-            <Link to="./login">Log in again</Link>
+            <a href="/login">Log in again</a>
             <span>{error}</span>
         </div>
        )

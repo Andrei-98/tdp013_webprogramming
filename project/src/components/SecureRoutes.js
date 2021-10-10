@@ -6,10 +6,10 @@ import Profile from './Profile'
 import NoMatch from './NoMatch'
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-function SecureRoutes({ logout, user, update, isLoggedIn }) {
 
-    
+function SecureRoutes({ logout, user, update }) {
     return (
+
         <div>  
             <Navigation logout={logout} username={user.username} />
             <Switch>

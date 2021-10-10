@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import SearchRes from './SearchRes';
 import FriendList from './FriendList.js'
 
@@ -9,6 +9,7 @@ function Find({ user, update }) {
     const [users, setUsers] = useState(null)
     // const [friends, setFriends] = useState([])
     const [error, setError] = useState("")
+   
 
     // useEffect(() => {
     //     const fetchFriends = async () => {
@@ -59,7 +60,7 @@ function Find({ user, update }) {
                     <SearchRes msg={us.username} user={user} update={update} className="msg"/>))}
                 <span>{error}</span>
             </div>
-            {<FriendList friends={user.friends} />}
+            {user.friends && <FriendList friends={user.friends} />}
         </div>  
     );
 }

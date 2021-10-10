@@ -1,9 +1,9 @@
 import React from "react";
 import MessageBox from "./MessageBox";
-import FriendRequests from "./FriendRequests";
+
 import MessageList from "./MessageList";
 
-function FriendProfile({username, from, addMessage, friendRequests, addFriend, messages}) {
+function FriendProfile({username, from, addMessage, messages}) {
 
 
     

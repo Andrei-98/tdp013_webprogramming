@@ -21,7 +21,7 @@ function MessageBox({ to, from, onAdd }) {
 
 
     const verifyMessage = (text) => {
-        if (text.length == 0 || text.length > 140) {
+        if (text.length === 0 || text.length > 140) {
             setFailed("Enter between 1 and 140 characters!");
             return false;
         } else if (!!text.match(/\$.*\{.*\}/)) {
@@ -51,7 +51,7 @@ function MessageBox({ to, from, onAdd }) {
 
     return (
         <div>
-            <form action="#" method="post" className="container-msg-box" onSubmit={handleSubmit}>
+            <form method="post" className="container-msg-box" onSubmit={handleSubmit}>
                 <textarea placeholder="Skriv in ett meddelande" rows="4" cols="30"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}>
