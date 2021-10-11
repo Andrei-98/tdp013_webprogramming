@@ -90,10 +90,13 @@ function Profile({from, user, showRequests, update}) {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(friend)
+        }).then((response) => {
+            update();
+            return response.status;
         })
 
-        await res.json()
     }
+
 
     return (
         <div> 

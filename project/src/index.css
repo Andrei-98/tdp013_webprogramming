@@ -13,6 +13,11 @@ code {
     monospace;
 }
 
+.background {
+  background-color: #121212;
+  color: white;
+
+}
 
 .clickable-profile {
   width: 500px;
@@ -104,7 +109,23 @@ code {
   margin-left: 5px;
 }
 
-.message-content {
+
+/* LOG IN SCREEN */
+
+.login-form {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
   
 
+}
+
+.login-border {
+  padding: 50px;
+  background-color: #1F2833;
+  border: 1px solid black;
+  border-radius: 10px;
 }

@@ -133,6 +133,7 @@ router.put("/profile/", (req, rsp) => {
         const target = req.body.target
 
         dbHandler.accept_friend(sender, target)
+        rsp.sendStatus(200)
     } else {
         // request is malicious or invalid
         rsp.sendStatus(400);

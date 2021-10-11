@@ -29,6 +29,7 @@ function App() {
   const [init, setInit] = useState(false);
 
   function update() {
+    console.log("in update baby")
     fetch('http://localhost:9070/update', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
