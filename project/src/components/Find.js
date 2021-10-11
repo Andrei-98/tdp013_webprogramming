@@ -28,14 +28,17 @@ function Find({ user, update }) {
 
 
     const handleSubmit = e => {
-        e.preventDefault(e.target[0].value); 
-
+        e.preventDefault(); 
+        console.log(e.target[0].value)
         fetch('http://localhost:9070/find/' + e.target[0].value, {
             method: 'GET',
         })
         .then((response) => {
             let stream = response.text();
             stream.then((res) => {
+                if (response.status != 200) {
+                    return;
+                }
                 if (res.length === 2) {
                     setError("No users with that name.")
                 }

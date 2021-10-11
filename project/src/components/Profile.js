@@ -76,7 +76,7 @@ function Profile({from, user, showRequests, update}) {
             body: JSON.stringify(msg)
         })
         setMessages([msg, ...messages])
-        await res.json()
+        await res.status
         // setMessages([...messages, data])
     }
 
@@ -86,7 +86,7 @@ function Profile({from, user, showRequests, update}) {
         // delete friend.sender from friendRequest client side
         setFriendRequests(friendRequests.filter((request) => request !== friend.sender))
 
-        const res = await fetch('http://localhost:9070/profile', {
+        const res = await fetch('http://localhost:9070/find', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(friend)
