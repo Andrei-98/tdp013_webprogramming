@@ -8,6 +8,9 @@ const chaiHttp = require('chai-http');
 chai.should();
 chai.use(chaiHttp);
 
+// TODO Check over routes and return only relevant information, not passwords.
+// TODO Fix validation for forms etc
+// TODO make manuscript for presentation 
 
 describe('POST for /register', () => {
     it('Should have status code 200 and add one user to database', (done) => {
@@ -28,6 +31,7 @@ describe('POST for /register', () => {
     });
 });
 
+
 describe('POST for /register', () => {
     it('Should have status code 200 and add one user to database', (done) => {
         let query = { username: "Andrei", password: "Hello" };
@@ -45,6 +49,7 @@ describe('POST for /register', () => {
             })
     });
 });
+
 
 describe('POST for /login', () => {
     it('Should have status code 200 and return correct user', (done) => {
@@ -331,6 +336,22 @@ describe('GET for /find/none', () => {
 });
 
 
+describe('GET for /find/', () => {
+    it('Should return all users', (done) => {
+        chai.request(server)
+            .get('/find/')
+            .then((res) => {
+                databaseHandler.find_all()
+                .then((r) => {
+                    assert.equal(res.body.length, r.length);
+                    done();
+                })
+                
+            })
+    })
+});
+
+
 describe('POST for /update', () => {
     it('Should return a JSON object of requested username', (done) => {
         chai.request(server)
@@ -355,6 +376,250 @@ describe('POST for /update', () => {
             })
     })
 });
+
+
+describe('Illegal function delete', () => {
+    it('Should return status code 405', (done) => {
+        chai.request(server)
+            .delete('/find')
+            .send({username : "Pål"})
+            .then((res) => {
+                assert.equal(res.status, 405);
+                done();
+            })
+    })
+});
+
+
+describe('POST Wrong URL', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .post('/ERROR')
+            .send({username : "Pål"})
+            .then((res) => {
+                assert.equal(res.status, 404);
+                done();
+            })
+    })
+});
+
+
+describe('GET Wrong URL', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .get('/ERROR')
+            .then((res) => {
+                assert.equal(res.status, 404);
+                done();
+            })
+    })
+});
+
+
+describe('PUT Wrong URL', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .put('/ERROR')
+            .then((res) => {
+                assert.equal(res.status, 404);
+                done();
+            })
+    })
+});
+
+
+describe('POST /profile json object', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .post('/profile/Kasper')
+            .send({from : "Andrei", content: {json : true}, to: "Kasper"})
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('POST /profile json object', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .post('/profile/Kasper')
+            .send({from : "Andrei", content: {json : true}, to: "Kasper"})
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('POST /profile string json object', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .post('/profile/Kasper')
+            .send({from : "Andrei", content: '{"json" : "true"}', to: "Kasper"})
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('POST /profile json object', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .post('/profile/Kasper')
+            .send({from : "Andrei", content: null, to: "Kasper"})
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('POST /profile json object', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .post('/profile/Kasper')
+            .send({from : "Andrei", content: "${error}", to: "Kasper"})
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('POST /register user that already exist', () => {
+    it('Should return status code 409', (done) => {
+        chai.request(server)
+            .post('/register')
+            .send({username: "Kasper", password: "hello"})
+            .then((res) => {
+                assert.equal(res.status, 409);
+                done();
+            })
+    })
+});
+
+
+describe('POST /register sending in json object as password', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .post('/register')
+            .send({username: "Lovisa", password: {json: true}})
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('POST /login sending in json object as password', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .post('/login')
+            .send({username: "Lovisa", password: {json: true}})
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('POST /find sending in json object as friend-request receiver', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .post('/find')
+            .send({sender: "Kasper", receiver: {json: true}})
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('PUT /find sending in json object as friend-accept receiver', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .put('/find')
+            .send({sender: "Kasper", receiver: {json: true}})
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('GET /messages/ and null object as user', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .get('/messages/' + null)
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('GET /friends/ and null object as user', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .get('/friends/' + null)
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('GET /profile/ and null object as user', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .get('/profile/' + null)
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('GET /find/ and null object as user', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .get('/find/' + null)
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+
+describe('POST /update json-object as username', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .post('/update')
+            .send({username : {JSON: true}})
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
 // TODO TESTS
 
 // test to post to nonexistet user --fail
@@ -369,8 +634,8 @@ describe('POST for /update', () => {
 
 // close database and exit app
 after(() => {
-    databaseHandler.closeDb();
-    exit();
+    databaseHandler.closeDb()
+    .then(exit());
 });
 
 

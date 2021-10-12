@@ -7,8 +7,11 @@ let dbHandler = require('./database.js');
 
 router.use((req, res, next) => {
     let requestStatus = errorHandler.validateRequest(req.method, req.path);
+    console.log(requestStatus)
+    console.log(req.method)
+    console.log(req.path)
 
-    if (requestStatus)
+    if (requestStatus == 200)
     {
         next();
     }
@@ -86,10 +89,10 @@ router.put("/find", (req, rsp) => {
 });
 
 router.post(/\/profile\/.+/, (req, rsp) => {
-    if (errorHandler.validate_string(req.body.to, req.body.from, req.body.content)) {
+    const to = String(req.url.split("/").slice(-1).pop());
+    if (errorHandler.validate_string(to, req.body.from, req.body.content)) {
         const content = req.body.content;
         const from = req.body.from;
-        const to = req.body.to;
         let message = { "content": content, "from": from, "to": to }
 
         dbHandler.insert_message(message, to)
@@ -131,7 +134,6 @@ router.get(/\/friends\/.+/, (req, rsp) => {
                     rsp.json([]);
                 }
             })
-            .catch((e) => console.log(e))
     }
     else {
         rsp.sendStatus(400);

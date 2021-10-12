@@ -50,7 +50,7 @@ function MessageBox({ to, from, onAdd }) {
 
 
     return (
-        <div>
+        <div className="msg-box-errror">
             <form method="post" className="container-msg-box" onSubmit={handleSubmit}>
                 <textarea placeholder="Skriv in ett meddelande" rows="4" cols="30"
                     value={content}

@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'react-router-dom/Link';
+import Button from 'react-bootstrap/Button'
 
 function SearchRes({ msg, user, update }) {
 
@@ -74,14 +75,16 @@ function SearchRes({ msg, user, update }) {
     return (
         <div>
             {is_friend() ? (
-                <div className="clickable-profile">
-                    <Link to={`/profile/${msg}`}>
+                <Link to={`/profile/${msg}`}>
+                    <div className="clickable-profile grey-3 round-border">
+
                         {/* <button className="friend_button">{check_status()}</button> */}
                         {/* <p>Sent request: {sent_req()}</p>
                     <p>Received request: {received_req()}</p> */}
-                        <p>{msg}</p>
-                    </Link>
-                </div>
+                        <span className="request">{msg}</span>
+
+                    </div>
+                </Link>
 
             )
                 : (
@@ -89,9 +92,8 @@ function SearchRes({ msg, user, update }) {
                 )
             }
             {sent_req() ? (
-                <div className="clickable-profile" >
-                    <p> Already sent friend request</p>
-                    <p>{msg}</p>
+                <div className="clickable-profile grey-3 round-border" >
+                    <span className="request">Already sent friend request to {msg}</span>
                 </div>
             )
                 : (
@@ -99,10 +101,12 @@ function SearchRes({ msg, user, update }) {
                 )
             }
             {received_req() ? (
-                <div className="clickable-profile" >
-                    <p> Already received friend request</p>
-                    <button onClick={accept_friend}>Accept request</button>
-                    <p>{msg}</p>
+                <div className="clickable-profile grey-3 round-border">
+                    <span className="request"> Already received friend request {msg}</span>
+
+                    <Button variant="primary" onClick={accept_friend}>Accept request</Button>{' '}
+                    {/* <button onClick={accept_friend}>Accept request</button> */}
+
                 </div>
             )
                 : (
@@ -110,9 +114,11 @@ function SearchRes({ msg, user, update }) {
                 )
             }
             {!is_friend() && !sent_req() && !received_req() && msg !== user.username ? (
-                <div className="clickable-profile" >
-                    <button className="Add-btn" onClick={add_friend}>Add friend</button>
-                    <p>{msg}</p>
+                <div className="clickable-profile grey-3 round-border" >
+                    <span className="request">{msg}</span>
+                    <Button variant="primary" onClick={add_friend}>Add friend</Button>{' '}
+                    {/* <button className="Add-btn" onClick={add_friend}>Add friend</button> */}
+
                 </div>
             )
                 : (

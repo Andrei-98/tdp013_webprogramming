@@ -6,13 +6,17 @@ import MessageList from "./MessageList";
 function MyProfile({username, from, addMessage,update, friendRequests, addFriend, messages}) {
 
     return (  
-        <div>
-            <h1>{username}</h1>
+        <div className="myprofile">
+            <h1 className="username">{username}</h1>
+            <div className="box-and-req-container">
+            <FriendRequests requests={friendRequests} target={username} onAdd={addFriend} update={update} />
             <MessageBox to={username} from={from} onAdd={addMessage} />
-            <div className="profile-container"> 
-                <FriendRequests requests={friendRequests} target={username} onAdd={addFriend} update={update} />
-                <MessageList messages={messages} />
-            </div>
+            
+            <div className="inviz-item"></div>
+            </div> 
+            
+            <MessageList messages={messages} />
+
         </div>
     )
 }

@@ -12,12 +12,12 @@ function IsJsonString(str) {
 
 
 function validate_string(...string) {
-    if (string == null) {
-        return false;
-    }
-    if (string.length == 0) {
-        return false;
-    }
+    // if (string == null) {
+    //     return false;
+    // }
+    // if (string.length == 0) {
+    //     return false;
+    // }
     for (let i = 0; i < string.length; i++) {
         console.log(string[i])
         if (typeof string[i] != "string") {
@@ -44,24 +44,18 @@ function validateGETreq(httpPath) {
     console.log("Requested method: GET")
 
     let isOk = 404;
-    switch(httpPath) {
-        case (httpPath.match(/\/messages\/.+/)):
-            isOk = 200;
-            break;
-        case (httpPath.match(/\/find\/.*/)):
-            isOk = 200;
-            break;
-        case (httpPath.match(/\/friends\/.+/)):
-            isOk = 200;
-            break;
-        case (httpPath.match(/\/profile\/.+/)):
-            isOk = 200;
-            break;
-        default:
-            isOk = 404;
-    }
+
+    if (httpPath.match(/\/messages\/.+/))
+        isOk = 200;
+    else if (httpPath.match(/\/find\/.*/))
+        isOk = 200;
+    else if (httpPath.match(/\/friends\/.+/))
+        isOk = 200;
+    else if (httpPath.match(/\/profile\/.+/))
+        isOk = 200;
 
     return isOk;
+
 }
 
 
@@ -69,25 +63,17 @@ function validatePOSTreq(httpPath) {
     console.log("Requested method: POST")
 
     let isOk = 404;
-    switch(httpPath) {
-        case (httpPath === "/register"):
-            isOk = 200;
-            break;
-        case (httpPath === "/login"):
-            isOk = 200;
-            break;
-        case (httpPath === "/find"):
-            isOk = 200;
-            break;
-        case (httpPath.match(/\/profile\/.+/)):
-            isOk = 200;
-            break;
-        case (httpPath === "/update"):
-            isOk = 200;
-            break;
-        default:
-            isOk = 404;
-    }
+    
+    if (httpPath === "/register")
+        isOk = 200;
+    else if (httpPath === "/login")
+        isOk = 200;
+    else if (httpPath === "/find")
+        isOk = 200;
+    else if (httpPath.match(/\/profile\/.+/))
+        isOk = 200;
+    else if (httpPath === "/update")
+        isOk = 200;
 
     return isOk;
 }
@@ -97,13 +83,9 @@ function validatePUTreq(httpPath) {
     console.log("Requested method: PUT")
 
     let isOk = 404;
-    switch(httpPath) {
-        case (httpPath === "/find"):
-            isOk = 200;
-            break;
-        default:
-            isOk = 404;
-    }
+    
+    if (httpPath === "/find")
+        isOk = 200;   
 
     return isOk;
 }
@@ -118,6 +100,9 @@ function validateRequest(httpMethod, httpPath) {
     }
     else if (httpMethod == "PUT") {
         return validatePUTreq(httpPath);
+    }
+    else if (httpMethod == "OPTIONS") {
+        return 200;
     }
     else {
         return 405;

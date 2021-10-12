@@ -12,9 +12,8 @@ function Request({sender, target, onAdd, update}) {
     }
 
     return (
-        <div>
-            <p>Friend Requests</p>
-            <p>{sender}</p>
+        <div className="friend-container grey-3 round-border">
+            <span>{sender}</span>
             <FcCheckmark onClick={handleClick} style={{ cursor: 'pointer'}} />
             {/* <button onClick={handleClick}>Add</button> */}
         </div>

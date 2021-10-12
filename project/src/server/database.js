@@ -14,7 +14,7 @@ function startDbConn(callback) {
 
  /* for testing */
 function closeDb() {
-  dbm.s.client.close();
+  return dbm.s.client.close();
 }
 
 async function dropColl() {
@@ -23,7 +23,7 @@ async function dropColl() {
 
 /* used in POST /register */
 function add_user(user) {
-  dbm.collection(coll).insertOne(user);
+  return dbm.collection(coll).insertOne(user);
 }
 
 /* used in POST /login */
@@ -33,21 +33,21 @@ function sign_in(user) {
 
 /* used in POST /find */
 function send_friend_request(sender, target) {
-  dbm.collection(coll).updateOne({ "username": sender }, { $push: { "sent_req": target } });
-  dbm.collection(coll).updateOne({ "username": target }, { $push: { "received_req": sender } });
+  return dbm.collection(coll).updateOne({ "username": sender }, { $push: { "sent_req": target } })
+  .then (dbm.collection(coll).updateOne({ "username": target }, { $push: { "received_req": sender } }))
 }
 
 /* used in PUT for /find */
 function accept_friend(sender, target) {
-  dbm.collection(coll).updateOne({ "username": sender }, { $pull: { "sent_req": target } });
-  dbm.collection(coll).updateOne({ "username": target }, { $pull: { "received_req": sender } });
-  dbm.collection(coll).updateOne({ "username": sender }, { $push: { "friends": target } });
-  dbm.collection(coll).updateOne({ "username": target }, { $push: { "friends": sender } });
+  return dbm.collection(coll).updateOne({ "username": sender }, { $pull: { "sent_req": target } })
+  .then (dbm.collection(coll).updateOne({ "username": target }, { $pull: { "received_req": sender } }))
+  .then (dbm.collection(coll).updateOne({ "username": sender }, { $push: { "friends": target } }))
+  .then (dbm.collection(coll).updateOne({ "username": target }, { $push: { "friends": sender } }))
 }
 
 /* used in Post /profile */
 async function insert_message(message, user) {
-  dbm.collection(coll).updateOne({ "username": user },
+  return dbm.collection(coll).updateOne({ "username": user },
     {
       $push: {
         "messages": {
