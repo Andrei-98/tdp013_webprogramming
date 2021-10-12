@@ -12,12 +12,18 @@ function IsJsonString(str) {
 
 
 function validate_string(...string) {
+    // if (string == null) {
+    //     return false;
+    // }
+    // if (string.length == 0) {
+    //     return false;
+    // }
     for (let i = 0; i < string.length; i++) {
         console.log(string[i])
         if (typeof string[i] != "string") {
             return false
         }
-
+        
         // {"content": "this"}
         if (IsJsonString(string[i])) {
             return false
@@ -33,77 +39,75 @@ function validate_string(...string) {
     return true
 }
 
-//    /\/fr\/.+/
-//    /\/find\/.+/
-//    /\/friends\/.+/
-//    /\/messages\/.+/
-//    "/chat",
-// function validateGETreq(httpPath) {
-//     console.log("Requested method: GET")
 
-//     switch(httpPath) {
-//         case (httpPath == "/fr" || httpPath.match(/\/fr\/.+/)):
-//             200
-//             break;
-//         case (httpPath == "/find" || httpPath.match(/\/find\/.+/)):
-//             200
-//             break;
-//         case (httpPath == "/friends" || httpPath.match(/\/friends\/.+/)):
-//             200
-//             break;
-//         case (httpPath == "/messages" || httpPath.match(/\/messages\/.+/)):
-//             200
-//             break;
-//         default:
-//             404;
-//     }
-//     // if (httpPath == "/fr" || httpPath.match(/\/fr\/.+/)) {
-//     //     return 200;
-//     // }
-//     // else {
-//     //     return 404;
-//     // }
-// }
+function validateGETreq(httpPath) {
+    console.log("Requested method: GET")
+
+    let isOk = 404;
+
+    if (httpPath.match(/\/messages\/.+/))
+        isOk = 200;
+    else if (httpPath.match(/\/find\/.*/))
+        isOk = 200;
+    else if (httpPath.match(/\/friends\/.+/))
+        isOk = 200;
+    else if (httpPath.match(/\/profile\/.+/))
+        isOk = 200;
+
+    return isOk;
+
+}
 
 
-// function validatePOSTreq(httpPath) {
-//     console.log("Requested method: POST")
+function validatePOSTreq(httpPath) {
+    console.log("Requested method: POST")
 
-//     if (httpPath == "/messages") {
-//         return 200;
-//     }
-//     else {
-//         return 404;
-//     }
-// }
+    let isOk = 404;
+    
+    if (httpPath === "/register")
+        isOk = 200;
+    else if (httpPath === "/login")
+        isOk = 200;
+    else if (httpPath === "/find")
+        isOk = 200;
+    else if (httpPath.match(/\/profile\/.+/))
+        isOk = 200;
+    else if (httpPath === "/update")
+        isOk = 200;
 
-
-// function validatePUTreq(httpPath) {
-//     console.log("Requested method: PUT")
-
-//     if (httpPath.match(/\/messages\/[0-9]+/)) {
-//         return 200;
-//     }
-//     else {
-//         return 404;
-//     }
-// }
+    return isOk;
+}
 
 
-// function validateRequest(httpMethod, httpPath) {
-//     if (httpMethod == "POST") {
-//         return validatePOSTreq(httpPath);
-//     }
-//     else if (httpMethod == "GET") {
-//         return validateGETreq(httpPath);
-//     }
-//     else if (httpMethod == "PUT") {
-//         return validatePUTreq(httpPath);
-//     }
-//     else {
-//         return 405;
-//     }
-// }
+function validatePUTreq(httpPath) {
+    console.log("Requested method: PUT")
+
+    let isOk = 404;
+    
+    if (httpPath === "/find")
+        isOk = 200;   
+
+    return isOk;
+}
 
 
-module.exports = {validate_string};
+function validateRequest(httpMethod, httpPath) {
+    if (httpMethod == "POST") {
+        return validatePOSTreq(httpPath);
+    }
+    else if (httpMethod == "GET") {
+        return validateGETreq(httpPath);
+    }
+    else if (httpMethod == "PUT") {
+        return validatePUTreq(httpPath);
+    }
+    else if (httpMethod == "OPTIONS") {
+        return 200;
+    }
+    else {
+        return 405;
+    }
+}
+
+
+module.exports = {validate_string, validateRequest, validateGETreq, validatePOSTreq, validatePUTreq};

@@ -19,8 +19,8 @@ function Register() {
             console.log("hiiii")
             console.log(e.target[0].value, e.target[1].value, e.target[2].value)
 
-            let status_username = verifyMessage(e.target[0].value.length)
-            let status_pass1 = verifyMessage(e.target[1].value.length)
+            let status_username = verifyMessage(e.target[0].value)
+            let status_pass1 = verifyMessage(e.target[1].value)
 
             if (status_username === "" &&
                 status_pass1 === "" ) {

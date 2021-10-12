@@ -6,7 +6,7 @@ function Request({sender, target, onAdd, update}) {
 
     const handleClick = (e) => {
         e.preventDefault()
-        const req = {"sender": sender, "target":target}
+        const req = {"sender": sender, "receiver": target}
         onAdd(req)
         update()
     }

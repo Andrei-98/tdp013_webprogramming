@@ -23,30 +23,17 @@ function Profile({from, user, showRequests, update}) {
    
     
     useEffect(() => {
-        // const fetchMessages = async () => {
-        //     const res = await fetch(`http://localhost:9070/messages/${username}`)
-        //     const data = await res.json()
-        //     return data
-        // }
-
         const validProfile = async () => {
             const res = await fetch(`http://localhost:9070/profile/${username}`)
             if (Number(res.status) === 400)
-                return null;
+                return res.status;
             const data = await res.json()
             return data
         }
     
-        // const fetchRequests = async () => {
-        //     const res = await fetch(`http://localhost:9070/fr/${username}`)
-        //     const data = await res.json()
-            
-        //     return data
-        // }
-
         const getProfile = async () => {
             const valid_user = await validProfile();
-            if(valid_user != null)
+            if(valid_user != 400)
             {
                 setMessages(valid_user.messages);
                 setFriendRequests(valid_user.received_req);
@@ -57,8 +44,6 @@ function Profile({from, user, showRequests, update}) {
                 setInvalid(true);
             }
             setInit(true);
-            // const serverRequests = await fetchRequests()
-            
         }
            
             getProfile()
@@ -68,7 +53,6 @@ function Profile({from, user, showRequests, update}) {
         return user.friends.includes(username);
       }
       
-    // Add Message
     const addMessage = async (msg) => {
         const res = await fetch('http://localhost:9070/profile/' + username, {
             method: 'POST',
@@ -76,17 +60,15 @@ function Profile({from, user, showRequests, update}) {
             body: JSON.stringify(msg)
         })
         setMessages([msg, ...messages])
-        await res.json()
-        // setMessages([...messages, data])
+        await res.status
     }
 
 
     const addFriend = async (friend) => {
 
-        // delete friend.sender from friendRequest client side
         setFriendRequests(friendRequests.filter((request) => request !== friend.sender))
 
-        const res = await fetch('http://localhost:9070/profile', {
+        const res = await fetch('http://localhost:9070/find', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(friend)

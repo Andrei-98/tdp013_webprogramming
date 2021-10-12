@@ -42,6 +42,9 @@ function Find({ user, update }) {
                 .then((response) => {
                     let stream = response.text();
                     stream.then((res) => {
+                        if (response.status != 200) {
+                            return;
+                        }
                         if (res.length === 2) {
                             setError("No users with that name.")
                         }
