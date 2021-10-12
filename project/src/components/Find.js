@@ -8,27 +8,8 @@ import verifyMessage from '../validation'
 
 function Find({ user, update }) {
 
-
     const [users, setUsers] = useState(null)
-    // const [friends, setFriends] = useState([])
     const [error, setError] = useState("")
-
-
-    // useEffect(() => {
-    //     const fetchFriends = async () => {
-    //         const res = await fetch(`http://localhost:9070/friends/${user.username}`)
-    //         const data = await res.json()
-    //         return data
-    //     }
-
-    //     const getProfile = async () => {
-    //         const serverFriends = await fetchFriends()
-    //         setFriends(serverFriends)
-    //     }
-
-    //     getProfile()
-    // }, [user])
-
 
     const handleSubmit = (e) => {
         e.preventDefault(e.target[0].value);

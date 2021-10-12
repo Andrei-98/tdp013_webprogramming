@@ -8,8 +8,6 @@ const chaiHttp = require('chai-http');
 chai.should();
 chai.use(chaiHttp);
 
-// TODO Check over routes and return only relevant information, not passwords.
-// TODO look over css and padding
 // TODO make manuscript for presentation 
 
 describe('POST for /register', () => {
@@ -589,8 +587,11 @@ describe('POST for /update', () => {
             .post('/update')
             .send({username : "Kasper"})
             .then((res) => {
-                assert.equal(res.body.username, "Kasper")
-                done();
+                let obj = databaseHandler.find_user({ username: "Kasper" });
+                obj.then((r) => {
+                    assert.equal(res.body._id, r._id);
+                    done();
+                })
             })
     })
 });

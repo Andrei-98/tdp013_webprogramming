@@ -39,7 +39,7 @@ function Navigation({ logout, username }) {
                         </Nav>
                         
                         <Button className="ms-auto"
-                            variant="outline-danger"
+                            variant="btn btn-light"
                             onClick={logging_out}
                         >Log out
                         </Button>{' '}

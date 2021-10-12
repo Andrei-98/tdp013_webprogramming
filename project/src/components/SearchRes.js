@@ -3,24 +3,6 @@ import Link from 'react-router-dom/Link';
 import Button from 'react-bootstrap/Button'
 
 function SearchRes({ msg, user, update }) {
-
-    // const [status, setStatus] = useState(null);
-
-    // function check_status() {
-    //     if (is_friend()) {
-    //         return "Friends";
-    //     }
-    //     else if (sent_req()) {
-    //         return "Sent request"
-    //     }
-    //     else if (received_req()) {
-    //         return "Received request"
-    //     }
-    //     else {
-    //         return "Add friend";
-    //     }
-    // }
-
     function is_friend() {
         if (user.friends.includes(msg)) {
             return true;
@@ -77,15 +59,9 @@ function SearchRes({ msg, user, update }) {
             {is_friend() ? (
                 <Link to={`/profile/${msg}`}>
                     <div className="clickable-profile grey-3 round-border">
-
-                        {/* <button className="friend_button">{check_status()}</button> */}
-                        {/* <p>Sent request: {sent_req()}</p>
-                    <p>Received request: {received_req()}</p> */}
                         <span className="request">{msg}</span>
-
                     </div>
                 </Link>
-
             )
                 : (
                     null
@@ -103,10 +79,7 @@ function SearchRes({ msg, user, update }) {
             {received_req() ? (
                 <div className="clickable-profile grey-3 round-border">
                     <span className="request"> Already received friend request {msg}</span>
-
                     <Button variant="primary" onClick={accept_friend}>Accept request</Button>{' '}
-                    {/* <button onClick={accept_friend}>Accept request</button> */}
-
                 </div>
             )
                 : (
@@ -117,25 +90,12 @@ function SearchRes({ msg, user, update }) {
                 <div className="clickable-profile grey-3 round-border" >
                     <span className="request">{msg}</span>
                     <Button variant="primary" onClick={add_friend}>Add friend</Button>{' '}
-                    {/* <button className="Add-btn" onClick={add_friend}>Add friend</button> */}
-
                 </div>
             )
                 : (
                     null
                 )
             }
-
-
-            {/* <div className="clickable-profile">
-                <Link to={`/profile/${msg}`}>
-                    {/* <button className="friend_button">{check_status()}</button> 
-                    {/* <p>Sent request: {sent_req()}</p>
-                        <p>Received request: {received_req()}</p> 
-                    <p>{msg}</p>
-                </Link>
-            </div> */}
-
         </div>
     )
 }

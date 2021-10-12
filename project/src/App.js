@@ -1,4 +1,4 @@
-import { BrowserRouter as Router} from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { useEffect, useState } from "react";
 import React from 'react';
 import './App.css';
@@ -29,7 +29,6 @@ function App() {
   const [init, setInit] = useState(false);
 
   function update() {
-    console.log("in update baby")
     fetch('http://localhost:9070/update', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -40,7 +39,15 @@ function App() {
         let stream = response.text();
 
         stream.then((res) => {
-          login(JSON.parse(res));
+          // login(JSON.parse(res));
+          const json_res = JSON.parse(res);
+          setUser(prevState => ({
+            ...prevState,
+            friends: json_res.friends,
+            messages: json_res.messages,
+            sent_req: json_res.sent_req,
+            received_req: json_res.received_req
+          }))
         })
       })
   }
@@ -63,6 +70,7 @@ function App() {
           }
           else {
             callback();
+            setUser(JSON.parse(res));
           }
         })
       })
@@ -75,7 +83,6 @@ function App() {
       if (stored_user != null) {
         stored_user = JSON.parse(stored_user);
         check_user(stored_user.username, stored_user.password, () => {
-          setUser(user => stored_user)
           setLogged(true);
           setInit(true);
         })
@@ -95,6 +102,7 @@ function App() {
 
     setUser(user => user_det);
     localStorage.setItem('isLoggedIn', 'true');
+    user_det = { username: user_det.username, password: user_det.password };
     localStorage.setItem('user', JSON.stringify(user_det));
     setLogged(true);
     setInit(true);
@@ -118,14 +126,14 @@ function App() {
     <div className="App">
       <Router>
         {!isLoggedIn ? (
-            <UnsecureRoutes login={login} />
+          <UnsecureRoutes login={login} />
         )
           : (
             null
           )
         }
         {isLoggedIn && init ? (
-            <SecureRoutes logout={logout} user={user} update={update} />
+          <SecureRoutes logout={logout} user={user} update={update} />
         )
           : (
             null

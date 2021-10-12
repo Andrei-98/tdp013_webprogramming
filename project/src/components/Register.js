@@ -36,6 +36,7 @@ function Register() {
                             // } else if (response.status === 200) {
                             //     setError("Account created successfully.")
                         } else {
+                            setError("Account created successfully.")
                             e.target[0].value = "";
                             e.target[1].value = "";
                             e.target[2].value = "";

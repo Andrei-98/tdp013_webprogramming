@@ -1,5 +1,4 @@
 import { React } from 'react'
-import NoMatch from './NoMatch'
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Register from './Register';
 import Login from './Login';

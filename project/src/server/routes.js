@@ -3,7 +3,6 @@ let router = express.Router();
 
 let errorHandler = require('./errorHandler.js');
 let dbHandler = require('./database.js');
-const { tsParameterProperty } = require('@babel/types');
 
 
 router.use((req, res, next) => {
@@ -91,7 +90,6 @@ router.put("/find", (req, rsp) => {
         const friend_requester = req.body.sender;
         dbHandler.before_accepting_request(friend_requester, friend_target)
             .then((res) => {
-                console.log(res);
                 if (res.length != 2) {
                     rsp.sendStatus(400)
                 }
@@ -195,6 +193,7 @@ router.get(/\/profile\/.+/, (req, rsp) => {
         let result = dbHandler.find_user({ username: user });
         result.then((res) => {
             if (res != null) {
+                delete res["password"]
                 rsp.json(res);
                 // rsp.sendStatus(200);
             }
@@ -212,10 +211,10 @@ router.get(/\/profile\/.+/, (req, rsp) => {
 
 router.get(/\/find\/.*/, (req, rsp) => {
     const user = req.url.split("/").pop();
-    console.log(user);
     if (user == "") {
         const found_users = dbHandler.find_all();
         found_users.then((res) => {
+            res.forEach(el => { delete el["password"] });
             rsp.json(res);
         })
     }
@@ -223,6 +222,7 @@ router.get(/\/find\/.*/, (req, rsp) => {
         const found_users = dbHandler.get_user(user);
 
         found_users.then((res) => {
+            res.forEach(el => { delete el["password"] });
             rsp.json(res);
         })
     }
@@ -239,6 +239,8 @@ router.post("/update", (req, rsp) => {
         const status = dbHandler.find_user(user);
         status.then((res) => {
             if (res != null) {
+                delete res["username"]
+                delete res["password"]
                 rsp.json(res);
             }
             else

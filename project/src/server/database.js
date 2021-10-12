@@ -75,7 +75,7 @@ function find_all() {
   return dbm.collection(coll).find({}).toArray();
 }
 
-
+ /* dealing with friend request and friend accept  */
 function before_sending_request(sender, receiver) {
   return dbm.collection(coll).find({username : {$in: [sender, receiver]}, friends : {$nin: [sender, receiver]}, received_req : {$nin: [sender, receiver]}, sent_req : {$nin: [sender, receiver]}}).toArray();
 }
