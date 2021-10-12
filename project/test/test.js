@@ -8,7 +8,6 @@ const chaiHttp = require('chai-http');
 chai.should();
 chai.use(chaiHttp);
 
-// TODO make manuscript for presentation 
 
 describe('POST for /register', () => {
     it('Should have status code 200 and add one user to database', (done) => {
@@ -419,59 +418,6 @@ describe('POST for /profile to friend', () => {
 })
 
 
-// describe('GET for /messages/Andrei', () => {
-//     it('Should respond with all messages that Andrei has', (done) => {
-//         chai.request(server)
-//             .get('/messages/Andrei')
-//             .then((res) => {
-//                 assert.equal(res.body[0].from, "Kasper");
-//                 assert.equal(res.body[0].to, "Andrei");
-//                 assert.equal(res.body[0].content, "Hello there");
-//                 done()
-//             })
-//     });
-// })
-
-
-// describe('GET for /messages/Andrei', () => {
-//     it('Should respond with all messages that Andrei has', (done) => {
-//         chai.request(server)
-//             .get('/messages/Andrei')
-//             .then((res) => {
-//                 assert.equal(res.body[0].from, "Kasper");
-//                 assert.equal(res.body[0].to, "Andrei");
-//                 assert.equal(res.body[0].content, "Hello there");
-//                 done()
-//             })
-//     });
-// })
-
-
-// describe('GET for /friends/Kasper', () => {
-//     it('Should respond with all friends that Kasper has', (done) => {
-//         chai.request(server)
-//             .get('/friends/Kasper')
-//             .then((res) => {
-//                 assert.equal(res.body.length, 1);
-//                 assert.equal(res.body[0], "Andrei");
-//                 done();
-//             })
-//     });
-// })
-
-
-// describe('GET for /friends/UNKNOWN', () => {
-//     it('Should respond with all friends that UNKNOWN has', (done) => {
-//         chai.request(server)
-//             .get('/friends/UNKNOWN')
-//             .then((res) => {
-//                 assert.equal(res.body.length, 0);
-//                 done();
-//             })
-//     });
-// })
-
-
 describe('GET for /profile/Kasper', () => {
     it('Should respond with Json object of user Kasper', (done) => {
         chai.request(server)
@@ -790,30 +736,6 @@ describe('PUT /find sending in json object as friend-accept receiver', () => {
 });
 
 
-// describe('GET /messages/ and null object as user', () => {
-//     it('Should return status code 400', (done) => {
-//         chai.request(server)
-//             .get('/messages/' + null)
-//             .then((res) => {
-//                 assert.equal(res.status, 400);
-//                 done();
-//             })
-//     })
-// });
-
-
-// describe('GET /friends/ and null object as user', () => {
-//     it('Should return status code 400', (done) => {
-//         chai.request(server)
-//             .get('/friends/' + null)
-//             .then((res) => {
-//                 assert.equal(res.status, 400);
-//                 done();
-//             })
-//     })
-// });
-
-
 describe('GET /profile/ and null object as user', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
@@ -851,6 +773,27 @@ describe('POST /update json-object as username', () => {
     })
 });
 
+
+/*
+FROM SERVER:
+    'Access-Control-Allow-Origin'  = '*'
+    'Access-Control-Allow-Headers' = 'Origin, X-Requested-With, Content-Type, Accept'
+    'Access-Control-Allow-Methods' = 'POST, GET, PUT, OPTIONS'
+*/
+describe('Check that cors-headers are equal to servers configuration', () => { 
+    it('Headers should have same preset', (done) => {
+        chai.request(server)
+        .post( '/profile/Kasper' )
+        .send({"from" : "Andrei", "content" : "Hello"})
+        .end((err, res) => {
+            assert.equal('*', res.header['access-control-allow-origin']);
+            assert.equal('Origin, X-Requested-With, Content-Type, Accept', res.header['access-control-allow-headers']);
+            assert.equal('POST, GET, PUT, OPTIONS', res.header['access-control-allow-methods']); 
+            assert.equal(res.status, 200); 
+            done();
+        });
+    })
+});
 
 // close database and exit app
 after(() => {
