@@ -2,6 +2,8 @@ import React from 'react'
 import { useState } from 'react'
 import SearchRes from './SearchRes';
 import FriendList from './FriendList.js'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 
 function Find({ user, update }) {
 
@@ -9,7 +11,7 @@ function Find({ user, update }) {
     const [users, setUsers] = useState(null)
     // const [friends, setFriends] = useState([])
     const [error, setError] = useState("")
-   
+
 
     // useEffect(() => {
     //     const fetchFriends = async () => {
@@ -22,47 +24,57 @@ function Find({ user, update }) {
     //         const serverFriends = await fetchFriends()
     //         setFriends(serverFriends)
     //     }
-        
+
     //     getProfile()
     // }, [user])
 
 
     const handleSubmit = e => {
-        e.preventDefault(e.target[0].value); 
+        e.preventDefault(e.target[0].value);
 
         fetch('http://localhost:9070/find/' + e.target[0].value, {
             method: 'GET',
         })
-        .then((response) => {
-            let stream = response.text();
-            stream.then((res) => {
-                if (res.length === 2) {
-                    setError("No users with that name.")
-                }
-                res = JSON.parse(res);
-                setUsers(users => res);
+            .then((response) => {
+                let stream = response.text();
+                stream.then((res) => {
+                    if (res.length === 2) {
+                        setError("No users with that name.")
+                    }
+                    res = JSON.parse(res);
+                    setUsers(users => res);
+                })
             })
-        }) 
     }
 
-    const resetError = () => {setError(error => "")}
+    const resetError = () => { setError(error => "") }
 
-    return (  
+    return (
 
-        <div>
-            <form method="GET" onSubmit={handleSubmit}>
-                <input type="text" placeholder="Find user" onInput={resetError}></input>
-                <input type="submit" value="Find"></input>
-            </form>
+        <div className="myprofile">
+            <div className="profile-container">
+            {user.friends && <FriendList friends={user.friends} />}
+            <Form className="find" onSubmit={handleSubmit} method="GET">
+                <Form.Group>
+                    <Form.Control
+                        type="text"
+                        placeholder="Find user"
+                        onInput={resetError}
+                    />
+                </Form.Group>
+                <Button variant="primary" type="submit">Find</Button>{' '}
+            </Form>
+            <div className="inviz-item"></div>
+            </div>
 
             <div className="search_list">
                 {users && users.map((us) => (
-                    <SearchRes msg={us.username} user={user} update={update} className="msg"/>))}
+                    <SearchRes msg={us.username} user={user} update={update} className="msg" />))}
                 <span>{error}</span>
             </div>
-            {user.friends && <FriendList friends={user.friends} />}
-        </div>  
+            
+        </div>
     );
 }
- 
+
 export default Find;

@@ -17,6 +17,12 @@ code {
   border-radius: 5%;
 } */
 
+.links {
+  text-decoration: none;
+  color: white;
+  overflow: hidden;
+}
+
 .grey-2 {
   background-color: #191919;
 }
@@ -36,14 +42,26 @@ code {
   border-radius: 20px;
 }
 
-.clickable-profile {
-  width: 500px;
-  border: solid black;
-  margin: 0 auto;
-  margin-top: 3rem;
-  display: block;
+.search_list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 30px; 
 }
 
+.clickable-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 500px;
+}
+
+.request {
+  padding: 10px;
+}
+ 
 .btn:focus {
   outline: none;
 }
@@ -69,6 +87,12 @@ code {
   padding-right: 8px;
   margin: 5px;
 }
+
+.friend-container:hover {
+  background-color:	cyan;
+}
+
+
 
 .profile-container {
   width: 100%;
@@ -174,4 +198,21 @@ centered and friend requests to the left */
   .message-list-container {
     width: 80%;
   }
+ }
+
+
+ .find {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+ }
+
+ .mb-3 {
+   padding: 0;
+ }
+
+ .form-group {
+   padding:0;
  }
