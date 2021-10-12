@@ -148,6 +148,7 @@ router.get(/\/profile\/.+/, (req, rsp) => {
     result.then((res) => { 
         if(res != null) {
             rsp.json(res);
+            rsp.sendStatus(200);
         }
         else {
             rsp.sendStatus(400);
