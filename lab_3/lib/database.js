@@ -17,7 +17,7 @@ function startDbConn(callback)
 
 function closeDb()
 {
-  dbm.s.client.close();
+  return dbm.s.client.close();
 }
 
 
@@ -29,7 +29,7 @@ async function dropColl()
 
 function insert_message(message) 
 {
-  dbm.collection(coll).insertOne(message);
+  return dbm.collection(coll).insertOne(message);
 }
  
 
