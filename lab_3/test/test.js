@@ -9,11 +9,15 @@ const { copyFileSync } = require('fs');
 chai.should()
 chai.use(chaiHttp)
 
-before(() => {
-    server.use(async () => { 
-      await databaseHandler.dropColl();
+describe("all tests", () => {
+
+    before((done) => {
+        server.use(async () => {
+            await databaseHandler.dropColl();
+            done();
+        })
     })
-})
+});
 
 describe('POST for /messages', () => { 
     it('Should have status code 200 and add one message to database', (done) => {
@@ -348,10 +352,8 @@ describe('Check that cors-headers are equal to servers configuration', () => {
 });
 
 
-
 // close database and exit app
 after(() => {
-    databaseHandler.closeDb(); 
-    exit();
+    databaseHandler.closeDb()
+    .then(() => {exit()});
 });
-  

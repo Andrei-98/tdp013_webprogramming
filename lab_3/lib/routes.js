@@ -27,8 +27,9 @@ router.post("/messages", (req, rsp) => {
       const content = req.body.content;
       const isRead = req.body.isRead;
       let message = {"id" : id, "content" : content, "isRead" : isRead};
-      dbHandler.insert_message(message);    
-      rsp.sendStatus(200);
+      dbHandler.insert_message(message)
+      .then(() => {rsp.sendStatus(200)});    
+      
     }
     else
     {
@@ -41,8 +42,8 @@ router.post("/messages", (req, rsp) => {
 router.put(/\/messages\/[0-9]+/, (req,rsp) => {
       const message_id = Number(req.url.split("/").slice(-1).pop());
       const query = {"id" : message_id};
-      let value = dbHandler.find_message(query); 
-      value.then((res) => {
+      dbHandler.find_message(query) 
+      .then((res) => {
         // id requested for message that dosent exist in database
         if (res == null)
         {
@@ -65,8 +66,8 @@ router.put(/\/messages\/[0-9]+/, (req,rsp) => {
   
 router.get("/messages", (req, rsp) => {
     // send an array with all messages in database
-    let value = dbHandler.find_all({});
-    value.then((res) => {
+    dbHandler.find_all({})
+    .then((res) => {
         rsp.json(res);
     })
 });
@@ -77,8 +78,8 @@ router.get(/messages\/\d+/, (req,rsp) => {
     const query = {"id" : message_id};
   
     //find a specific message based on id
-    let value = dbHandler.find_message(query);
-    value.then((res) => {
+    dbHandler.find_message(query)
+    .then((res) => {
         // if (res == null)
         // {
         //     rsp.sendStatus(400)

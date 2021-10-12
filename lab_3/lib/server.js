@@ -4,7 +4,7 @@ const app = express();
 app.use(express.static(__dirname), express.json());
 
 const cors = require('cors');
-const PORT = 9070;
+const PORT = 9090;
 const databaseHandler = require("./database.js");
 
 
