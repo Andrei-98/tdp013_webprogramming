@@ -18,7 +18,7 @@ function Register() {
             fetch('http://localhost:9070/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ "username": e.target[0].value, "password": e.target[1].value })
+                body: JSON.stringify({ "username": e.target[0].value, "password": e.target[1].value, "password_confirm" : e.target[2].value })
             })
                 .then((response) => {
 
@@ -27,8 +27,9 @@ function Register() {
                     } else if (response.status === 400) {
                         setError("Forbidden characters detected, your input is either ${} or a JSON string.")
                         // } else if (response.status === 200) {
-                        //     setError("Account created successfully.")
+                        //     
                     } else {
+                        setError("Account created successfully.")
                         e.target[0].value = "";
                         e.target[1].value = "";
                         e.target[2].value = "";

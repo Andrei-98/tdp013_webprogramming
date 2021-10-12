@@ -40,8 +40,8 @@ function MessageBox({ to, from, onAdd }) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if (verifyMessage(content)) {
-            const msg = { content, to, from }
+        if (verifyMessage(content)) { 
+            const msg = { content, from }
             onAdd(msg)
             setContent('')
             setFailed('')

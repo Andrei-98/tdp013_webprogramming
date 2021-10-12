@@ -63,7 +63,7 @@ function get_user(user) {
   return dbm.collection(coll).find({username : {$regex : user, $options: 'i' }}).toArray(); 
 }
 
-function before_register(user) {
+function user_exist(user) {
   return dbm.collection(coll).find({username : user}).toArray(); 
 }
 
@@ -76,7 +76,20 @@ function find_all() {
 }
 
 
+function before_sending_request(sender, receiver) {
+  return dbm.collection(coll).find({username : {$in: [sender, receiver]}, friends : {$nin: [sender, receiver]}, received_req : {$nin: [sender, receiver]}, sent_req : {$nin: [sender, receiver]}}).toArray();
+}
+
+function before_accepting_request(sender, receiver) {
+  return dbm.collection(coll).find({username : {$in: [sender, receiver]}, friends : {$nin: [sender, receiver]}, $or: [{received_req : {$in: [sender, receiver]}}, {sent_req : {$in: [sender, receiver]}}]}).toArray();
+}
+
+// can only send messages to oneself or friends
+function is_friends(user1, user2) {
+  return dbm.collection(coll).find({username : {$in: [user2]}, $or: [{friends : {$in: [user1, user2]}}, {username : user1}]}).toArray();
+}
+
 module.exports = {
-  startDbConn, closeDb, dropColl, insert_message, before_register, find_all,  
-  find_user, sign_in, send_friend_request, accept_friend, get_user, add_user
+  startDbConn, closeDb, dropColl, insert_message, user_exist, find_all, before_sending_request, is_friends,
+  find_user, sign_in, send_friend_request, accept_friend, get_user, add_user, before_accepting_request
 };

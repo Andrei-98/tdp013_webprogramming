@@ -9,12 +9,12 @@ chai.should();
 chai.use(chaiHttp);
 
 // TODO Check over routes and return only relevant information, not passwords.
-// TODO Fix validation for forms etc
+// TODO look over css and padding
 // TODO make manuscript for presentation 
 
 describe('POST for /register', () => {
     it('Should have status code 200 and add one user to database', (done) => {
-        let query = { username: "Kasper", password: "123456" };
+        let query = { username: "Kasper", password: "123456", password_confirm: "123456" };
         databaseHandler.dropColl();
         chai.request(server)
             .post('/register')
@@ -34,7 +34,7 @@ describe('POST for /register', () => {
 
 describe('POST for /register', () => {
     it('Should have status code 200 and add one user to database', (done) => {
-        let query = { username: "Andrei", password: "Hello" };
+        let query = { username: "Andrei", password: "Hello" , password_confirm: "Hello"};
         chai.request(server)
             .post('/register')
             .send(query)
@@ -46,6 +46,20 @@ describe('POST for /register', () => {
                     r.password.should.be.equal(query.password);
                     done();
                 })
+            })
+    });
+});
+
+
+describe('POST for /register user already exist', () => {
+    it('Should have status code 409', (done) => {
+        let query = { username: "Andrei", password: "Hello" , password_confirm: "Hello"};
+        chai.request(server)
+            .post('/register')
+            .send(query)
+            .then((res) => {
+                res.should.have.status(409);
+                done();
             })
     });
 });
@@ -68,6 +82,21 @@ describe('POST for /login', () => {
             })
     });
 });
+
+
+describe('POST for /login wrong password', () => {
+    it('Should have status code 401 and return null', (done) => {
+        let query = { username: "Kasper", password: "12345" };
+        chai.request(server)
+            .post('/login')
+            .send(query)
+            .then((res) => {
+                res.should.have.status(401);
+                done();
+            })
+    });
+});
+
 
 
 describe('POST for /login', () => {
@@ -106,12 +135,104 @@ describe('POST for /find', () => {
                     assert.equal(user_sender.sent_req[0], receiver)
                     assert.equal(user_receiver.received_req[0], sender)
                     assert.equal(user_sender.sent_req.length, 1)
-                    assert.equal(user_sender.sent_req.length, 1)
+                    assert.equal(user_receiver.received_req.length, 1)
                     done();
                 })
             })
     });
 });
+
+describe('POST for /find in same way as before ' , () => {
+    it('Should have status code 400 since sender already sent request', (done) => {
+        const sender = "Kasper";
+        const receiver = "Andrei";
+        const fr_req = { "sender": sender, "receiver": receiver }
+        chai.request(server)
+            .post('/find')
+            .send(fr_req)
+            .then((res) => {
+                res.should.have.status(400);
+                let obj = databaseHandler.find_all();
+                obj.then((r) => {
+                    let user_sender = r.find(elem => elem.username === sender)
+                    let user_receiver = r.find(elem => elem.username === receiver)
+
+                    assert.equal(user_sender.sent_req[0], receiver)
+                    assert.equal(user_receiver.received_req[0], sender)
+                    assert.equal(user_sender.sent_req.length, 1)
+                    assert.equal(user_receiver.received_req.length, 1)
+                    done();
+                })
+            })
+    });
+});
+
+
+describe('POST for /find inverted ' , () => {
+    it('Should have status code 400 since sender already sent request', (done) => {
+        const sender = "Andrei";
+        const receiver = "Kasper";
+        const fr_req = { "sender": sender, "receiver": receiver }
+        chai.request(server)
+            .post('/find')
+            .send(fr_req)
+            .then((res) => {
+                res.should.have.status(400);
+                let obj = databaseHandler.find_all();
+                obj.then((r) => {
+                    let user_sender = r.find(elem => elem.username === sender)
+                    let user_receiver = r.find(elem => elem.username === receiver)
+
+                    assert.equal(user_sender.received_req[0], receiver)
+                    assert.equal(user_receiver.sent_req[0], sender)
+                    assert.equal(user_sender.received_req.length, 1)
+                    assert.equal(user_receiver.sent_req.length, 1)
+                    done();
+                })
+            })
+    });
+});
+
+
+describe('POST for /profile to friend', () => {
+    it('Should have status code 400, since they are not friends', (done) => {
+        const from = "Kasper";
+        const content = "Hello there";
+        const message = { content: content, from: from}
+        chai.request(server)
+            .post('/profile/Andrei')
+            .send(message)
+            .then((res) => {
+                res.should.have.status(400);
+                let obj = databaseHandler.find_user({ username: "Andrei" });
+                obj.then((r) => {
+                    r.username.should.be.equal("Andrei");
+                    r.messages.length.should.be.equal(0);
+                    done();
+                })
+            })
+    });
+})
+
+
+describe('POST for /profile to non existent user', () => {
+    it('Should have status code 400, since that user dosent exist', (done) => {
+        const from = "Kasper";
+        const content = "Hello there";
+        const message = { content: content, from: from}
+        chai.request(server)
+            .post('/profile/Cleo')
+            .send(message)
+            .then((res) => {
+                res.should.have.status(400);
+                let obj = databaseHandler.find_user({ username: "Cleo" });
+                obj.then((r) => {
+                    assert.equal(r, null);
+                    done();
+                })
+            })
+    });
+})
 
 
 describe('PUT for /find', () => {
@@ -140,11 +261,89 @@ describe('PUT for /find', () => {
 });
 
 
-describe('POST for /profile to self', () => {
-    it('Should have status code 200, add message to John', (done) => {
+describe('POST for /profile to friend', () => {
+    it('Should have status code 200, since they are now friends', (done) => {
         const from = "Kasper";
         const content = "Hello there";
-        const message = { content: content, from: from, to: from }
+        const message = { content: content, from: from}
+        chai.request(server)
+            .post('/profile/Andrei')
+            .send(message)
+            .then((res) => {
+                res.should.have.status(200);
+                let obj = databaseHandler.find_user({ username: "Andrei" });
+                obj.then((r) => {
+                    r.username.should.be.equal("Andrei");
+                    r.messages.length.should.be.equal(1);
+                    assert.equal(r.messages[0].from, from);
+                    assert.equal(r.messages[0].to, "Andrei");
+                    assert.equal(r.messages[0].content, content);
+                    done();
+                })
+            })
+    });
+})
+
+
+describe('POST for /find after already friends' , () => {
+    it('Should have status code 400 since sender already friends with receiver', (done) => {
+        const sender = "Andrei";
+        const receiver = "Kasper";
+        const fr_req = { "sender": sender, "receiver": receiver }
+        chai.request(server)
+            .post('/find')
+            .send(fr_req)
+            .then((res) => {
+                res.should.have.status(400);
+                let obj = databaseHandler.find_all();
+                obj.then((r) => {
+                    let user_sender = r.find(elem => elem.username === sender)
+                    let user_receiver = r.find(elem => elem.username === receiver)
+
+                    assert.equal(user_sender.friends[0], receiver)
+                    assert.equal(user_receiver.friends[0], sender)
+                    assert.equal(user_sender.received_req.length, 0)
+                    assert.equal(user_receiver.sent_req.length, 0)
+                    done();
+                })
+            })
+    });
+});
+
+
+describe('PUT for /find same as before', () => {
+    it('Should have status code 400,since they are already friends', (done) => {
+        const sender = "Kasper";
+        const receiver = "Andrei";
+        const fr_req = { "sender": sender, "receiver": receiver }
+        chai.request(server)
+            .put('/find')
+            .send(fr_req)
+            .then((res) => {
+                res.should.have.status(400);
+                let obj = databaseHandler.find_all();
+                obj.then((r) => {
+                    let user_sender = r.find(elem => elem.username === sender)
+                    let user_receiver = r.find(elem => elem.username === receiver)
+
+                    assert.equal(user_sender.friends[0], receiver)
+                    assert.equal(user_receiver.friends[0], sender)
+                    assert.equal(user_receiver.friends.length, 1)
+                    assert.equal(user_receiver.friends.length, 1)
+                    assert.equal(user_sender.sent_req.length, 0)
+                    assert.equal(user_receiver.received_req.length, 0)
+                    done();
+                })
+            })
+    });
+});
+
+
+describe('POST for /profile to self', () => {
+    it('Should have status code 200, add message to Kasper', (done) => {
+        const from = "Kasper";
+        const content = "Hello there";
+        const message = { content: content, from: from}
         chai.request(server)
             .post('/profile/Kasper')
             .send(message)
@@ -164,24 +363,56 @@ describe('POST for /profile to self', () => {
 });
 
 
+describe('POST for /profile to self with 0 chars', () => {
+    it('Should have status code 400', (done) => {
+        const from = "Kasper";
+        const content = "";
+        const message = { content: content, from: from}
+        chai.request(server)
+            .post('/profile/Kasper')
+            .send(message)
+            .then((res) => {
+                res.should.have.status(400);
+                done();
+            })
+    });
+});
+
+
+
+describe('POST for /profile to self with more than 140 chars', () => {
+    it('Should have status code 400', (done) => {
+        const from = "Kasper";
+        const content = "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello";
+        const message = { content: content, from: from}
+        chai.request(server)
+            .post('/profile/Kasper')
+            .send(message)
+            .then((res) => {
+                res.should.have.status(400);
+                done();
+            })
+    });
+});
+
+
 describe('POST for /profile to friend', () => {
     it('Should have status code 200, add message to Andrei', (done) => {
         const from = "Kasper";
         const content = "Hello there";
-        const to = "Andrei";
-        const message = { content: content, from: from, to: to }
-
+        const message = { content: content, from: from}
         chai.request(server)
             .post('/profile/Andrei')
             .send(message)
             .then((res) => {
                 res.should.have.status(200);
-                let obj = databaseHandler.find_user({ username: to });
+                let obj = databaseHandler.find_user({ username: "Andrei" });
                 obj.then((r) => {
-                    r.username.should.be.equal(to);
-                    r.messages.length.should.be.equal(1);
+                    console.log(r)
+                    r.username.should.be.equal("Andrei");
+                    r.messages.length.should.be.equal(2);
                     assert.equal(r.messages[0].from, from);
-                    assert.equal(r.messages[0].to, to);
+                    assert.equal(r.messages[0].to, "Andrei");
                     assert.equal(r.messages[0].content, content);
                     done();
                 })
@@ -190,57 +421,57 @@ describe('POST for /profile to friend', () => {
 })
 
 
-describe('GET for /messages/Andrei', () => {
-    it('Should respond with all messages that Andrei has', (done) => {
-        chai.request(server)
-            .get('/messages/Andrei')
-            .then((res) => {
-                assert.equal(res.body[0].from, "Kasper");
-                assert.equal(res.body[0].to, "Andrei");
-                assert.equal(res.body[0].content, "Hello there");
-                done()
-            })
-    });
-})
+// describe('GET for /messages/Andrei', () => {
+//     it('Should respond with all messages that Andrei has', (done) => {
+//         chai.request(server)
+//             .get('/messages/Andrei')
+//             .then((res) => {
+//                 assert.equal(res.body[0].from, "Kasper");
+//                 assert.equal(res.body[0].to, "Andrei");
+//                 assert.equal(res.body[0].content, "Hello there");
+//                 done()
+//             })
+//     });
+// })
 
 
-describe('GET for /messages/Andrei', () => {
-    it('Should respond with all messages that Andrei has', (done) => {
-        chai.request(server)
-            .get('/messages/Andrei')
-            .then((res) => {
-                assert.equal(res.body[0].from, "Kasper");
-                assert.equal(res.body[0].to, "Andrei");
-                assert.equal(res.body[0].content, "Hello there");
-                done()
-            })
-    });
-})
+// describe('GET for /messages/Andrei', () => {
+//     it('Should respond with all messages that Andrei has', (done) => {
+//         chai.request(server)
+//             .get('/messages/Andrei')
+//             .then((res) => {
+//                 assert.equal(res.body[0].from, "Kasper");
+//                 assert.equal(res.body[0].to, "Andrei");
+//                 assert.equal(res.body[0].content, "Hello there");
+//                 done()
+//             })
+//     });
+// })
 
 
-describe('GET for /friends/Kasper', () => {
-    it('Should respond with all friends that Kasper has', (done) => {
-        chai.request(server)
-            .get('/friends/Kasper')
-            .then((res) => {
-                assert.equal(res.body.length, 1);
-                assert.equal(res.body[0], "Andrei");
-                done();
-            })
-    });
-})
+// describe('GET for /friends/Kasper', () => {
+//     it('Should respond with all friends that Kasper has', (done) => {
+//         chai.request(server)
+//             .get('/friends/Kasper')
+//             .then((res) => {
+//                 assert.equal(res.body.length, 1);
+//                 assert.equal(res.body[0], "Andrei");
+//                 done();
+//             })
+//     });
+// })
 
 
-describe('GET for /friends/UNKNOWN', () => {
-    it('Should respond with all friends that UNKNOWN has', (done) => {
-        chai.request(server)
-            .get('/friends/UNKNOWN')
-            .then((res) => {
-                assert.equal(res.body.length, 0);
-                done();
-            })
-    });
-})
+// describe('GET for /friends/UNKNOWN', () => {
+//     it('Should respond with all friends that UNKNOWN has', (done) => {
+//         chai.request(server)
+//             .get('/friends/UNKNOWN')
+//             .then((res) => {
+//                 assert.equal(res.body.length, 0);
+//                 done();
+//             })
+//     });
+// })
 
 
 describe('GET for /profile/Kasper', () => {
@@ -493,13 +724,13 @@ describe('POST /profile json object', () => {
 });
 
 
-describe('POST /register user that already exist', () => {
-    it('Should return status code 409', (done) => {
+describe('POST /register user where password done match', () => {
+    it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/register')
-            .send({username: "Kasper", password: "hello"})
+            .send({username: "Kasper", password: "hello" , password_confirm: "ERROR"})
             .then((res) => {
-                assert.equal(res.status, 409);
+                assert.equal(res.status, 400);
                 done();
             })
     })
@@ -510,7 +741,7 @@ describe('POST /register sending in json object as password', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/register')
-            .send({username: "Lovisa", password: {json: true}})
+            .send({ username: "Lovisa", password: {json: true}, password_confirm: {json: true} })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -558,28 +789,28 @@ describe('PUT /find sending in json object as friend-accept receiver', () => {
 });
 
 
-describe('GET /messages/ and null object as user', () => {
-    it('Should return status code 400', (done) => {
-        chai.request(server)
-            .get('/messages/' + null)
-            .then((res) => {
-                assert.equal(res.status, 400);
-                done();
-            })
-    })
-});
+// describe('GET /messages/ and null object as user', () => {
+//     it('Should return status code 400', (done) => {
+//         chai.request(server)
+//             .get('/messages/' + null)
+//             .then((res) => {
+//                 assert.equal(res.status, 400);
+//                 done();
+//             })
+//     })
+// });
 
 
-describe('GET /friends/ and null object as user', () => {
-    it('Should return status code 400', (done) => {
-        chai.request(server)
-            .get('/friends/' + null)
-            .then((res) => {
-                assert.equal(res.status, 400);
-                done();
-            })
-    })
-});
+// describe('GET /friends/ and null object as user', () => {
+//     it('Should return status code 400', (done) => {
+//         chai.request(server)
+//             .get('/friends/' + null)
+//             .then((res) => {
+//                 assert.equal(res.status, 400);
+//                 done();
+//             })
+//     })
+// });
 
 
 describe('GET /profile/ and null object as user', () => {
@@ -619,18 +850,6 @@ describe('POST /update json-object as username', () => {
     })
 });
 
-
-// TODO TESTS
-
-// test to post to nonexistet user --fail
-// test for post to nonfriend --ok
-// test for post with 0 chars --fail
-// register user with nonmatching passwords --fail
-// register user with username already take --fail
-// ? test to post to a friend profile as a different person
-// ----client side 
-// log in to existing user but wrong password
-// log in to non-existing user
 
 // close database and exit app
 after(() => {

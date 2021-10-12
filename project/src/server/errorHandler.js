@@ -1,3 +1,11 @@
+function password_confirmation(p1, p2) {
+    return String(p1) === String(p2);
+}
+
+function validate_message(msg) {
+    return msg.length > 0 && msg.length < 141;
+} 
+
 function IsJsonString(str) {
     try {
         str = JSON.parse(str);
@@ -15,9 +23,7 @@ function validate_string(...string) {
     // if (string == null) {
     //     return false;
     // }
-    // if (string.length == 0) {
-    //     return false;
-    // }
+    
     for (let i = 0; i < string.length; i++) {
         console.log(string[i])
         if (typeof string[i] != "string") {
@@ -45,12 +51,12 @@ function validateGETreq(httpPath) {
 
     let isOk = 404;
 
-    if (httpPath.match(/\/messages\/.+/))
+    // if (httpPath.match(/\/messages\/.+/))
+    //     isOk = 200;
+    if (httpPath.match(/\/find\/.*/))
         isOk = 200;
-    else if (httpPath.match(/\/find\/.*/))
-        isOk = 200;
-    else if (httpPath.match(/\/friends\/.+/))
-        isOk = 200;
+    // else if (httpPath.match(/\/friends\/.+/))
+    //     isOk = 200;
     else if (httpPath.match(/\/profile\/.+/))
         isOk = 200;
 
@@ -110,4 +116,4 @@ function validateRequest(httpMethod, httpPath) {
 }
 
 
-module.exports = {validate_string, validateRequest, validateGETreq, validatePOSTreq, validatePUTreq};
+module.exports = {validate_string, validateRequest, validateGETreq, validatePOSTreq, validatePUTreq, password_confirmation, validate_message};

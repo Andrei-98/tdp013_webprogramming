@@ -3,7 +3,7 @@ import MessageBox from "./MessageBox";
 import FriendRequests from "./FriendRequests";
 import MessageList from "./MessageList";
 
-function MyProfile({username, from, addMessage,update, friendRequests, addFriend, messages}) {
+function MyProfile({username, from, addMessage, update, friendRequests, addFriend, messages}) {
 
     return (  
         <div className="myprofile">

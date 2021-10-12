@@ -6,7 +6,7 @@ import MyProfile from './MyProfile'
 import InvalidProfile from './InvalidProfile'
 import FriendProfile from './FriendProfile'
 
-function Profile({from, user, showRequests, update}) {
+function Profile({from, user, update}) {
 
     const { username } = useParams()
     const [messages, setMessages] = useState([])
