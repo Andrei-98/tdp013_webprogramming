@@ -20,10 +20,10 @@ function Navigation({ logout, username }) {
 
 
     return (
-        <div>
-            <Navbar bg="light" expand="lg">
+        <div className="background">
+            <Navbar bg="primary" variant="dark" expand="lg">
                 <Container>
-                    <Navbar.Brand href="#home">Epic name</Navbar.Brand>
+                    <Navbar.Brand>{username}</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mx-auto parent">
@@ -31,13 +31,17 @@ function Navigation({ logout, username }) {
                                 <Nav.Link>My profile</Nav.Link>
                             </LinkContainer>
                             <LinkContainer to="/find">
-                            <Nav.Link>Find</Nav.Link>
+                                <Nav.Link>Find</Nav.Link>
                             </LinkContainer>
                             <LinkContainer to="/chat">
                                 <Nav.Link>Chat</Nav.Link>
                             </LinkContainer>
                         </Nav>
-                        <Button variant="outline-danger" onClick={logging_out}>Log out</Button>{' '}
+                        <Button
+                            variant="outline-danger"
+                            onClick={logging_out}
+                        >Log out
+                        </Button>{' '}
                     </Navbar.Collapse>
                 </Container>
             </Navbar>

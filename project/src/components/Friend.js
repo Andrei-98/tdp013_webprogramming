@@ -5,7 +5,7 @@ import Link from 'react-router-dom/Link';
 
 function Friend({ friend }) {
     return (
-        <div className="friend-container">
+        <div className="friend-container grey-3">
             <Link to={`/profile/${friend}`}><span>{friend}</span></Link>
             {/* <FaTimes
                 style={{ color: 'red', cursor: 'pointer'}}

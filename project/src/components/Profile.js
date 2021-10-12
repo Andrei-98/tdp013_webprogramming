@@ -99,13 +99,13 @@ function Profile({from, user, showRequests, update}) {
 
 
     return (
-        <div> 
-            <div>
+        <div className="profile-container grey-1"> 
+            <>
                 {init && invalid_user && <InvalidProfile />}
                 {init && !other_profile && <MyProfile username={username} from={from} addMessage={addMessage} update={update} friendRequests={friendRequests} addFriend={addFriend} messages={messages} />}
                 {init && other_profile && isFriend() && <FriendProfile username={username} from={from} addMessage={addMessage} friendRequests={friendRequests} addFriend={addFriend} messages={messages} />}
                 {init && !isFriend() && other_profile && !invalid_user && <NotFriend user={user} update={update} />}
-            </div>
+            </>
         </div>
     )
 }

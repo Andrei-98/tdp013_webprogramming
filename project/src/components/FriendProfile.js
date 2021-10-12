@@ -8,7 +8,7 @@ function FriendProfile({username, from, addMessage, messages}) {
 
     
     return (  
-        <div>
+        <div className="myprofile">
             <h1>{username}</h1>
             <MessageBox to={username} from={from} onAdd={addMessage} />
             <div className="profile-container"> 

@@ -12,7 +12,7 @@ function OtherProfile({ user }) {
     
 
     return (
-        <div>
+        <div className="myprofile">
            
             <h1>{}</h1>
           

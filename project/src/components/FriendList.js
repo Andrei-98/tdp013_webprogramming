@@ -4,7 +4,7 @@ import Friend from "./Friend"
 function FriendList({ friends }) {
 
     return (
-        <div className="friends-list-container">
+        <div className="friends-list-container grey-2 round-border">
             {friends.length === 0 && <span>No friends to show :(</span>}    
 
             {friends.map((friend) => (
