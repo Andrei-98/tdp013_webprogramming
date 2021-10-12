@@ -11,8 +11,9 @@ function SecureRoutes({ logout, user, update }) {
     return (
 
         <div>
-            <Navigation logout={logout} username={user.username} />
+            
             <Router>
+            <Navigation logout={logout} username={user.username} />
                 <Switch>
                     <Route exact path="/find"> <Find user={user} update={update} username={user.username} /> </Route>
                     <Route exact path="/profile/:username"> <Profile from={user.username} user={user} update={update} showRequests={true} /> </Route>

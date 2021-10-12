@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import verifyMessage from '../validation'
+
 function Register() {
 
     const [error, setError] = useState('')
@@ -8,37 +10,50 @@ function Register() {
     const handleSubmit = e => {
         e.preventDefault();
 
+        // check if the passwords match
+        // check if username and passwords have one or more chars
         if (e.target[1].value === e.target[2].value &&
             e.target[1].value.length >= 1 &&
-            e.target[0].value.length >= 1 &&
-            e.target[2].value.length >= 1) {
+            e.target[0].value.length >= 1) {
 
-            console.log("1 val")
-            console.log(e.target[1].value)
-            fetch('http://localhost:9070/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ "username": e.target[0].value, "password": e.target[1].value, "password_confirm" : e.target[2].value })
-            })
-                .then((response) => {
+            let status_username = verifyMessage(e.target[0].value)
+            let status_pass1 = verifyMessage(e.target[1].value)
 
-                    if (response.status === 409) {
-                        setError("Username is already in use.")
-                    } else if (response.status === 400) {
-                        setError("Forbidden characters detected, your input is either ${} or a JSON string.")
-                        // } else if (response.status === 200) {
-                        //     
-                    } else {
-                        setError("Account created successfully.")
-                        e.target[0].value = "";
-                        e.target[1].value = "";
-                        e.target[2].value = "";
-                    }
+            if (status_username === "" &&
+                status_pass1 === "" ) {
 
-                    return response.status;
+                fetch('http://localhost:9070/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ "username": e.target[0].value, "password": e.target[1].value, "password_confirm" : e.target[2].value })
                 })
+                    .then((response) => {
+
+                        if (response.status === 409) {
+                            setError("Username is already in use.")
+                        } else if (response.status === 400) {
+                            setError("Forbidden characters detected, your input is either ${} or a JSON string.")
+                            // } else if (response.status === 200) {
+                            //     setError("Account created successfully.")
+                        } else {
+                            e.target[0].value = "";
+                            e.target[1].value = "";
+                            e.target[2].value = "";
+                        }
+
+                        return response.status;
+                    })
+            } else {
+                if (status_username !== "") {
+                    setError(status_username)
+                }  else {
+                    setError(status_pass1)
+                }
+
+            }
+
         } else {
-            setError("Passwords must match and they cannot be empty.")
+            setError("Passwords and username must match and they cannot be empty.")
         }
     }
 

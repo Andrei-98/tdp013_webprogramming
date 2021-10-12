@@ -23,10 +23,10 @@ function Navigation({ logout, username }) {
         <div className="background">
             <Navbar bg="primary" variant="dark" expand="lg">
                 <Container>
-                    <Navbar.Brand>{username}</Navbar.Brand>
+                <Navbar.Brand className="me-auto">{username}</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="mx-auto parent">
+                        <Nav className="mx-5">
                             <LinkContainer to={"/profile/" + username}>
                                 <Nav.Link>My profile</Nav.Link>
                             </LinkContainer>
@@ -37,7 +37,8 @@ function Navigation({ logout, username }) {
                                 <Nav.Link>Chat</Nav.Link>
                             </LinkContainer>
                         </Nav>
-                        <Button
+                        
+                        <Button className="ms-auto"
                             variant="outline-danger"
                             onClick={logging_out}
                         >Log out

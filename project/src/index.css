@@ -50,6 +50,10 @@ code {
   margin: 30px; 
 }
 
+.search-res{
+  margin: 10px;
+}
+
 .clickable-profile {
   display: flex;
   flex-direction: column;
@@ -91,8 +95,6 @@ code {
 .friend-container:hover {
   background-color:	cyan;
 }
-
-
 
 .profile-container {
   width: 100%;
@@ -137,13 +139,16 @@ code {
   margin-left: 5px;
 }
 
+.msg-box-errror{
+  display: flex;
+  flex-direction: column;
+}
 
 .box-and-req-container {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: row;
-
 }
 
 /* this is usesed to make .msg-container 
@@ -168,7 +173,8 @@ centered and friend requests to the left */
   align-items: center;
   justify-content: center;
   padding: 2%;
-  margin: 2%
+  margin: 2%;
+  margin-left: 30px;
 }
 
 /* LOG IN SCREEN */

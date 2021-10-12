@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { useState } from 'react'
 import { useHistory } from "react-router-dom";
+import verifyMessage from '../validation'
 
 
 function Login({ login }) {
@@ -11,31 +12,41 @@ function Login({ login }) {
     const [user, setUser] = useState({ username: "", password: "" })
     const [error, setError] = useState(false)
 
+
     const submitHandler = e => {
         e.preventDefault();
 
-        fetch('http://localhost:9070/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            json: true,
-            body: JSON.stringify({ "username": user.username, "password": user.password })
-        })
-            .then((response) => {
-                let stream = response.text();
-                stream.then((res) => {
-                    if (res === "Unauthorized") {
-                        setError("Wrong password or name.")
-                        return;
-                    } else if (res === "Bad Request") {
+        let status_user = verifyMessage(e.target[0].value)
+        let status_password = verifyMessage(e.target[1].value)
 
-                        setError("Forbidden characters detected, your input is either ${} or a JSON string.")
-                    }
-                    else {
-                        login(JSON.parse(res));
-                        history.push("/profile/" + user.username)
-                    }
-                })
+        if (status_user === "" && status_password === "") {
+
+            fetch('http://localhost:9070/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                json: true,
+                body: JSON.stringify({ "username": user.username, "password": user.password })
             })
+                .then((response) => {
+                    let stream = response.text();
+                    stream.then((res) => {
+                        if (res === "Unauthorized") {
+                            setError("Wrong password or name.")
+                            return;
+                        } else {
+                            login(JSON.parse(res));
+                            history.push("/profile/" + user.username)
+                        }
+                    })
+                })
+        } else {
+            console.log("in error")
+            if (status_user !== "") {
+                setError(status_user)
+            } else {
+                setError(status_password)
+            }
+        }
     }
     function clearError() {
         setError("")

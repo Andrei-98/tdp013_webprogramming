@@ -73,7 +73,7 @@ function SearchRes({ msg, user, update }) {
     }
 
     return (
-        <div>
+        <div className="search-res">
             {is_friend() ? (
                 <Link to={`/profile/${msg}`}>
                     <div className="clickable-profile grey-3 round-border">
