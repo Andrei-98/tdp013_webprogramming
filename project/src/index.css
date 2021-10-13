@@ -11,11 +11,10 @@ code {
     monospace;
 }
 
-/* .grey-1 {
-  background-color: #121212;
-  border: 1px;
-  border-radius: 5%;
-} */
+.form-label {
+  margin-bottom: 0px;
+  padding: 0px;
+}
 
 .links {
   text-decoration: none;

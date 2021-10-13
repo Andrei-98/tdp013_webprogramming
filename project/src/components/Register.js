@@ -7,58 +7,61 @@ function Register() {
 
     const [error, setError] = useState('')
 
-    const handleSubmit = e => {
+    const resetError = () => { setError(error => "") }
+
+    const registerFetch = (e) => {
+        fetch('http://localhost:9070/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "username": e.target[0].value,
+                "password": e.target[1].value,
+                "password_confirm": e.target[2].value
+            })
+        })
+            .then((response) => {
+                if (response.status === 409) {
+                    setError("Username is already in use.")
+                } else if (response.status === 400) {
+                    setError("Forbidden characters detected, your \
+                              input is either ${} or a JSON string.")
+                } else {
+                    setError("Account created successfully.")
+                    // reset text fields
+                    e.target[0].value = ""
+                    e.target[1].value = ""
+                    e.target[2].value = ""
+                }
+            })
+
+    }
+
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         // check if the passwords match
-        // check if username and passwords have one or more chars
-        if (e.target[1].value === e.target[2].value &&
-            e.target[1].value.length >= 1 &&
-            e.target[0].value.length >= 1) {
+        if (e.target[1].value === e.target[2].value) {
 
             let status_username = verifyMessage(e.target[0].value)
             let status_pass1 = verifyMessage(e.target[1].value)
 
             if (status_username === "" &&
-                status_pass1 === "" ) {
-
-                fetch('http://localhost:9070/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ "username": e.target[0].value, "password": e.target[1].value, "password_confirm" : e.target[2].value })
-                })
-                    .then((response) => {
-
-                        if (response.status === 409) {
-                            setError("Username is already in use.")
-                        } else if (response.status === 400) {
-                            setError("Forbidden characters detected, your input is either ${} or a JSON string.")
-                            // } else if (response.status === 200) {
-                            //     setError("Account created successfully.")
-                        } else {
-                            setError("Account created successfully.")
-                            e.target[0].value = "";
-                            e.target[1].value = "";
-                            e.target[2].value = "";
-                        }
-
-                        return response.status;
-                    })
+                status_pass1 === "") {
+                registerFetch(e)
             } else {
                 if (status_username !== "") {
                     setError(status_username)
-                }  else {
+                } else {
                     setError(status_pass1)
                 }
-
             }
 
         } else {
-            setError("Passwords and username must match and they cannot be empty.")
+            setError("Passwords and username must\
+                      match and they cannot be empty.")
         }
     }
 
-    const resetError = () => { setError(error => "") }
 
     return (
         <div className="login-form background">
@@ -75,6 +78,7 @@ function Register() {
                             id="uname3"
                         />
                     </Form.Group>
+
                     <Form.Group className="mb-3">
                         <Form.Control
                             type="password"
@@ -84,6 +88,7 @@ function Register() {
                             id="pword1"
                         />
                     </Form.Group>
+
                     <Form.Group className="mb-3">
                         <Form.Control
                             type="password"
@@ -93,6 +98,7 @@ function Register() {
                             id="pword2"
                         />
                     </Form.Group>
+
                     <p>{error}</p>
 
                     <Button variant="primary" type="submit">Register</Button>{' '}
