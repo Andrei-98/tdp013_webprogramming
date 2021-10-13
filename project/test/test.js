@@ -2,11 +2,13 @@ const assert = require('assert');
 let server = require('../src/server/server.js');
 const { exit } = require('process');
 let databaseHandler = require('../src/server/database.js');
+let cryptoJS = require("crypto-js")
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 chai.should();
 chai.use(chaiHttp);
+const KEYPHRASE = "JiajfiahbbvasfoahfojJIHFASHFUHFhfhf1134124";
 
 
 describe('POST for /register', () => {
@@ -405,7 +407,6 @@ describe('POST for /profile to friend', () => {
                 res.should.have.status(200);
                 let obj = databaseHandler.find_user({ username: "Andrei" });
                 obj.then((r) => {
-                    console.log(r)
                     r.username.should.be.equal("Andrei");
                     r.messages.length.should.be.equal(2);
                     assert.equal(r.messages[0].from, from);
@@ -774,6 +775,60 @@ describe('POST /update json-object as username', () => {
 });
 
 
+describe('POST /checkup json-object as username', () => {
+    it('Should return status code 400', (done) => {
+        chai.request(server)
+            .post('/checkup')
+            .send({username : {JSON: true}})
+            .then((res) => {
+                assert.equal(res.status, 400);
+                done();
+            })
+    })
+});
+
+
+describe('POST /checkup wrong password', () => {
+    it('Should return status code 401', (done) => {
+        chai.request(server)
+            .post('/checkup')
+            .send({username : "kasper", password: "1234566"})
+            .then((res) => {
+                assert.equal(res.status, 401);
+                done();
+            })
+    })
+});
+
+
+describe('POST /checkup right hashed password', () => {
+    it('Should return JSON object of user', (done) => {
+        const passwordHashed = cryptoJS.AES.encrypt("123456", KEYPHRASE).toString();
+        chai.request(server)
+            .post('/checkup')
+            .send({username : "Kasper", password: passwordHashed})
+            .then((res) => {
+                assert.equal(res.body.username, "Kasper");
+                done();
+            })
+    })
+});
+
+
+describe('POST /options right password', () => {
+    it('Should return JSON object of user', (done) => {
+        const passwordHashed = cryptoJS.AES.encrypt("123456", KEYPHRASE).toString();
+        chai.request(server)
+            .options('/checkup')
+            .send({username : "Kasper", password: passwordHashed})
+            .then((res) => {
+                assert.equal(res.status, 200);
+                done();
+            })
+    })
+});
+
+
 /*
 FROM SERVER:
     'Access-Control-Allow-Origin'  = '*'
@@ -794,6 +849,7 @@ describe('Check that cors-headers are equal to servers configuration', () => {
         });
     })
 });
+
 
 // close database and exit app
 after(() => {

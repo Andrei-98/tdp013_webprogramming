@@ -54,7 +54,7 @@ function App() {
 
 
   function check_user(userName, userPassword, callback) {
-    fetch('http://localhost:9070/login', {
+    fetch('http://localhost:9070/checkup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       json: true,

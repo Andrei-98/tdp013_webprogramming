@@ -25,7 +25,6 @@ function validate_string(...string) {
     // }
     
     for (let i = 0; i < string.length; i++) {
-        console.log(string[i])
         if (typeof string[i] != "string") {
             return false
         }
@@ -80,7 +79,8 @@ function validatePOSTreq(httpPath) {
         isOk = 200;
     else if (httpPath === "/update")
         isOk = 200;
-
+    else if (httpPath === "/checkup")
+        isOk = 200;
     return isOk;
 }
 

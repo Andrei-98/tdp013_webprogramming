@@ -4,6 +4,10 @@ let router = express.Router();
 let errorHandler = require('./errorHandler.js');
 let dbHandler = require('./database.js');
 
+let cryptoJS = require("crypto-js")
+
+const KEYPHRASE = "JiajfiahbbvasfoahfojJIHFASHFUHFhfhf1134124";
+
 
 router.use((req, res, next) => {
     let requestStatus = errorHandler.validateRequest(req.method, req.path);
@@ -45,12 +49,15 @@ router.post("/register", (req, rsp) => {
     }
 });
 
+// runs after click sign in btn
 router.post("/login", (req, rsp) => {
     if (errorHandler.validate_string(req.body.username, req.body.password)) {
         const user = { username: req.body.username, password: req.body.password };
         const status = dbHandler.sign_in(user);
         status.then((res) => {
             if (res != null) {
+                const hashedPass = cryptoJS.AES.encrypt(req.body.password, KEYPHRASE).toString(); 
+                res.password = hashedPass;
                 rsp.json(res);
             }
             else
@@ -61,6 +68,28 @@ router.post("/login", (req, rsp) => {
         rsp.sendStatus(400);
     }
 });
+
+// runs after refresh of page
+router.post("/checkup", (req, rsp) => {
+    if (errorHandler.validate_string(req.body.username, req.body.password)) {
+        const decryptPassword = cryptoJS.AES.decrypt(req.body.password, KEYPHRASE);
+        const user = { username: req.body.username, password: decryptPassword.toString(cryptoJS.enc.Utf8)};
+        const status = dbHandler.sign_in(user);
+        status.then((res) => {
+            if (res != null) {
+                const hashedPass = cryptoJS.AES.encrypt(req.body.password, KEYPHRASE).toString();  
+                res.password = hashedPass;
+                rsp.json(res);
+            }
+            else
+                rsp.sendStatus(401);
+        })
+    } else {
+        // request is malicious or invalid
+        rsp.sendStatus(400);
+    }
+});
+
 
 router.post("/find", (req, rsp) => {
     if (errorHandler.validate_string(req.body.receiver, req.body.sender)) {
