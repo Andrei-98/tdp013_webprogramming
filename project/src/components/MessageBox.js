@@ -34,7 +34,6 @@ function MessageBox({ to, from, onAdd }) {
                     method="POST">
 
                     <FloatingLabel
-                        controlId="floatingTextarea2"
                         label="Write a message">
                         <Form.Control
                             as="textarea"

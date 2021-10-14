@@ -8,13 +8,13 @@ function FriendRequests({ requests, target, onAdd, update }) {
         <div className="friends-list-container round-border grey-2">
             <p>Friend Requests</p>
             {requests.length === 0 && <span>No friend requests.</span>}
-            {requests.map((req) => (
+            {requests.map((req, index) => (
                 <Request
                     sender={req}
                     target={target}
                     onAdd={onAdd}
                     update={update}
-                    key={req}
+                    key={index}
                 />)
             )}
         </div>

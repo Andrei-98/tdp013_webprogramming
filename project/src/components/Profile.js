@@ -39,7 +39,7 @@ function Profile({ from, user, update }) {
 
         const getProfile = async () => {
             const valid_user = await validProfile();
-            if (valid_user != 400) {
+            if (valid_user !== 400) {
                 setMessages(valid_user.messages);
                 setFriendRequests(valid_user.received_req);
                 setInvalid(false);
@@ -60,7 +60,7 @@ function Profile({ from, user, update }) {
 
 
     const addMessage = async (msg) => {
-        const res = await fetch(`http://localhost:9070/profile/${username}`, {
+        await fetch(`http://localhost:9070/profile/${username}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(msg)
@@ -79,7 +79,7 @@ function Profile({ from, user, update }) {
         setFriendRequests(friendRequests.filter(
             (request) => request !== friend.sender))
 
-        const res = await fetch('http://localhost:9070/find', {
+        await fetch('http://localhost:9070/find', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(friend)

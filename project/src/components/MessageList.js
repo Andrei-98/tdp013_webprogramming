@@ -2,13 +2,18 @@ import Message from './Message'
 import React from 'react'
 
 
-function MessageList({messages}) {
+function MessageList({ messages }) {
 
     return (
         <div className="message-list-container">
-            {messages.map((msg) => (
-                <Message msg={msg} className="msg"/>))}
-            
+            {messages.map((msg, index) => (
+                <Message
+                    msg={msg}
+                    className="msg"
+                    key={index}
+                />
+            ))}
+
         </div>
     )
 }

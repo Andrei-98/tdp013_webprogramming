@@ -33,8 +33,7 @@ function Register() {
                 if (response.status === 409) {
                     setError("Username is already in use.")
                 } else if (response.status === 400) {
-                    setError("Forbidden characters detected,\
-                            your input is either ${} or a JSON string.")
+                    setError("Forbidden characters detected, your input is either ${} or a JSON string.")
                 } else {
                     setError("Account created successfully.")
                     e.target[0].value = "";
@@ -67,8 +66,7 @@ function Register() {
             }
 
         } else {
-            setError("Passwords and username must\
-                      match and they cannot be empty.")
+            setError("Passwords and username must match and they cannot be empty.")
         }
     }
 

@@ -49,49 +49,52 @@ function App() {
         stream.then((res) => {
 
           const json_res = JSON.parse(res)
-          setUser(prevState => ({...prevState,
-              friends: json_res.friends,
-              messages: json_res.messages,
-              sent_req: json_res.sent_req,
-              received_req: json_res.received_req
-            }))
+          setUser(prevState => ({
+            ...prevState,
+            friends: json_res.friends,
+            messages: json_res.messages,
+            sent_req: json_res.sent_req,
+            received_req: json_res.received_req
+          }))
         })
       })
   }
 
 
-  // log in user and set user State 
-  const check_user = (userName, userPassword, callback) => {
-    fetch('http://localhost:9070/checkup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      json: true,
-      body: JSON.stringify({
-        "username": userName,
-        "password": userPassword
-      })
-    })
-      .then((response) => {
-        let stream = response.text()
-        stream.then((res) => {
-          if (res === "Unauthorized") {
-            logout()
-          } else if (res === "Bad Request") {
-            logout()
-          }
-          else {
-            callback();
-            setUser(JSON.parse(res))
-          }
-        })
-      })
-  }
+
 
 
   // when webpage is refreshed 
   // check local storage if we are logged in
   // log in the user
   useEffect(() => {
+    // log in user and set user State 
+    const check_user = (userName, userPassword, callback) => {
+      fetch('http://localhost:9070/checkup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        json: true,
+        body: JSON.stringify({
+          "username": userName,
+          "password": userPassword
+        })
+      })
+        .then((response) => {
+          let stream = response.text()
+          stream.then((res) => {
+            if (res === "Unauthorized") {
+              logout()
+            } else if (res === "Bad Request") {
+              logout()
+            }
+            else {
+              callback();
+              setUser(JSON.parse(res))
+            }
+          })
+        })
+    }
+
     const signed_in = localStorage.getItem("isLoggedIn");
     if (signed_in === 'true') {
       let stored_user = localStorage.getItem('user');
@@ -110,6 +113,7 @@ function App() {
     else {
       logout();
     }
+
   }, []);
 
 
@@ -149,7 +153,7 @@ function App() {
         {!isLoggedIn && <UnsecureRoutes login={login} />}
         {isLoggedIn && init &&
           <SecureRoutes logout={logout} user={user} update={update}
-        />}
+          />}
 
       </Router>
     </div>

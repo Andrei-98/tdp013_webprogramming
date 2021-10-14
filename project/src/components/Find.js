@@ -22,7 +22,7 @@ function Find({ user, update }) {
             .then((response) => {
                 let stream = response.text();
                 stream.then((res) => {
-                    if (response.status != 200) {
+                    if (response.status !== 200) {
                         return;
                     }
                     res = JSON.parse(res);
@@ -73,12 +73,13 @@ function Find({ user, update }) {
             <div className="search_list">
 {/*             iterate through the found in getUsers()
                 create a SearchRes component out of each one  */}
-                {users && users.map((us) => (
+                {users && users.map((us, index) => (
                     <SearchRes
                         receiver={us.username}
                         user={user}
                         update={update}
                         className="msg"
+                        key={index}
                     />))}
 
             </div>

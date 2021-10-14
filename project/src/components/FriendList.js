@@ -8,8 +8,8 @@ function FriendList({ friends }) {
             <p>Friends</p>
             {friends.length === 0 && <span>No friends to show :(</span>}    
 
-            {friends.map((friend) => (
-                <Friend friend={friend} key={String(friend)} />
+            {friends.map((friend, index) => (
+                <Friend friend={friend} key={index} />
             ))
             }
 
