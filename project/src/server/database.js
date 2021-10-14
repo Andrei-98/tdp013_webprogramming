@@ -1,5 +1,6 @@
-const url = "mongodb://localhost:27017"
+const url = 'mongodb://localhost:27017'
 const coll = 'users';
+
 
 function startDbConn(callback) {
   const MongoClient = require('mongodb').MongoClient;
@@ -12,21 +13,23 @@ function startDbConn(callback) {
   });
 }
 
+
 /* for testing */
 function closeDb() {
   return dbm.s.client.close();
 }
 
-async function dropColl() {
+
+function dropColl() {
   return dbm.collection(coll).drop();
 }
 
-/* used in POST /register */
+
 function add_user(user) {
   return dbm.collection(coll).insertOne(user);
 }
 
-/* used in POST /login */
+
 function sign_in(user) {
   return dbm.collection(coll).findOne(
     {
@@ -35,7 +38,7 @@ function sign_in(user) {
     });
 }
 
-/* used in POST /find */
+
 function send_friend_request(sender, target) {
   return dbm.collection(coll).updateOne(
     { "username": sender },
@@ -49,7 +52,7 @@ function send_friend_request(sender, target) {
       }))
 }
 
-/* used in PUT for /find */
+
 function accept_friend(sender, target) {
   return dbm.collection(coll).updateOne({ "username": sender },
                                         { $pull: { "sent_req": target } })
@@ -64,8 +67,9 @@ function accept_friend(sender, target) {
                                         { $push: { "friends": sender }}))
 }
 
-/* used in Post /profile */
-async function insert_message(message, user) {
+
+/* can only send messages to oneself or friends */
+function insert_message(message, user) {
   return dbm.collection(coll).updateOne({ "username": user },
     {
       $push: {
@@ -77,23 +81,28 @@ async function insert_message(message, user) {
     });
 }
 
+
 /* access users in different ways */
 function get_user(user) {
   return dbm.collection(coll).find(
     { username: { $regex: user, $options: 'i' } }).toArray();
 }
 
+
 function user_exist(user) {
   return dbm.collection(coll).find({ username: user }).toArray();
 }
+
 
 function find_user(user) {
   return dbm.collection(coll).findOne(user);
 }
 
+
 function find_all() {
   return dbm.collection(coll).find({}).toArray();
 }
+
 
 /* dealing with friend request and friend accept  */
 function before_sending_request(sender, receiver) {
@@ -106,6 +115,7 @@ function before_sending_request(sender, receiver) {
     }).toArray();
 }
 
+
 function before_accepting_request(sender, receiver) {
   return dbm.collection(coll).find(
     {
@@ -116,7 +126,7 @@ function before_accepting_request(sender, receiver) {
     }).toArray();
 }
 
-// can only send messages to oneself or friends
+
 function is_friends(user1, user2) {
   return dbm.collection(coll).find(
     {
@@ -125,6 +135,7 @@ function is_friends(user1, user2) {
       { username: user1 }]
     }).toArray();
 }
+
 
 module.exports =
 {

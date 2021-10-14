@@ -1,14 +1,14 @@
-let express = require('express');
-let router = express.Router();
+const express = require('express');
+const router = express.Router();
+const errorHandler = require('./errorHandler.js');
+const dbHandler = require('./database.js');
+const cryptoJS = require('crypto-js');
 
-let errorHandler = require('./errorHandler.js');
-let dbHandler = require('./database.js');
-
-let cryptoJS = require("crypto-js")
-
-const KEYPHRASE = "JiajfiahbbvasfoahfojJIHFASHFUHFhfhf1134124";
+ /* used as key in encrypt */
+const KEYPHRASE = 'JiajfiahbbvasfoahfojJIHFASHFUHFhfhf1134124';
 
 
+/* validation of method and path */
 router.use((req, res, next) => {
     let requestStatus = errorHandler.validateRequest(req.method, req.path);
 
@@ -21,6 +21,7 @@ router.use((req, res, next) => {
 })
 
 
+/* register a user */
 router.post("/register", (req, rsp) => {
     if (errorHandler.validate_string(req.body.username,
         req.body.password,
@@ -31,7 +32,7 @@ router.post("/register", (req, rsp) => {
             rsp.sendStatus(400);
         }
 
-        let user_exist = dbHandler.user_exist(req.body.username);
+        const user_exist = dbHandler.user_exist(req.body.username);
         user_exist.then((res) => {
             if (res.length == 0) {
                 const user = {
@@ -56,7 +57,8 @@ router.post("/register", (req, rsp) => {
     }
 });
 
-// runs after click sign in btn
+
+/* runs after click sign in btn */
 router.post("/login", (req, rsp) => {
     if (errorHandler.validate_string(req.body.username, req.body.password)) {
         const user = {
@@ -80,7 +82,8 @@ router.post("/login", (req, rsp) => {
     }
 });
 
-// runs after refresh of page
+
+/* runs after refresh of page */
 router.post("/checkup", (req, rsp) => {
     if (errorHandler.validate_string(req.body.username,
         req.body.password)) {
@@ -108,14 +111,15 @@ router.post("/checkup", (req, rsp) => {
 });
 
 
+/* used for sending friend request  */
 router.post("/find", (req, rsp) => {
-    console.log("hii")
     if (errorHandler.validate_string(req.body.receiver, req.body.sender)) {
         const friend_target = req.body.receiver;
         const friend_requester = req.body.sender;
 
         dbHandler.before_sending_request(friend_requester, friend_target)
             .then((res) => {
+                // finds themselves and friend target
                 if (res.length != 2) {
                     rsp.sendStatus(400)
                 }
@@ -132,15 +136,16 @@ router.post("/find", (req, rsp) => {
     }
 });
 
+
+/* used when accepting friend-request */
 router.put("/find", (req, rsp) => {
-    console.log("hey")
     if (errorHandler.validate_string(req.body.receiver, req.body.sender)) {
         const friend_target = req.body.receiver;
         const friend_requester = req.body.sender;
         dbHandler.before_accepting_request(friend_requester, friend_target)
             .then((res) => {
                 if (res.length != 2) {
-                    rsp.sendStatus(400)
+                    rsp.sendStatus(400);
                 }
                 else {
                     dbHandler.accept_friend(friend_requester, friend_target)
@@ -154,7 +159,9 @@ router.put("/find", (req, rsp) => {
     }
 });
 
-// Send message to another profile only if self or friends
+
+/* Send message to another profile 
+   can only send to self or friends */
 router.post(/\/profile\/.+/, (req, rsp) => {
     const to = String(req.url.split("/").slice(-1).pop());
     if (errorHandler.validate_string(to, req.body.from, req.body.content)) {
@@ -165,19 +172,19 @@ router.post(/\/profile\/.+/, (req, rsp) => {
             dbHandler.is_friends(req.body.from, to)
                 .then((res) => {
                     if (res.length != 0) {
-                        const rec = res.find(elem => elem.username === to)
+                        const rec = res.find(elem => elem.username === to);
                         const content = req.body.content;
                         const from = req.body.from;
-                        let message = {
+                        const message = {
                             "content": content,
                             "from": from,
                             "to": rec.username
-                        }
+                        };
                         dbHandler.insert_message(message, rec.username)
                             .then(() => { rsp.sendStatus(200) })
                     }
                     else {
-                        rsp.sendStatus(400)
+                        rsp.sendStatus(400);
                     }
                 })
         }
@@ -189,15 +196,15 @@ router.post(/\/profile\/.+/, (req, rsp) => {
 });
 
 
+/* used for getting another profile other than self  */
 router.get(/\/profile\/.+/, (req, rsp) => {
     const user = String(req.url.split("/").slice(-1).pop());
     if (errorHandler.validate_string(user)) {
-        let result = dbHandler.find_user({ username: user });
+        const result = dbHandler.find_user({ username: user });
         result.then((res) => {
             if (res != null) {
                 delete res["password"]
                 rsp.json(res);
-                // rsp.sendStatus(200);
             }
             else {
                 rsp.sendStatus(400);
@@ -211,6 +218,8 @@ router.get(/\/profile\/.+/, (req, rsp) => {
 }
 );
 
+
+/* get users based on search */
 router.get(/\/find\/.*/, (req, rsp) => {
     const user = req.url.split("/").pop();
     if (user == "") {
@@ -228,13 +237,14 @@ router.get(/\/find\/.*/, (req, rsp) => {
             rsp.json(res);
         })
     }
-
     else {
         // request is malicious or invalid
         rsp.sendStatus(400);
     }
 });
 
+
+/* update self profile */
 router.post("/update", (req, rsp) => {
     if (errorHandler.validate_string(req.body.username)) {
         const user = { username: req.body.username };
@@ -253,5 +263,6 @@ router.post("/update", (req, rsp) => {
         rsp.sendStatus(400);
     }
 });
+
 
 module.exports = router;
