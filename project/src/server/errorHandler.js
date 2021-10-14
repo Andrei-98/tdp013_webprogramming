@@ -19,11 +19,7 @@ function IsJsonString(str) {
 }
 
 
-function validate_string(...string) {
-    // if (string == null) {
-    //     return false;
-    // }
-    
+function validate_string(...string) { 
     for (let i = 0; i < string.length; i++) {
         if (typeof string[i] != "string") {
             return false
@@ -50,12 +46,8 @@ function validateGETreq(httpPath) {
 
     let isOk = 404;
 
-    // if (httpPath.match(/\/messages\/.+/))
-    //     isOk = 200;
     if (httpPath.match(/\/find\/.*/))
         isOk = 200;
-    // else if (httpPath.match(/\/friends\/.+/))
-    //     isOk = 200;
     else if (httpPath.match(/\/profile\/.+/))
         isOk = 200;
 
@@ -116,4 +108,5 @@ function validateRequest(httpMethod, httpPath) {
 }
 
 
-module.exports = {validate_string, validateRequest, validateGETreq, validatePOSTreq, validatePUTreq, password_confirmation, validate_message};
+module.exports = {validate_string, validateRequest, validateGETreq, 
+    validatePOSTreq, validatePUTreq, password_confirmation, validate_message};

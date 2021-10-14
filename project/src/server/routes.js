@@ -22,9 +22,12 @@ router.use((req, res, next) => {
 
 
 router.post("/register", (req, rsp) => {
-    if (errorHandler.validate_string(req.body.username, req.body.password, req.body.password_confirm)) {
+    if (errorHandler.validate_string(req.body.username,
+        req.body.password,
+        req.body.password_confirm)) {
 
-        if (!errorHandler.password_confirmation(req.body.password, req.body.password_confirm)) {
+        if (!errorHandler.password_confirmation(req.body.password,
+            req.body.password_confirm)) {
             rsp.sendStatus(400);
         }
 
@@ -32,8 +35,12 @@ router.post("/register", (req, rsp) => {
         user_exist.then((res) => {
             if (res.length == 0) {
                 const user = {
-                    username: req.body.username, password: req.body.password,
-                    "sent_req": [], "received_req": [], "friends": [], "messages": []
+                    username: req.body.username,
+                    password: req.body.password,
+                    "sent_req": [],
+                    "received_req": [],
+                    "friends": [],
+                    "messages": []
                 };
                 dbHandler.add_user(user);
                 rsp.sendStatus(200);
@@ -52,11 +59,15 @@ router.post("/register", (req, rsp) => {
 // runs after click sign in btn
 router.post("/login", (req, rsp) => {
     if (errorHandler.validate_string(req.body.username, req.body.password)) {
-        const user = { username: req.body.username, password: req.body.password };
+        const user = {
+            username: req.body.username,
+            password: req.body.password
+        };
         const status = dbHandler.sign_in(user);
         status.then((res) => {
             if (res != null) {
-                const encryptPass = cryptoJS.AES.encrypt(req.body.password, KEYPHRASE).toString(); 
+                const encryptPass = cryptoJS.AES.encrypt(req.body.password, 
+                    KEYPHRASE).toString(); 
                 res.password = encryptPass;
                 rsp.json(res);
             }
@@ -71,13 +82,19 @@ router.post("/login", (req, rsp) => {
 
 // runs after refresh of page
 router.post("/checkup", (req, rsp) => {
-    if (errorHandler.validate_string(req.body.username, req.body.password)) {
-        const decryptPassword = cryptoJS.AES.decrypt(req.body.password, KEYPHRASE);
-        const user = { username: req.body.username, password: decryptPassword.toString(cryptoJS.enc.Utf8)};
+    if (errorHandler.validate_string(req.body.username,
+        req.body.password)) {
+        const decryptPassword = cryptoJS.AES.decrypt(req.body.password,
+            KEYPHRASE);
+        const user = {
+            username: req.body.username,
+            password: decryptPassword.toString(cryptoJS.enc.Utf8)
+        };
         const status = dbHandler.sign_in(user);
         status.then((res) => {
             if (res != null) {
-                const encryptPass = cryptoJS.AES.encrypt(req.body.password, KEYPHRASE).toString();  
+                const encryptPass = cryptoJS.AES.encrypt(req.body.password,
+                     KEYPHRASE).toString();  
                 res.password = encryptPass;
                 rsp.json(res);
             }
@@ -92,6 +109,7 @@ router.post("/checkup", (req, rsp) => {
 
 
 router.post("/find", (req, rsp) => {
+    console.log("hii")
     if (errorHandler.validate_string(req.body.receiver, req.body.sender)) {
         const friend_target = req.body.receiver;
         const friend_requester = req.body.sender;
@@ -102,7 +120,8 @@ router.post("/find", (req, rsp) => {
                     rsp.sendStatus(400)
                 }
                 else {
-                    dbHandler.send_friend_request(friend_requester, friend_target)
+                    dbHandler.send_friend_request(friend_requester,
+                        friend_target)
                         .then(() => { rsp.sendStatus(200) });
                 }
             })
@@ -114,6 +133,7 @@ router.post("/find", (req, rsp) => {
 });
 
 router.put("/find", (req, rsp) => {
+    console.log("hey")
     if (errorHandler.validate_string(req.body.receiver, req.body.sender)) {
         const friend_target = req.body.receiver;
         const friend_requester = req.body.sender;
@@ -144,18 +164,15 @@ router.post(/\/profile\/.+/, (req, rsp) => {
         else {
             dbHandler.is_friends(req.body.from, to)
                 .then((res) => {
-                    // if (res.length == 1) {
-                    //     const content = req.body.content;
-                    //     const from = req.body.from;
-                    //     let message = { "content": content, "from": from, "to": from }
-                    //     dbHandler.insert_message(message, from)
-                    //     .then(() => {rsp.sendStatus(200)})
-                    // }
                     if (res.length != 0) {
                         const rec = res.find(elem => elem.username === to)
                         const content = req.body.content;
                         const from = req.body.from;
-                        let message = { "content": content, "from": from, "to": rec.username }
+                        let message = {
+                            "content": content,
+                            "from": from,
+                            "to": rec.username
+                        }
                         dbHandler.insert_message(message, rec.username)
                             .then(() => { rsp.sendStatus(200) })
                     }
@@ -171,50 +188,6 @@ router.post(/\/profile\/.+/, (req, rsp) => {
     }
 });
 
-// // Get messages of specific user
-// router.get(/\/messages\/.+/, (req, rsp) => {
-//     const user = String(req.url.split("/").slice(-1).pop());
-//     if (errorHandler.validate_string(user)) {
-//         dbHandler.user_exist(user)
-//         .then ((res) => {
-//             if(res.length == 1)
-//             {
-//                 dbHandler.find_user({username : user})                
-//                 .then((res) => {
-//                     rsp.json(res.messages);
-//                 })
-//             }
-//             else {
-//                 rsp.sendStatus(400);
-//             }
-//         })
-//     }
-//     else {
-//         rsp.sendStatus(400);
-//     }
-// });
-
-// //Get friends of specific user
-// router.get(/\/friends\/.+/, (req, rsp) => {
-//     const friend = String(req.url.split("/").slice(-1).pop());
-//     if (errorHandler.validate_string(friend)) {
-//         let friends = dbHandler.find_user({username : friend})
-//         friends
-//             .then((res) => {
-//                 if (res != null) {
-
-//                     rsp.json(res.friends)
-//                 }
-//                 else {
-//                     rsp.json([]);
-//                 }
-//             })
-//     }
-//     else {
-//         rsp.sendStatus(400);
-//     }
-
-// });
 
 router.get(/\/profile\/.+/, (req, rsp) => {
     const user = String(req.url.split("/").slice(-1).pop());

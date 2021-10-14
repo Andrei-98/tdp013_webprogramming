@@ -14,6 +14,30 @@ function Login({ login }) {
     const [user, setUser] = useState({ username: "", password: "" })
     const [error, setError] = useState(false)
 
+    const clearError = () => { setError(error => "") }
+
+    
+    const fetchLogin = (hashedPassword) => {
+        fetch('http://localhost:9070/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            json: true,
+            body: JSON.stringify({ "username": user.username, "password": hashedPassword })
+        })
+            .then((response) => {
+                let stream = response.text();
+                stream.then((res) => {
+                    if (res === "Unauthorized") {
+                        setError("Wrong password or name.")
+                        return;
+                    } else {
+                        login(JSON.parse(res));
+                        history.push("/profile/" + user.username)
+                    }
+                })
+            })
+    }
+
 
     const submitHandler = e => {
         e.preventDefault();
@@ -23,25 +47,7 @@ function Login({ login }) {
         const hashedPassword = CryptoJS.SHA512(e.target[1].value).toString();
 
         if (status_user === "" && status_password === "") {
-
-            fetch('http://localhost:9070/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                json: true,
-                body: JSON.stringify({ "username": user.username, "password": hashedPassword })
-            })
-                .then((response) => {
-                    let stream = response.text();
-                    stream.then((res) => {
-                        if (res === "Unauthorized") {
-                            setError("Wrong password or name.")
-                            return;
-                        } else {
-                            login(JSON.parse(res));
-                            history.push("/profile/" + user.username)
-                        }
-                    })
-                })
+            fetchLogin(hashedPassword)
         } else {
             console.log("in error")
             if (status_user !== "") {
@@ -51,16 +57,17 @@ function Login({ login }) {
             }
         }
     }
-    function clearError() {
-        setError("")
-    }
+
 
     return (
         <div className="login-form background">
             <div className="login-border">
                 <h3>Log in</h3>
 
-                <Form className="login" onSubmit={submitHandler} method="POST">
+                <Form className="login"
+                    onSubmit={submitHandler}
+                    method="POST"
+                >
                     <Form.Group className="mb-3 login">
                         <Form.Control
                             type="text"
@@ -68,10 +75,13 @@ function Login({ login }) {
                             onInput={clearError}
                             placeholder="Username"
                             id="username"
-                            onChange={e => setUser({ ...user, username: e.target.value })}
+                            onChange={e => setUser({
+                                ...user, username: e.target.value
+                            })}
                             value={user.username}
                         />
                     </Form.Group>
+
                     <Form.Group className="mb-3">
                         <Form.Control
                             type="password"
@@ -79,13 +89,20 @@ function Login({ login }) {
                             onInput={clearError}
                             placeholder="Password"
                             id="password"
-                            onChange={e => setUser({ ...user, password: e.target.value })}
+                            onChange={e => setUser({
+                                ...user, password: e.target.value
+                            })}
                             value={user.password}
                         />
                     </Form.Group>
+
                     <p>{error}</p>
 
-                    <Button variant="primary" type="submit">Login</Button>{' '}
+                    <Button
+                        variant="primary"
+                        type="submit">Login
+                    </Button>{' '}
+
                 </Form>
                 <a href="/register">Register</a>
             </div>

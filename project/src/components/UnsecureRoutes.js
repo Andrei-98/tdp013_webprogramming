@@ -11,9 +11,18 @@ function UnsecureRoutes({ login }) {
         <div>
             <Router>
                 <Switch>
-                    <Route exact path="/register"> <Register /> </Route>
-                    <Route exact path={["/", "/login"]}> <Login login={login} /> </Route>
-                    <Route exact path='*' ><Redirect exact to="/login" ></Redirect> </Route>
+                    <Route exact path="/register">
+                        <Register />
+                    </Route>
+
+                    <Route exact path={["/", "/login"]}>
+                        <Login login={login} />
+                    </Route>
+
+                    <Route exact path='*' >
+                        <Redirect exact to="/login" ></Redirect>
+                    </Route>
+
                 </Switch>
             </Router>
         </div>
