@@ -33,7 +33,7 @@ function validate_string(...string) {
         if (IsJsonString(string[i])) {
             return false
         }
-
+ 
         //${console.log}
         if (!!string[i].match(/\$.*\{.*\}/)) {
             return false;

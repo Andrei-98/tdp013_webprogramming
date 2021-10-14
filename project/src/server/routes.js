@@ -56,8 +56,8 @@ router.post("/login", (req, rsp) => {
         const status = dbHandler.sign_in(user);
         status.then((res) => {
             if (res != null) {
-                const hashedPass = cryptoJS.AES.encrypt(req.body.password, KEYPHRASE).toString(); 
-                res.password = hashedPass;
+                const encryptPass = cryptoJS.AES.encrypt(req.body.password, KEYPHRASE).toString(); 
+                res.password = encryptPass;
                 rsp.json(res);
             }
             else
@@ -77,8 +77,8 @@ router.post("/checkup", (req, rsp) => {
         const status = dbHandler.sign_in(user);
         status.then((res) => {
             if (res != null) {
-                const hashedPass = cryptoJS.AES.encrypt(req.body.password, KEYPHRASE).toString();  
-                res.password = hashedPass;
+                const encryptPass = cryptoJS.AES.encrypt(req.body.password, KEYPHRASE).toString();  
+                res.password = encryptPass;
                 rsp.json(res);
             }
             else

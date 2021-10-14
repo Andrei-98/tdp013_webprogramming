@@ -2,6 +2,8 @@ import { useState } from "react";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import verifyMessage from '../validation'
+import CryptoJS from "crypto-js";
+
 
 function Register() {
 
@@ -21,11 +23,13 @@ function Register() {
 
             if (status_username === "" &&
                 status_pass1 === "" ) {
+                const hashedPassword = CryptoJS.SHA512(e.target[1].value).toString();
+                const hashedPasswordConfirm = CryptoJS.SHA512(e.target[2].value).toString();
 
                 fetch('http://localhost:9070/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ "username": e.target[0].value, "password": e.target[1].value, "password_confirm" : e.target[2].value })
+                    body: JSON.stringify({ "username": e.target[0].value, "password": hashedPassword, "password_confirm" : hashedPasswordConfirm })
                 })
                     .then((response) => {
 

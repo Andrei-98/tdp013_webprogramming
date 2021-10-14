@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button'
 import { useState } from 'react'
 import { useHistory } from "react-router-dom";
 import verifyMessage from '../validation'
+import CryptoJS from "crypto-js";
+
 
 
 function Login({ login }) {
@@ -16,8 +18,9 @@ function Login({ login }) {
     const submitHandler = e => {
         e.preventDefault();
 
-        let status_user = verifyMessage(e.target[0].value)
-        let status_password = verifyMessage(e.target[1].value)
+        const status_user = verifyMessage(e.target[0].value)
+        const status_password = verifyMessage(e.target[1].value)
+        const hashedPassword = CryptoJS.SHA512(e.target[1].value).toString();
 
         if (status_user === "" && status_password === "") {
 
@@ -25,7 +28,7 @@ function Login({ login }) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 json: true,
-                body: JSON.stringify({ "username": user.username, "password": user.password })
+                body: JSON.stringify({ "username": user.username, "password": hashedPassword })
             })
                 .then((response) => {
                     let stream = response.text();
