@@ -13,27 +13,36 @@ const KEYPHRASE = "JiajfiahbbvasfoahfojJIHFASHFUHFhfhf1134124";
 
 describe('POST for /register', () => {
     it('Should have status code 200 and add one user to database', (done) => {
-        let query = { username: "Kasper", password: "123456", password_confirm: "123456" };
-        databaseHandler.dropColl();
-        chai.request(server)
-            .post('/register')
-            .send(query)
-            .then((res) => {
-                res.should.have.status(200);
-                let obj = databaseHandler.find_user({ username: query.username });
-                obj.then((r) => {
-                    r.username.should.be.equal(query.username);
-                    r.password.should.be.equal(query.password);
-                    done();
-                })
-            })
-    });
+        let query = {
+            username: "Kasper", password: cryptoJS.SHA512("123456").toString(),
+            password_confirm: cryptoJS.SHA512("123456").toString()
+        };
+        databaseHandler.dropColl()
+            .then(() => {
+                chai.request(server)
+                    .post('/register')
+                    .send(query)
+                    .then((res) => {
+                        res.should.have.status(200);
+                        let obj = databaseHandler.find_user({ username: query.username });
+                        obj.then((r) => {
+                            r.username.should.be.equal(query.username);
+                            r.password.should.be.equal(query.password);
+                            done();
+                        })
+                    })
+            });
+    })
+
 });
 
 
 describe('POST for /register', () => {
     it('Should have status code 200 and add one user to database', (done) => {
-        let query = { username: "Andrei", password: "Hello" , password_confirm: "Hello"};
+        let query = {
+            username: "Andrei", password: cryptoJS.SHA512("Hello").toString(),
+            password_confirm: cryptoJS.SHA512("Hello").toString()
+        };
         chai.request(server)
             .post('/register')
             .send(query)
@@ -52,7 +61,7 @@ describe('POST for /register', () => {
 
 describe('POST for /register user already exist', () => {
     it('Should have status code 409', (done) => {
-        let query = { username: "Andrei", password: "Hello" , password_confirm: "Hello"};
+        let query = { username: "Andrei", password: "Hello", password_confirm: "Hello" };
         chai.request(server)
             .post('/register')
             .send(query)
@@ -66,7 +75,7 @@ describe('POST for /register user already exist', () => {
 
 describe('POST for /login', () => {
     it('Should have status code 200 and return correct user', (done) => {
-        let query = { username: "Kasper", password: "123456" };
+        let query = { username: "Kasper", password: cryptoJS.SHA512("123456").toString() };
         chai.request(server)
             .post('/login')
             .send(query)
@@ -141,7 +150,7 @@ describe('POST for /find', () => {
     });
 });
 
-describe('POST for /find in same way as before ' , () => {
+describe('POST for /find in same way as before ', () => {
     it('Should have status code 400 since sender already sent request', (done) => {
         const sender = "Kasper";
         const receiver = "Andrei";
@@ -167,7 +176,7 @@ describe('POST for /find in same way as before ' , () => {
 });
 
 
-describe('POST for /find inverted ' , () => {
+describe('POST for /find inverted ', () => {
     it('Should have status code 400 since sender already sent request', (done) => {
         const sender = "Andrei";
         const receiver = "Kasper";
@@ -197,7 +206,7 @@ describe('POST for /profile to friend', () => {
     it('Should have status code 400, since they are not friends', (done) => {
         const from = "Kasper";
         const content = "Hello there";
-        const message = { content: content, from: from}
+        const message = { content: content, from: from }
         chai.request(server)
             .post('/profile/Andrei')
             .send(message)
@@ -218,7 +227,7 @@ describe('POST for /profile to non existent user', () => {
     it('Should have status code 400, since that user dosent exist', (done) => {
         const from = "Kasper";
         const content = "Hello there";
-        const message = { content: content, from: from}
+        const message = { content: content, from: from }
         chai.request(server)
             .post('/profile/Cleo')
             .send(message)
@@ -264,7 +273,7 @@ describe('POST for /profile to friend', () => {
     it('Should have status code 200, since they are now friends', (done) => {
         const from = "Kasper";
         const content = "Hello there";
-        const message = { content: content, from: from}
+        const message = { content: content, from: from }
         chai.request(server)
             .post('/profile/Andrei')
             .send(message)
@@ -284,7 +293,7 @@ describe('POST for /profile to friend', () => {
 })
 
 
-describe('POST for /find after already friends' , () => {
+describe('POST for /find after already friends', () => {
     it('Should have status code 400 since sender already friends with receiver', (done) => {
         const sender = "Andrei";
         const receiver = "Kasper";
@@ -342,7 +351,7 @@ describe('POST for /profile to self', () => {
     it('Should have status code 200, add message to Kasper', (done) => {
         const from = "Kasper";
         const content = "Hello there";
-        const message = { content: content, from: from}
+        const message = { content: content, from: from }
         chai.request(server)
             .post('/profile/Kasper')
             .send(message)
@@ -366,7 +375,7 @@ describe('POST for /profile to self with 0 chars', () => {
     it('Should have status code 400', (done) => {
         const from = "Kasper";
         const content = "";
-        const message = { content: content, from: from}
+        const message = { content: content, from: from }
         chai.request(server)
             .post('/profile/Kasper')
             .send(message)
@@ -383,7 +392,7 @@ describe('POST for /profile to self with more than 140 chars', () => {
     it('Should have status code 400', (done) => {
         const from = "Kasper";
         const content = "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello";
-        const message = { content: content, from: from}
+        const message = { content: content, from: from }
         chai.request(server)
             .post('/profile/Kasper')
             .send(message)
@@ -399,7 +408,7 @@ describe('POST for /profile to friend', () => {
     it('Should have status code 200, add message to Andrei', (done) => {
         const from = "Kasper";
         const content = "Hello there";
-        const message = { content: content, from: from}
+        const message = { content: content, from: from }
         chai.request(server)
             .post('/profile/Andrei')
             .send(message)
@@ -518,11 +527,11 @@ describe('GET for /find/', () => {
             .get('/find/')
             .then((res) => {
                 databaseHandler.find_all()
-                .then((r) => {
-                    assert.equal(res.body.length, r.length);
-                    done();
-                })
-                
+                    .then((r) => {
+                        assert.equal(res.body.length, r.length);
+                        done();
+                    })
+
             })
     })
 });
@@ -532,7 +541,7 @@ describe('POST for /update', () => {
     it('Should return a JSON object of requested username', (done) => {
         chai.request(server)
             .post('/update')
-            .send({username : "Kasper"})
+            .send({ username: "Kasper" })
             .then((res) => {
                 let obj = databaseHandler.find_user({ username: "Kasper" });
                 obj.then((r) => {
@@ -548,7 +557,7 @@ describe('POST for /update', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/update')
-            .send({username : "Pål"})
+            .send({ username: "Pål" })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -561,7 +570,7 @@ describe('Illegal function delete', () => {
     it('Should return status code 405', (done) => {
         chai.request(server)
             .delete('/find')
-            .send({username : "Pål"})
+            .send({ username: "Pål" })
             .then((res) => {
                 assert.equal(res.status, 405);
                 done();
@@ -574,7 +583,7 @@ describe('POST Wrong URL', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/ERROR')
-            .send({username : "Pål"})
+            .send({ username: "Pål" })
             .then((res) => {
                 assert.equal(res.status, 404);
                 done();
@@ -611,7 +620,7 @@ describe('POST /profile json object', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/profile/Kasper')
-            .send({from : "Andrei", content: {json : true}, to: "Kasper"})
+            .send({ from: "Andrei", content: { json: true }, to: "Kasper" })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -624,7 +633,7 @@ describe('POST /profile json object', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/profile/Kasper')
-            .send({from : "Andrei", content: {json : true}, to: "Kasper"})
+            .send({ from: "Andrei", content: { json: true }, to: "Kasper" })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -637,7 +646,7 @@ describe('POST /profile string json object', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/profile/Kasper')
-            .send({from : "Andrei", content: '{"json" : "true"}', to: "Kasper"})
+            .send({ from: "Andrei", content: '{"json" : "true"}', to: "Kasper" })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -650,7 +659,7 @@ describe('POST /profile json object', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/profile/Kasper')
-            .send({from : "Andrei", content: null, to: "Kasper"})
+            .send({ from: "Andrei", content: null, to: "Kasper" })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -663,7 +672,7 @@ describe('POST /profile json object', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/profile/Kasper')
-            .send({from : "Andrei", content: "${error}", to: "Kasper"})
+            .send({ from: "Andrei", content: "${error}", to: "Kasper" })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -676,7 +685,7 @@ describe('POST /register user where password done match', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/register')
-            .send({username: "Kasper", password: "hello" , password_confirm: "ERROR"})
+            .send({ username: "Kasper", password: "hello", password_confirm: "ERROR" })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -689,7 +698,7 @@ describe('POST /register sending in json object as password', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/register')
-            .send({ username: "Lovisa", password: {json: true}, password_confirm: {json: true} })
+            .send({ username: "Lovisa", password: { json: true }, password_confirm: { json: true } })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -702,7 +711,7 @@ describe('POST /login sending in json object as password', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/login')
-            .send({username: "Lovisa", password: {json: true}})
+            .send({ username: "Lovisa", password: { json: true } })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -715,7 +724,7 @@ describe('POST /find sending in json object as friend-request receiver', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/find')
-            .send({sender: "Kasper", receiver: {json: true}})
+            .send({ sender: "Kasper", receiver: { json: true } })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -728,7 +737,7 @@ describe('PUT /find sending in json object as friend-accept receiver', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .put('/find')
-            .send({sender: "Kasper", receiver: {json: true}})
+            .send({ sender: "Kasper", receiver: { json: true } })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -766,7 +775,7 @@ describe('POST /update json-object as username', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/update')
-            .send({username : {JSON: true}})
+            .send({ username: { JSON: true } })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -779,7 +788,7 @@ describe('POST /checkup json-object as username', () => {
     it('Should return status code 400', (done) => {
         chai.request(server)
             .post('/checkup')
-            .send({username : {JSON: true}})
+            .send({ username: { JSON: true } })
             .then((res) => {
                 assert.equal(res.status, 400);
                 done();
@@ -792,7 +801,7 @@ describe('POST /checkup wrong password', () => {
     it('Should return status code 401', (done) => {
         chai.request(server)
             .post('/checkup')
-            .send({username : "kasper", password: "1234566"})
+            .send({ username: "kasper", password: "1234566" })
             .then((res) => {
                 assert.equal(res.status, 401);
                 done();
@@ -803,10 +812,11 @@ describe('POST /checkup wrong password', () => {
 
 describe('POST /checkup right hashed password', () => {
     it('Should return JSON object of user', (done) => {
-        const passwordHashed = cryptoJS.AES.encrypt("123456", KEYPHRASE).toString();
+        const passwordHashed = cryptoJS.AES.encrypt(cryptoJS.SHA512("123456").toString(),
+            KEYPHRASE).toString();
         chai.request(server)
             .post('/checkup')
-            .send({username : "Kasper", password: passwordHashed})
+            .send({ username: "Kasper", password: passwordHashed })
             .then((res) => {
                 assert.equal(res.body.username, "Kasper");
                 done();
@@ -820,7 +830,7 @@ describe('POST /options right password', () => {
         const passwordHashed = cryptoJS.AES.encrypt("123456", KEYPHRASE).toString();
         chai.request(server)
             .options('/checkup')
-            .send({username : "Kasper", password: passwordHashed})
+            .send({ username: "Kasper", password: passwordHashed })
             .then((res) => {
                 assert.equal(res.status, 200);
                 done();
@@ -835,18 +845,18 @@ FROM SERVER:
     'Access-Control-Allow-Headers' = 'Origin, X-Requested-With, Content-Type, Accept'
     'Access-Control-Allow-Methods' = 'POST, GET, PUT, OPTIONS'
 */
-describe('Check that cors-headers are equal to servers configuration', () => { 
+describe('Check that cors-headers are equal to servers configuration', () => {
     it('Headers should have same preset', (done) => {
         chai.request(server)
-        .post( '/profile/Kasper' )
-        .send({"from" : "Andrei", "content" : "Hello"})
-        .end((err, res) => {
-            assert.equal('*', res.header['access-control-allow-origin']);
-            assert.equal('Origin, X-Requested-With, Content-Type, Accept', res.header['access-control-allow-headers']);
-            assert.equal('POST, GET, PUT, OPTIONS', res.header['access-control-allow-methods']); 
-            assert.equal(res.status, 200); 
-            done();
-        });
+            .post('/profile/Kasper')
+            .send({ "from": "Andrei", "content": "Hello" })
+            .end((err, res) => {
+                assert.equal('*', res.header['access-control-allow-origin']);
+                assert.equal('Origin, X-Requested-With, Content-Type, Accept', res.header['access-control-allow-headers']);
+                assert.equal('POST, GET, PUT, OPTIONS', res.header['access-control-allow-methods']);
+                assert.equal(res.status, 200);
+                done();
+            });
     })
 });
 
@@ -854,7 +864,7 @@ describe('Check that cors-headers are equal to servers configuration', () => {
 // close database and exit app
 after(() => {
     databaseHandler.closeDb()
-    .then(exit());
+        .then(exit());
 });
 
 
