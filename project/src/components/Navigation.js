@@ -13,6 +13,7 @@ function Navigation({ logout, username }) {
 
     const history = useHistory();
 
+    // logout defined in App.js
     function logging_out() {
         logout()
         history.push("/login")
@@ -26,16 +27,21 @@ function Navigation({ logout, username }) {
                 <Navbar.Brand className="me-auto">{username}</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
+
                         <Nav className="mx-5">
+
                             <LinkContainer to={"/profile/" + username}>
                                 <Nav.Link>My profile</Nav.Link>
                             </LinkContainer>
+
                             <LinkContainer to="/find">
                                 <Nav.Link>Find</Nav.Link>
                             </LinkContainer>
+
                             <LinkContainer to="/chat">
                                 <Nav.Link>Chat</Nav.Link>
                             </LinkContainer>
+
                         </Nav>
                         
                         <Button className="ms-auto"

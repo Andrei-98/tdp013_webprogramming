@@ -9,7 +9,9 @@ function IsJsonString(str) {
     }
     return false;
 }
-
+// check if text is valid
+// returns error as a string if wrong
+// return "" if all tests ok
 const verifyMessage = (text) => {
     if (text.length === 0 || text.length > 140) {
         return "Enter between 1 and 140 characters!"

@@ -5,7 +5,13 @@ import './App.css';
 import SecureRoutes from "./components/SecureRoutes";
 import UnsecureRoutes from "./components/UnsecureRoutes"
 
-
+/* 
+ * The app has two components that determine which routes the user has
+ * access to (SecureRoutes UnsecureRoutes).
+ * UnsecureRoutes are /login and /register.
+ * To get access to SecureRoutes (/profile /find) the user has to log
+ * in with a valid account.
+ */
 
 function App() {
 
@@ -28,6 +34,8 @@ function App() {
   }
 
 
+  // update logged in user
+  // fetch potential new information
   const update = () => {
     fetch('http://localhost:9070/update', {
       method: 'POST',
@@ -40,9 +48,8 @@ function App() {
 
         stream.then((res) => {
 
-          const json_res = JSON.parse(res);
-          setUser(prevState => ({
-              ...prevState,
+          const json_res = JSON.parse(res)
+          setUser(prevState => ({...prevState,
               friends: json_res.friends,
               messages: json_res.messages,
               sent_req: json_res.sent_req,
@@ -53,6 +60,7 @@ function App() {
   }
 
 
+  // log in user and set user State 
   const check_user = (userName, userPassword, callback) => {
     fetch('http://localhost:9070/checkup', {
       method: 'POST',
@@ -80,6 +88,9 @@ function App() {
   }
 
 
+  // when webpage is refreshed 
+  // check local storage if we are logged in
+  // log in the user
   useEffect(() => {
     const signed_in = localStorage.getItem("isLoggedIn");
     if (signed_in === 'true') {
@@ -102,8 +113,8 @@ function App() {
   }, []);
 
 
+  // used in Login.js
   const login = (user_det) => {
-
     setUser(user_det);
     localStorage.setItem('isLoggedIn', 'true');
     user_det = {
@@ -115,7 +126,7 @@ function App() {
     setInit(true);
   }
 
-
+  // used in Navigation.js
   const logout = () => {
     setUser({
       username: "",

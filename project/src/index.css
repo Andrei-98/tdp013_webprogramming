@@ -150,7 +150,7 @@ code {
   flex-direction: row;
 }
 
-/* this is usesed to make .msg-container 
+/* this is used to make .msg-container 
 centered and friend requests to the left */
 .inviz-item {
   width: 220px;
@@ -165,8 +165,7 @@ centered and friend requests to the left */
   padding: 2%;
 }
 
-.msg-box-errror {
-
+.msg-box-error {
   display: flex;
   flex-flow: wrap row;
   align-items: center;
@@ -204,7 +203,6 @@ centered and friend requests to the left */
     width: 80%;
   }
  }
-
 
  .find {
   display: flex;

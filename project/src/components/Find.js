@@ -11,9 +11,10 @@ function Find({ user, update }) {
     const [users, setUsers] = useState(null)
     const [error, setError] = useState("")
 
-    const resetError = () => { setError(error => "") }
+    const resetError = () => { setError("") }
 
-
+    // get the users that match the search
+    // set the users to the response of the server
     const getUsers = (getuser) => {
         fetch(`http://localhost:9070/find/${getuser}`, {
             method: 'GET',
@@ -26,10 +27,6 @@ function Find({ user, update }) {
                     }
                     res = JSON.parse(res);
 
-                    // this dosent work
-                    // if (res.length === 1) {
-                    //     setError("No users with that name.")
-                    // }
                     setUsers(res);
                 })
             })
@@ -74,9 +71,11 @@ function Find({ user, update }) {
             <span>{error}</span>
 
             <div className="search_list">
+{/*             iterate through the found in getUsers()
+                create a SearchRes component out of each one  */}
                 {users && users.map((us) => (
                     <SearchRes
-                        msg={us.username}
+                        receiver={us.username}
                         user={user}
                         update={update}
                         className="msg"

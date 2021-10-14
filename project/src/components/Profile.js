@@ -6,6 +6,13 @@ import MyProfile from './MyProfile'
 import InvalidProfile from './InvalidProfile'
 import FriendProfile from './FriendProfile'
 
+/* Render 4 different types of profiles depending if
+ * we try to access a user that dose not exists in the database
+ * we try to access our own profile
+ * we try to access a profile we are friends with
+ * we try to access a profile we are not friends with
+ */
+
 function Profile({ from, user, update }) {
 
     const { username } = useParams()
@@ -51,22 +58,24 @@ function Profile({ from, user, update }) {
         return user.friends.includes(username);
     }
 
-    
+
     const addMessage = async (msg) => {
         const res = await fetch(`http://localhost:9070/profile/${username}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(msg)
         })
-        .then((re) => {
-            if(re.status === 200) {
-                setMessages([msg, ...messages])
-            }
-        })
+            .then((re) => {
+                if (re.status === 200) {
+                    // add message in ui
+                    setMessages([msg, ...messages])
+                }
+            })
     }
 
 
     const addFriend = async (friend) => {
+        //remove friend from ui
         setFriendRequests(friendRequests.filter(
             (request) => request !== friend.sender))
 
@@ -85,8 +94,10 @@ function Profile({ from, user, update }) {
     return (
         <div className="profile-container grey-1">
             <>
+                {/* profile that dose not exists in the database */}
                 {init && invalid_user && <InvalidProfile />}
 
+                {/*access our own profile */}
                 {init && !other_profile &&
                     <MyProfile
                         username={username}
@@ -98,6 +109,7 @@ function Profile({ from, user, update }) {
                         messages={messages}
                     />}
 
+                {/* profile we are friends with */}
                 {init && other_profile && isFriend() &&
                     <FriendProfile
                         username={username}
@@ -108,6 +120,7 @@ function Profile({ from, user, update }) {
                         messages={messages}
                     />}
 
+                {/* profile we are not friends with */}
                 {init && !isFriend() && other_profile && !invalid_user &&
                     <NotFriend
                         user={user}

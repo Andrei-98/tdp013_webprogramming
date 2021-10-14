@@ -26,7 +26,7 @@ function MessageBox({ to, from, onAdd }) {
 
     return (
         <div>
-            <div className="msg-box-errror">
+            <div className="msg-box-error">
                 
                 <Form
                     className="container-msg-box"

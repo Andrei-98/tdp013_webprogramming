@@ -9,26 +9,32 @@ function Register() {
 
     const [error, setError] = useState('')
 
-    const resetError = () => { setError(error => "") }
+    const resetError = () => { setError("") }
 
-    const registerFetch = (e) => {
+    // register the use on the database
+    // hashes the passwords
+    // checks the response from the sever
+    // writes in error relevant message depending on response status
+    const fetchRegister = (e) => {
         const hashedPassword = CryptoJS.SHA512(e.target[1].value).toString();
         const hashedPasswordConfirm = CryptoJS.SHA512(e.target[2].value).toString();
 
         fetch('http://localhost:9070/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ "username": e.target[0].value, "password": hashedPassword,
-                                   "password_confirm": hashedPasswordConfirm })
+            body: JSON.stringify({
+                "username": e.target[0].value,
+                "password": hashedPassword,
+                "password_confirm": hashedPasswordConfirm
+            })
         })
             .then((response) => {
 
                 if (response.status === 409) {
                     setError("Username is already in use.")
                 } else if (response.status === 400) {
-                    setError("Forbidden characters detected, your input is either ${} or a JSON string.")
-                    // } else if (response.status === 200) {
-                    //     setError("Account created successfully.")
+                    setError("Forbidden characters detected,\
+                            your input is either ${} or a JSON string.")
                 } else {
                     setError("Account created successfully.")
                     e.target[0].value = "";
@@ -50,9 +56,8 @@ function Register() {
             let status_username = verifyMessage(e.target[0].value)
             let status_pass1 = verifyMessage(e.target[1].value)
 
-            if (status_username === "" &&
-                status_pass1 === "") {
-                return registerFetch(e)
+            if (status_username === "" && status_pass1 === "") {
+                return fetchRegister(e)
             } else {
                 if (status_username !== "") {
                     setError(status_username)

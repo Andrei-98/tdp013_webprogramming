@@ -14,9 +14,9 @@ function Login({ login }) {
     const [user, setUser] = useState({ username: "", password: "" })
     const [error, setError] = useState(false)
 
-    const clearError = () => { setError(error => "") }
+    const clearError = () => { setError("") }
 
-    
+    // Try to log user with the information typed in
     const fetchLogin = (hashedPassword) => {
         fetch('http://localhost:9070/login', {
             method: 'POST',
@@ -31,6 +31,7 @@ function Login({ login }) {
                         setError("Wrong password or name.")
                         return;
                     } else {
+                        // defined in App.js
                         login(JSON.parse(res));
                         history.push("/profile/" + user.username)
                     }
@@ -49,7 +50,6 @@ function Login({ login }) {
         if (status_user === "" && status_password === "") {
             fetchLogin(hashedPassword)
         } else {
-            console.log("in error")
             if (status_user !== "") {
                 setError(status_user)
             } else {
