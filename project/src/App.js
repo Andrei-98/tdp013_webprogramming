@@ -61,9 +61,6 @@ function App() {
   }
 
 
-
-
-
   // when webpage is refreshed 
   // check local storage if we are logged in
   // log in the user
@@ -145,7 +142,6 @@ function App() {
     localStorage.removeItem('user');
     setLogged(false);
   }
-
 
   return (
     <div className="App">
